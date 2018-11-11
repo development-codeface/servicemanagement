@@ -1,0 +1,170 @@
+<form id="ajaxForm">
+                                <div class="row">
+                                    <div class="col-lg-4">
+                                        <fieldset class="form-group">
+                                            <label>Job Location</label>
+
+                                      <select class="form-control" name="job_location">
+                                            <option value="">Select Job Location</option>
+                                               
+                                                    <option value="Outdoor">Outdoor</option>
+                                                    <option value="Indoor">Indoor</option>
+                                            </select>                                        
+                                            </fieldset>
+                                    </div>
+                                    <div class="col-lg-4">
+                                        <fieldset class="form-group">
+                                            <label>Repair Order Number</label>
+
+                                            <input class="form-control" name="rep_order_no" id="placeholderInput"  type="text">
+                                        </fieldset>
+                                    </div>
+                                    <div class="col-lg-4">
+                   <fieldset class="form-group">
+                   <label>Model</label>
+                   <select class="form-control" name="product">
+                   <option value="">Select Product</option>
+                           @foreach($products as $menu)
+                               <option value="{{ $menu->product_no }}">{{$menu->product_description }}</option>
+                           @endforeach
+                   </select>
+                   </fieldset>
+                </div>
+                                </div>
+                              
+
+                                <div class="row">
+
+
+                                    <!-- <div class="col-lg-4">
+                                        <fieldset class="form-group">
+                                            <label>First Name</label>
+                                            <input class="form-control" name="first_name" id="placeholderInput"  type="text">
+                                        </fieldset>
+                                    </div>
+                                    <div class="col-lg-4">
+                                        <fieldset class="form-group">
+                                            <label>	Last Name</label>
+                                            <input class="form-control" name="last_name" id="placeholderInput"  type="text">
+                                        </fieldset>
+                                    </div> -->
+                                    <div class="col-lg-4">
+                                        <fieldset class="form-group">
+                                            <label>	Bill To Name</label>
+                                            <textarea class="form-control" id="placeholderInput" name="address"></textarea>
+                                        </fieldset>
+                                    </div>
+                                   
+                                    <div class="col-lg-4">
+                                        <fieldset class="form-group">
+                                            <label>	Contact Number</label>
+                                            <input class="form-control" name="phone" id="placeholderInput"  type="text">
+                                        </fieldset>
+                                    </div>
+                                    <!-- <div class="col-lg-4">
+                                        <fieldset class="form-group">
+                                            <label>	Pin Code</label>
+                                            <input class="form-control" name="pin_code" id="placeholderInput" type="text">
+                                        </fieldset>
+                                    </div> -->
+                                    <!-- <div class="col-lg-4">
+                                        <fieldset class="form-group">
+                                            <label>	</label>
+                                            <input class="form-control" name="bus_num" id="placeholderInput"  type="text">
+                                        </fieldset>
+                                    </div> -->
+                                   
+                                    <!-- <div class="col-lg-4 techn hidden" id="techn">
+                                    <fieldset class="form-group">
+                                            <label> Assign Asp Technician</label>
+                                            <select class="form-control asp" name="technician">
+                                            <option value="">Select technician</option>
+                                                @foreach($techs as $stat)
+                                                    <option value="{{ $stat->id}}">{{$stat->email}}</option>
+                                                @endforeach
+                                            </select>
+                                        </fieldset>
+                                    </div> -->
+                                </div>
+                            <hr>
+                            <div class="row">
+                                <div class="col-lg-4">
+                                        <fieldset class="form-group">
+                                            <label>Complaints/Remarks</label>
+                                            <textarea class="form-control" id="placeholderInput" name="remark"></textarea>
+                                        </fieldset>
+                                    </div>
+                                    <div class="col-lg-4">
+                                        <fieldset class="form-group">
+                                            <label>Turn Around Time</label>
+                                            <input class="form-control" name="turn_fround_time" id="placeholderInput"  type="text">
+                                        </fieldset>
+                                    </div>
+                                    <div class="col-lg-4">
+                                        <fieldset class="form-group">
+                                            <label>Description</label>
+                                            <textarea class="form-control" id="placeholderInput" name="description"></textarea>
+                                        </fieldset>
+                                    </div>
+
+                                    </div>
+                                    <div class="row">
+                                    <div class="col-lg-4">
+                                        <fieldset class="form-group">
+                                            <label> Assign Asp Admin</label>
+                                            <select class="form-control asp" name="asp_location" required>
+                                            <option value="">Select WareHouse</option>
+                                                @foreach($warehouse as $stat)
+                                                    <option value="{{ $stat->code}}">{{$stat->name}} - {{$stat->code}}</option>
+                                                @endforeach
+                                            </select>
+                                        </fieldset>
+                                    </div>
+                                    </div>
+                                <!-- <div class="row">
+                                    <div class="col-lg-4">
+                                        <fieldset class="form-group">
+                                            <label>Faulty Code</label>
+                                            <select class="form-control" name="faulty">
+                                            <option value="">Select Faulty Code</option>
+                                                @foreach($faultys as $faulty)
+                                                    <option value="{{ $faulty->faulty_id }}">{{ $faulty-> faulty_description }}</option>
+                                               @endforeach
+                                            </select>
+                                        </fieldset>
+                                    </div>
+
+
+                                    <div class="col-lg-4">
+                                        <fieldset class="form-group">
+                                            <label>Symptom Code</label>
+                                            <select class="form-control" name="symptom">
+                                            <option value="">Select Symptom Code</option>
+                                                @foreach($symptoms as $symptom)
+                                                    <option value="{{ $symptom->symptom_id }}">{{ $symptom-> symptom_description }}</option>
+                                                @endforeach
+                                            </select>
+                                        </fieldset>
+                                    </div>
+
+                                    <div class="col-lg-4">
+                                        <fieldset class="form-group">
+                                            <label>Resolution Code</label>
+                                            <select class="form-control" name="resolution">
+                                            <option value="">Select Resolution Code</option>
+                                                @foreach($resolutions as $resolution)
+                                                    <option value="{{ $resolution->resolution_id }}">{{ $resolution-> resolution_description }}</option>
+                                                @endforeach
+                                            </select>
+                                        </fieldset>
+                                    </div> 
+                                
+
+                                </div>-->
+                              
+                                <div class="mod_fot">
+        <input type="hidden" name="type" value="newJob">
+                                    <input type="hidden" name="_token" value="{{ csrf_token() }}">
+          <button type="submit" class="btn btn-lg btn-success"><i class=" fa fa-hdd-o"></i> Create</button>
+        </div>
+                            </form>
