@@ -207,38 +207,27 @@
                                 <td>{{str_limit($job->cu_address,25)}}</td>
                                 
                                 <td>{{$job->phone_no}}</td>
-                                <td>{{$job->remark}}</td>
+                                <td>{{$job->job_remark}}</td>
                                 <td>{{$job->symptom_description}}</td>
                                 <td>{{$job->resolution_description}}</td>
                                 <td>{{$job->change_code}}</td>
-                               @if($job->claim_create)
-                   <?php $d1 = App\Models\Job::where('job_id',$job->job_id)->first();
-                      $dat1 = $d1->created_at;
-                      $vv = date('d-m-Y', strtotime($dat1));
-                    
-                  $d2 = App\Models\Claim::where('job_id',$job->job_id)->first();
-                  $dat2 = $d2->created_at;
-                    $nn =  date('d-m-Y', strtotime($dat2));
-                   $formatted_dt1=Carbon::parse($vv);
 
-                                 $formatted_dt2=Carbon::parse($nn);
-
-                          $date_diff=$formatted_dt1->diffInDays($formatted_dt2);
-                  
-                  //echo round($diff / (60 * 60 * 24));
-
-                  
-                 ?>@endif
-                                @if($job->claim_approve)<td>{{$date_diff}} days<td>
-                @else
-                  <td></td>@endif
+                            @if($job->turn_fround_time)
+                                    <td>{{$job->turn_fround_time}} days</td>
+                                @else
+                                    <td></td>
+								@endif
                                
-                  @if($job->appointment_time)
+                            @if($job->appointment_time)
                                 <td>{{date('d-m-Y', strtotime($job->appointment_time))}}</td>
-              @else<td></td>
-              @endif
+                            @else
+                                <td></td>
+                            @endif
+                            @if($job->order_date)    
                                 <td>{{date('d-m-Y', strtotime($job->order_date))}}</td>
-                               
+                            @else 
+                                <td></td>
+                            @endif 
                                 <td>{{$job->product}}</td>
                                 <td>{{$job->seriel_number}}</td>
                                 <td>{{$job->servicetype}}</td>
@@ -300,36 +289,34 @@
     <script>
         $(document).ready(function(){
             $("#export11").click(function(){
-
-  $("#example2").tableToCSV();
-
-});
-
+                if($( "#example2" ).hasClass("hidden")){
+                    alert("No Job Available for export !!");
+                }else {
+                    $("#example2").tableToCSV();
+                }   
+            });
             $("#daterange").daterangepicker();
-            $('#getbtn').on('click', function() {
-
-  var dateRange = $('#daterange').val();
-  var token = "{{ csrf_token() }}";
-  var type = 'filter_list';
-             $.ajax({
-                 type: 'post',
-                 url: '{{ URL::route("postData") }}',
-                 data: { type:type,dateRange:dateRange,_token:token},
-                 success: function(data){
-                     if(data.status==1){
- $(".no_f").addClass('hidden');
-
-                         $("#example2").html(data.html);
-
-                     }
-                     else{
-                        $(".no_f").removeClass('hidden');
-                         $("#example2").addClass('hidden');
-                     }
-
-                 }
-             });
-});
+                $('#getbtn').on('click', function() {
+                    var dateRange = $('#daterange').val();
+                    var token = "{{ csrf_token() }}";
+                    var type = 'filter_list';
+                    $.ajax({
+                        type: 'post',
+                        url: '{{ URL::route("postData") }}',
+                        data: { type:type,dateRange:dateRange,_token:token},
+                        success: function(data){
+                            if(data.status==1){
+                                $(".no_f").addClass('hidden');
+                                $("#example2").removeClass('hidden');
+                                $("#example2").html(data.html);
+                            }
+                            else{
+                                $(".no_f").removeClass('hidden');
+                                $("#example2").addClass('hidden');
+                            }
+                        }
+                    });
+            });
 
 
  $('#getasp').on('click', function() {

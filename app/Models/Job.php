@@ -26,6 +26,8 @@ class Job extends Model implements AuthenticatableContract, CanResetPasswordCont
         'technician',
         'status',
         'parts_order',
+        'change_code',
+        'seriel_number',
         'item',
         'item_purchase_date',
         'item_serial_number',

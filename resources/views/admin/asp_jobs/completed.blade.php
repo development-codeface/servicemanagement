@@ -86,33 +86,24 @@
                                 <td>{{$job->symptom_description}}</td>
                                 <td>{{$job->resolution_description}}</td>
                                 <td>{{$job->change_code}}</td>
-                               @if($job->created_at)
-								   <?php $d1 = App\Models\Job::where('job_id',$job->job_id)->first();
-							        $dat1 = $d1->created_at;
-									    $vv = date('d-m-Y', strtotime($dat1));
-										
-									$d2 = App\Models\Claim::where('job_id',$job->job_id)->first();
-									$dat2 = $d2->created_at;
-									  $nn =  date('d-m-Y', strtotime($dat2));
-									 $formatted_dt1=Carbon::parse($vv);
-
-                                 $formatted_dt2=Carbon::parse($nn);
-
-                          $date_diff=$formatted_dt1->diffInDays($formatted_dt2);
-									
-									//echo round($diff / (60 * 60 * 24));
-
-									
-							   ?>@endif
-                                @if($job->created_at)<td>{{$date_diff}} days<td>
-								@else
-									<td></td>@endif
+                               @if($job->turn_fround_time)
+                                   
+                                    <td>{{$job->turn_fround_time}} days</td>
+                                @else
+                                    <td></td>
+								@endif
                                
-								  @if($job->appointment_time)
-                                <td>{{date('d-m-Y', strtotime($job->appointment_time))}}</td>
-							@else<td></td>
-							@endif
-                                <td>{{date('d-m-Y', strtotime($job->order_date))}}</td>
+								@if($job->appointment_time)
+                                    <td>{{date('d-m-Y', strtotime($job->appointment_time))}}</td>
+							    @else
+                                    <td></td>
+							    @endif
+
+                                @if($job->order_date)
+                                    <td>{{date('d-m-Y', strtotime($job->order_date))}}</td>
+                                @else
+                                    <td></td>
+                                @endif
                                
                                 <td>{{$job->product}}</td>
                                 <td>{{$job->seriel_number}}</td>

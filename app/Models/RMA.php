@@ -41,6 +41,7 @@ class RMA extends Model implements AuthenticatableContract, CanResetPasswordCont
         'dot_screen',
         'white_screen',
         'flicker',
+        'other',
         'back_light',
         'abnormal_pic',
         'purchase_date',
@@ -48,6 +49,7 @@ class RMA extends Model implements AuthenticatableContract, CanResetPasswordCont
         'credit_note',
         'application_date',
         'date_received',
+        'rma_remarks',
 		'is_cn_ex'
     ];
 

@@ -62,8 +62,7 @@
                                 @endif
                                 <td>{{$job->job_id}}</td>
                                
-                              
-                                <td>{{$job->order_date}}</td>
+                                @if($job->order_date)<td>{{date('d-m-Y', strtotime($job->order_date))}}</td>@else<td></td>@endif
                                 <td>{{$job->part_order_id}}</td>
                                
                                 <td>{{$job->name}}</td>

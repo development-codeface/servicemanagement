@@ -19,7 +19,7 @@
     <div class="content-wrapper">
         <!-- Content Header (Page header) -->
         <div class="content-header sty-one">
-            <h1>Job Edit</h1>
+            <h1>Job Edit </h1>
             <ol class="breadcrumb">
                 <li><a href="#">Dashboard</a></li>
                 <li><i class="fa fa-angle-right"></i> Job Edit</li>
@@ -209,7 +209,7 @@
                                     </div>
 									  <div class="col-lg-4">
                                         <fieldset class="form-group">
-                                            <label>Seriel No</label>
+                                            <label>Serial Number</label>
                                             <input class="form-control" name="seriel_number" id="time" value="{{$job->seriel_number}}"  type="text">
 											
                                         </fieldset>
@@ -253,10 +253,10 @@
                                             <textarea class="form-control" name="remark" id="placeholderInput"   type="text">{{$job->job_remark}}</textarea>
                                         </fieldset>
                                     </div>
-                                    <div class="col-lg-4 hidden">
+                                    <div class="col-lg-4">
                                         <fieldset class="form-group">
                                             <label>Turn Around Time</label>
-                                            <input class="form-control" name="turn_fround_time"  id="placeholderInput" value="{{$job->turn_fround_time}}"  type="text">
+                                            <input class="form-control" name="turn_fround_time"  id="placeholderInput" value="{{$job->turn_fround_time}}"  type="text" disabled>
                                         </fieldset>
                                     </div>
                                     <div class="col-lg-4">
@@ -355,7 +355,7 @@
         
           
         
-            <div class="row">
+            <div class="row hidden" >
             <div class="col-lg-4">
                                         <fieldset class="form-group">
                                             <label>Faulty Code</label>
@@ -411,7 +411,7 @@
                                         </fieldset>
                                     </div> 
                                 </div>
-                              <hr>  
+                              <!--<hr> -->  
                               <div class="row">
                               <div class="col-lg-4">
             <fieldset class="form-group">
@@ -436,10 +436,10 @@
                                             <label>Part &nbsp;</label>
                                             <select class="form-control partqty" onchange="onChangeNewquantity(this)"  name="parts[]">
                                             
-                                                    <option value="{{$part->part_id}}">{{ $mul->part_no }} - {{$mul->parts_description}}</option>
+                                                    <!--<option value="{{$part->part_id}}">{{ $mul->part_no }} - {{$mul->parts_description}}</option> -->
                                             
                                                 @foreach($parts as $part)
-                                                <option value="{{$part->part_id}}">{{$part->parts_description}} - {{$part->part_no}}</option>
+                                                <option value="{{$part->part_id}}" @if($mul->part_no==$part->part_no) selected @endif >{{$part->parts_description}} - {{$part->part_no}}</option>
                                                 @endforeach
                                               
                                             </select>            
@@ -448,10 +448,10 @@
                                            
                                     
                                   
-                                    <div class="col-lg-2">
+                                    <div class="col-lg-1">
                                         <fieldset class="form-group">
                                             <label> Quantity</label>
-                                            <input class="form-control" name="qty[]" value="{{$mul->quantity}}"  type="text" readonly>
+                                            <input class="form-control" name="qnty[]" value="{{$mul->quantity}}"  type="text" readonly>
                                             <input type="hidden" name="ml_id[]" value="{{$mul->mul_part_id}}">
                                             <input type="hidden" name="part_n[]" value="{{$mul->parts}}">
 
@@ -460,7 +460,7 @@
                                     <div class="col-lg-3">
                                         <fieldset class="form-group">
                                             <label> Available Quantity</label>
- <input class="form-control avlqty" id="avl_part_qty" @if($mul->avl_qty >= 0)value="{{$mul->avl_qty}}" @else value="0" @endif  type="text" readonly>                                        </fieldset>
+                                            <input class="form-control avlqty" id="avl_part_qty" @if($mul->avl_qty >= 0)value="{{$mul->avl_qty}}" @else value="0" @endif  type="text" readonly>                                        </fieldset>
                                     </div></div>
                                     <?php $i++;?>
                                     @endforeach
@@ -483,7 +483,7 @@
            
 
 
-           <div class="col-lg-2">
+           <div class="col-lg-3">
               <fieldset class="form-group">
                 <label> Parts Quantity</label>
               
@@ -492,17 +492,18 @@
                 
               </fieldset>
             </div>
-            <div class="col-lg-2">
+            <div class="col-lg-3">
                                         <fieldset class="form-group">
                                             <label> Available Quantity</label>
                                             <input class="form-control avlqty" id="avl_part_qty" type="text" readonly>
                                         </fieldset>
                                     </div>
             @endif
-            <div class="col-lg-2">
+            <div class="col-lg-12">
               <fieldset class="form-group">
               <label>&nbsp;</label>
-            <button type="button" class="btn btn-info pull-right answer_next" style="    margin-top: 34px; float: left;
+            <button type="button" class="btn btn-info pull-right answer_next" style="       margin-top: -55px;
+    float: right;
 ">Add More</button>
             </fieldset>
             </div>
@@ -520,12 +521,12 @@
                                         <fieldset class="form-group">
                                             <label>Approve/Reject</label><br>
                                             
-                                            <input type="radio" name="reject" value="1" @if($job->part_appr==1)checked @endif> Approve &nbsp; 
+                                            <input type="radio" name="reject" value="1" @if($job->part_appr==1 || (!$job->part_appr))checked @endif > Approve &nbsp; 
                                             
-                                             <input type="radio" name="reject" value="2" @if($job->part_appr==2)checked @endif> Reject<br>                                          
+                                             <input type="radio" name="reject" value="2" @if($job->part_appr==2)checked @endif > Reject<br>                                          
                                              </fieldset>
                                     </div>
-                                    <div class="col-lg-4 appr hidden">
+                                    <!--<div class="col-lg-4 appr hidden">
                                         <fieldset class="form-group">
                                             <label> Delivery Date</label>
                                             @if($job->delivery_date)
@@ -535,35 +536,35 @@
                                           @endif
                                         </fieldset>
                                     </div>
-                                    <div class="col-lg-4 rej hidden" >
+                                    <div class="col-lg-4 rej @if($job->part_appr==1) hidden @endif " >
                                         <fieldset class="form-group">
                                             <label> Remarks</label>
                                             <textarea class="form-control disable" name="note" ></textarea>                                      
                                              </fieldset>
-                                    </div>
+                                    </div>-->
                                     
                                     
-                            @if($job->delivery_date)<div class="col-lg-4 appr">
+                                    <div class="col-lg-4 appr @if($job->part_appr==2) hidden @endif ">
                                         <fieldset class="form-group">
                                             <label> Delivery Date</label>
                                             @if($job->delivery_date)
-                                            <input class="form-control" id="datepicker2" value="{{date('d-m-Y', strtotime($job->delivery_date))}}" name="del_date"  type="text" required>
+                                            <input class="form-control prtOrderDeldate" id="datepicker2" value="{{date('d-m-Y', strtotime($job->delivery_date))}}" name="del_date"  type="text" required>
                                             @else
-                                            <input class="form-control" id="datepicker2" value="" name="del_date"  type="text"required >
+                                            <input class="form-control prtOrderDeldate" id="datepicker2" value="" name="del_date"  type="text"required >
                                           @endif
                                         </fieldset>
                                     </div>
-                                    @endif
-                                    @if($job->apprv_remarks)
+                                    
+                                    
                                     <div class="col-lg-4 rej " >
                                         <fieldset class="form-group">
                                             <label> Remarks</label>
-                                            <textarea class="form-control disable" name="note" >{{$job->apprv_remarks}}</textarea>                                      
+                                             <textarea class="form-control disable" name="note" id="partOrederRemark">{{$job->appr_remark}}</textarea>                                 
                                              </fieldset>
                                     </div>
-                                    @endif
+                                    
                               
-          </div>
+                                </div>
         <div class="col-md-12 cenbut">
              <input type="hidden" name="type" value="newParts">
              @if(isset($job))
@@ -685,7 +686,7 @@
                </fieldset>
                </div> -->
                <div class="col-lg-4 ">
-           <fieldset class="form-group ">
+           <fieldset class="form-group hidden">
                  <label>Serial Number</label>
    
                  <input class="form-control" type="text" value="{{$job->seriel_number}}" id="seriel" name="seriel_no"
@@ -756,8 +757,13 @@
            <label for="exampleInputFile">Attach Proof</label>
                                                    <div class="col-sm-10">
 												   @if($job->attach_proof)
-													   <img src="{{ url('data/products/'.$job->attach_proof) }}" style="width: 124px;
-    height: 66px;"class="thumbnail img_rem"><a href="javascript:;" class="btn default btn-sm removeImageproof" data-id="{{$job->grn_id}}"  id="removeicon"><i class="fa fa-times"></i> Remove </a>
+                                                   @if($is_proof_image)
+													    <img src="{{ url('data/products/'.$job->attach_proof) }}" style="width: 124px;height: 66px;"class="thumbnail prooffile img_rem">
+                                                   @else 
+                                                   <input type="text" value="$job->attach_proof" name="filenameproof" class="hidden prooffile"/>
+                                                   <a href="{{ url('data/products/'.$job->attach_proof) }}" class="prooffile">{{$job->attach_proof}}</a>
+                                                   @endif
+    <a href="javascript:;" class="btn default btn-sm removeImageproof" data-id="{{$job->grn_id}}"  ><i class="fa fa-times"></i> Remove </a>
 	                                                   <input id="Image"  type="file" name="proof"/>
 
 												   @else
@@ -850,53 +856,53 @@
                </div>
    </div>
     <hr>
-   <div class="row">
   
-              
+  
+   <div class="row">         		   
+        <div class="col-lg-4">
+            <fieldset class="form-group">
+                <label>Select EX/CN</label><br>
+                <input type="radio" name="approve" value="1" @if($job->is_ex_cn == 1|| (!$job->is_ex_cn)) checked @endif> Credit note &nbsp;
+                <input type="radio" name="approve" value="2" @if($job->is_ex_cn == 2) checked @endif> Exchange<br>  
+                                                                            
+            </fieldset>
+        </div>
+     
+        <div class="col-lg-3 ">
+            <fieldset class="@if($job->is_ex_cn == 1|| (!$job->is_ex_cn))form-group amont @else amont hidden @endif">
+            <label>Credit Note</label>
+
+            <input class="form-control" type="text" value="{{$job->grn_credit}}"  id="grn_creditnote" name="credit_not"
+            />   
+            </fieldset>
+            <fieldset class="@if($job->is_ex_cn == 1|| (!$job->is_ex_cn))form-group amt @else amt hidden @endif">
+            <label>Amount</label>
+
+            <input class="form-control" type="text" value="{{$job->grn_amount}}" id="grn_amount" name="amount"
+            />   
+            </fieldset>
+            <fieldset class="@if($job->is_ex_cn == 1|| (!$job->is_ex_cn)) form-group sel_pr @else sel_pr hidden @endif">
+            <label>Last Selling Price RM</label>
+
+            <input class="form-control" type="text" value="{{$job->sell_price}}" id="grn_sellprice" name="sell_price"
+            />   
+            </fieldset>
+
+            <fieldset class="@if($job->is_ex_cn == 2) form-group ex_number @else ex_number hidden @endif">
+            <label>Exchange Number</label>
+
+            <input class="form-control" type="text" value="{{$job->grn_ex}}" id="grn_exchange" name="ex_number"
+            />   
+            </fieldset>
+
+            <fieldset class="form-group grn_rem">
+            <label>Remarks</label>
+            <textarea class="form-control" type="text" id="grn_remarks" name="grn_remarks"> {{$job->grn_remarks}} </textarea> 
+            </fieldset>
+        </div>    
+    </div>
                
-               <div class="col-lg-4">
-               <fieldset class="form-group">
-                                            <label>Select EX/CN</label><br>
-                                            <input type="radio" name="approve" value="1" @if($job->is_ex_cn == 1) checked @endif> Credit note &nbsp;
-                                             <input type="radio" name="approve" value="2" @if($job->is_ex_cn == 2) checked @endif> Exchange<br>  
-                                                                                 
-                                             </fieldset>
-               </div>
-               
-              <div class="col-lg-3 ">
-           <fieldset class="@if($job->grn_credit)form-group amont @else amont hidden @endif">
-                 <label>Credit Note</label>
-   
-                 <input class="form-control" type="text" value="{{$job->grn_credit}}"  id="credit_not" name="credit_not"
-                 />   
-               </fieldset>
-			   <fieldset class="@if($job->grn_amount)form-group amt @else amt hidden @endif">
-                 <label>Amount</label>
-   
-                 <input class="form-control" type="text" value="{{$job->grn_amount}}" id="amount" name="amount"
-                 />   
-               </fieldset>
-			    <fieldset class="@if($job->sell_price) form-group sel_pr @else sel_pr hidden @endif">
-                 <label>Last Selling Price RM</label>
-   
-                 <input class="form-control" type="text" value="{{$job->sell_price}}" id="amount" name="sell_price"
-                 />   
-               </fieldset>
-               <fieldset class="@if($job->grn_ex) form-group ex_number @else ex_number hidden @endif">
-                 <label>Exchange Number</label>
-   
-                 <input class="form-control" type="text" value="{{$job->grn_ex}}" id="ex_number" name="ex_number"
-                />   
-               </fieldset>
-			    <fieldset class="@if($job->remark) form-group grn_rem @else grn_rem hidden @endif">
-                 <label>Remarks</label>
-   
-                 <textarea class="form-control" type="text" value="{{$job->remark}}" id="grn_remarks" name="grn_remarks"
-                />  </textarea> 
-               </fieldset>
-               </div>
-               
-   </div>
+  
    <hr>
    <div class="row">
    <!-- <div class="col-lg-4">
@@ -943,14 +949,19 @@
            <fieldset class="form-group">
            <label for="exampleInputFile">Image</label>
                                                    <div class="col-sm-10">
-@if($job->grn_image)
-                                                       <img src="{{ url('data/products/'.$job->grn_image) }}" style="width: 124px;
-    height: 66px;"class="thumbnail img_rem"><a href="javascript:;" class="btn default btn-sm removeImage" data-id="{{$job->grn_id}}" id="removeicon"><i class="fa fa-times"></i> Remove </a>
-                                                       <input id="Image"  type="file" name="files"/>
+                                                   @if($job->grn_image)
+                                                   @if($is_symptom_image)
+													   <img src="{{ url('data/products/'.$job->grn_image) }}" style="width: 124px;height: 66px;"class="thumbnail symptom_image img_rem">
+                                                    @else
+                                                       <a href="{{ url('data/products/'.$job->grn_image) }}" class="symptom_image"> {{$job->grn_image}}</a>
+                                                    @endif
+    <a href="javascript:;" class="btn default btn-sm removeImage" data-id="{{$job->grn_id}}"  id="removeicon"><i class="fa fa-times"></i> Remove </a>
+	                                                   <input id="Image"  type="file" name="files"/>
 
-                                                   @else
+												   @else
                                                    <input id="Image"  type="file" name="files"/>
-                                               @endif     
+											   @endif
+         
                                                </div>
    
                </fieldset>
@@ -1192,62 +1203,41 @@
 
 
 
-<div class="row">
-               <div class="col-lg-4">
-               <fieldset class="form-group">
-                                            <label>Select EX/CN</label><br>
-                                            <input type="radio" name="approve" value="1" @if($job->is_cn_ex == 1) checked @endif> Credit note &nbsp;
-                                             <input type="radio" name="approve" value="2" @if($job->is_cn_ex == 2) checked @endif> Exchange<br>  
-                                                                                 
-                                             </fieldset>
-               </div>
-                 <div class="col-lg-4 ">
-           <fieldset class="form-group amont hidden">
-                 <label>Credit Note</label>
-   
-                 <input class="form-control" type="text" id="credit_not" name="credit_not"
-                 />   
-               </fieldset>
-               <fieldset class="form-group amt hidden">
-                 <label>Amount</label>
-   
-                 <input class="form-control" type="text" id="amount" name="amount"
-                 />   
-               </fieldset>
-               <fieldset class="form-group ex_number hidden">
-                 <label>Exchange Number</label>
-   
-                 <input class="form-control" type="text" id="ex_number" name="ex_number"
+        <div class="row">
+            <div class="col-lg-4">
+                <fieldset class="form-group">  
+                    <label>Select EX/CN</label><br>
+                    <input type="radio" name="approve" class="rma_ex" value="1" @if($job->is_cn_ex == 1 || (!$job->is_cn_ex)) checked @endif> Credit note &nbsp;
+                    <input type="radio" name="approve" value="2" class="rma_ex" @if($job->is_cn_ex == 2) checked @endif> Exchange<br>                                        
+                </fieldset>
+            </div>
+            <div class="col-lg-4 ">
+                <fieldset class="rma_container_cn @if($job->is_cn_ex == 1|| (!$job->is_cn_ex))form-group  @else hidden @endif">
+                <label>Credit Note</label>
+
+                <input class="form-control" type="text" value="{{$job->gma_credit}}"  id="rma_creditnote" name="credit_not"
                 />   
-               </fieldset>
-                <fieldset class="form-group grn_rem hidden">
-                 <label>Remarks</label>
-   
-                 <textarea class="form-control" type="text" id="rma_remarks" name="grn_remarks"
-                />  </textarea> 
-               </fieldset>
-               </div>
-               <div class="col-lg-4 ">
-               @if($job->is_cn_ex == 2) 
-               <fieldset class="form-group ex_number">
-                 <label>Exchange Number</label>
-   
-                 <input class="form-control" type="text" value="{{$job->gma_ex}}" id="ex_number" name="ex_number"
+                </fieldset>
+                <fieldset class="rma_container_amount @if($job->is_cn_ex == 1|| (!$job->is_cn_ex)) form-group  @else  hidden @endif">
+                <label>Amount</label>
+
+                <input class="form-control" type="text" value="{{$job->gma_amount}}" id="rma_amount" name="amount"
                 />   
-               </fieldset>
-               @endif
-               @if($job->is_cn_ex == 1)
-               <fieldset class="form-group amont ">
-                 <label>Credit Note</label>
-   
-                 <input class="form-control" type="text" id="credit_not" name="credit_not"
-                 />   
-               </fieldset>
-               @endif
-               </div>
-              
-</div>
-<hr>
+                </fieldset>
+                <fieldset class="rma_container_ex_number @if($job->is_cn_ex == 2) form-group  @else  hidden @endif">
+                <label>Exchange Number</label>
+
+                <input class="form-control" type="text" value="{{$job->rma_ex_number}}" id="rma_exchange" name="ex_number"
+                />   
+                </fieldset>
+
+                <fieldset class="form-group rma_container_rem">
+                <label>Remarks</label>
+                <textarea class="form-control" type="text" id="grn_remarks" name="rma_remarks"> {{$job->rma_remarks}} </textarea> 
+                </fieldset>
+            </div>    
+        </div>
+    <hr>
 <h4 class="sympd">Symptom/Defect</h4>
 
 
@@ -1371,13 +1361,9 @@
                </div>
                <div class="col-lg-4">
                                        
-                                       <fieldset class="form-group appr">
-                                            <label> Delivery Date</label>
-                                            @if($job->prod_deliver)
-                                            <input class="form-control"  value="{{date('d-m-Y', strtotime($job->prod_deliver))}}" id="datepicker3" name="del_date"  type="text">
-                                            @else
-                                            <input class="form-control"   id="datepicker3" name="del_date"  type="text"  >
-                                           @endif
+                                        <fieldset class="form-group rmaappr @if($job->is_cn_ex == 2) hidden @endif">
+                                            <label>	Delivery Date</label>
+                                            <input class="form-control"  value="@if($job->prod_deliver) {{date('d-m-Y', strtotime($job->prod_deliver))}} @endif" id="datepicker3" name="del_date"  type="text">
                                         </fieldset>
                                         </div>
 </div>
@@ -1522,42 +1508,32 @@
             
             </fieldset>
             </div>
+
+
+
             
               <div class="col-lg-4">
-                                      <fieldset class="form-group">
-                                            <label>Approve/Reject</label><br>
-                                            @if($job->claim_approv==1)<input type="radio" name="reject" value="1" checked> Approve &nbsp;
-@else                                           <input type="radio" name="reject" value="1" > Approve &nbsp;
-                                            @endif
-                                            @if($job->claim_approv==2) <input type="radio" name="reject" value="2" checked>  Reject<br>  
-                                            @else<input type="radio" name="reject" value="2" >  Reject<br> 
-@endif                                          
-                                             </fieldset>
-                                             
-                                    </div>      
-                                    <div class="col-lg-4">
-                                      
-                                        <fieldset class="form-group rej hidden">
-                                            <label>Remarks</label>
-                                            <textarea class="form-control disable" name="remark" ></textarea>                                      
-                                             </fieldset>
-                                    </div>
-                                    @if($job->claim_remarks)
-                                        <div class="col-lg-4">
-                                      
-                                        <fieldset class="form-group rej ">
-                                            <label>Remarks</label>
-                                            <textarea class="form-control disable" name="remark" >{{$job->claim_remarks}}</textarea>                                      
-                                             </fieldset>
-                                    </div>
-                                        @endif
-          
+                <fieldset class="form-group">
+                    <label>Approve/Reject</label><br>
+                        <input type="radio" name="reject" class="claimApprove" value="1" @if($job->claim_approv==1 || (!$job->claim_approv))checked @endif> Approve &nbsp;                                          
+                        <input type="radio" name="reject" value="2" class="claimApprove" @if($job->claim_approv==2 || (!$job->claim_approv))checked @endif>  Reject<br>  
+                </fieldset>
+            </div>      
+                                    
+            <div class="col-lg-4">                      
+                <fieldset class="form-group rej">
+                    <label>Remarks</label>
+                    <textarea class="form-control disable" id="claimremark" name="remark" >{{$job->claim_remarks}}</textarea>                                      
+                </fieldset>
+            </div>
+
           </div>
+
         <div class="col-md-12 cenbut">
     <input type="hidden" name="type" value="newClaim">
     @if(isset($job))
-             <input type="hidden" name="job_id" value="{{$job->job_id}} ">
-                      <input type="hidden" name="claim_id" value="{{$job->claim_id }}">
+            <input type="hidden" name="job_id" value="{{$job->job_id}} ">
+            <input type="hidden" name="claim_id" value="{{$job->claim_id }}">
 
              @endif
               
@@ -1593,7 +1569,7 @@
     <script>
 	 var myselect;
         function onChangeNewquantity(selectObj){
-			alert();
+			
                 var status = selectObj.value;
                  myselect = selectObj;
                 var token = "{{ csrf_token() }}";
@@ -1714,8 +1690,29 @@ if($(this).is(":checked")){
  }
      
 });
+    $('#tech_prob').click(function() {
+        
+        if($(this).is(":checked")){
+            img = 1;
+        }else{
+            img = 2;
+        }
+        
+        
+        if(img == 1){
+            
+            $(".attach_proof").show();
+        }
+        else{
+            
+            $(".attach_proof").hide();
+        }
+    });
+
        $( ".reject" ).change(function() {
              var rej= this.value;
+             $(".prtOrderDeldate").val("");
+             $("#partOrederRemark").val("");
              if(rej == 0){
                 $(".select-pane").show();
              }
@@ -1764,26 +1761,41 @@ if($(this).is(":checked")){
             }
 
     });
-    $('body').on('click', '.removeImage', function () {
-
-              
- var grn = $(this).attr("data-id");
- 
-var token = "{{ csrf_token() }}";
-var type = 'Delete-Image-GRN';
+    $('body').on('click', '.removeImage', function () {            
+    var grn = $(this).attr("data-id");
+    var token = "{{ csrf_token() }}";
+    var type = 'Delete-Image-GRN';
          $.ajax({
              type: 'post',
              url: '{{ URL::route("PostRemove") }}',
              data: { type:type,grn:grn,_token:token},
              success: function(data){
                  if(data.status==1){
-$( ".img_rem" ).remove();
-$( "#removeicon" ).remove();
-                 }
-                 
+                    //$( ".img_rem" ).remove();
+                    $( ".removeImage" ).remove();
+                    $(".symptom_image").remove();
+                 } 
              }
          });
             });
+			
+$('body').on('click', '.removeImageproof', function () {           
+    var grn = $(this).attr("data-id");
+    var token = "{{ csrf_token() }}";
+    var type = 'Delete-Image-Proof';
+         $.ajax({
+             type: 'post',
+             url: '{{ URL::route("PostRemove") }}',
+             data: { type:type,grn:grn,_token:token},
+             success: function(data){
+                 if(data.status==1){
+                    //$( ".img_rem" ).remove();
+                    $( ".removeImageproof" ).remove();
+                    $(".prooffile").remove();
+                 }	 
+             }
+         });
+});
             $('body').on('click', '.removeImagerma', function () {
 
               
@@ -1810,20 +1822,59 @@ $('input:radio').change(function() {
      if(crd==1)
     {
         $(".amont").show();
+        $(".amont").val("");
         $(".grn_rem").show();
+        $(".grn_rem").val("");
         $(".amt").show();
+        $(".amt").val("");
         $(".credit_not").show();
+        $(".credit_not").val("");
         $(".ex_number").hide();
+        $(".ex_number").val("");
     }else{
         $(".ex_number").show();
+        $(".ex_number").val("");
         $(".grn_rem").show();
-        $(".amont").hide();     
+        $(".grn_rem").val("");
+        $(".amont").hide(); 
+        $(".amont").val("");   
         $(".amt").hide();
+        $(".amt").val(""); 
         $(".credit_not").hide();
+        $(".credit_not").val(""); 
     }
 
 })
-$('body').on('click', '.removeImageproof', function () {
+
+$("input.rma_ex:radio").change(function() {
+    $('#rma_creditnote').val("");
+    $('#rma_amount').val("");
+    $('#rma_exchange').val("");
+    $('#rma_remarks').val("");
+    if (this.value == "1") {
+        $('.rma_container_cn').show();
+        $('.rma_container_amount').show();
+        $('.rma_container_ex_number').hide();
+        $('.appr').show();
+        $('.rmaappr').show();
+
+    } else {
+        $('.rma_container_cn').hide();
+        $('.rma_container_amount').hide();
+        $('.rma_container_ex_number').show();
+        $('.rmaappr').hide();
+    }
+});
+
+$("input.claimApprove:radio").change(function() {
+    $('#claimremark').val("");
+});
+
+
+
+
+
+/*$('body').on('click', '.removeImageproof', function () {
 
               
  var grn = $(this).attr("data-id");
@@ -1842,18 +1893,21 @@ $( "#removeicon" ).remove();
 				 
              }
          });
-            });
+            });*/
 $('input:radio').change(function() {      
-        var crd = $("input[name='approve']:checked").val(); 
-
-
-
+    var crd = $("input[name='approve']:checked").val(); 
+    $("#grn_amount").val("");
+    $("#grn_creditnote").val("");
+    $("#grn_sellprice").val("");
+    $("#grn_exchange").val("");
+    $("#grn_remarks").val("");
+    
     if(crd==1)
     {
-        $(".amont").show();
-        $(".sel_pr").show();
-        $(".grn_rem").show();
-        $(".amt").show();
+        $(".amont").show();    
+        $(".sel_pr").show();      
+        $(".grn_rem").show();       
+        $(".amt").show();    
         $(".credit_not").show();
         $(".ex_number").hide();
     }else{
@@ -2018,14 +2072,14 @@ $(Rows).append('<div class="container remdiv">'+'<div class="row">'+' <div class
         // do other things for a valid form
         var formData = $("#partsform").serialize();
       var avl_qty = $("#avl_part_qty").val();
-        if(avl_qty == 0){
+        /*if(avl_qty == 0){
             alert('Cant Approve Order due to insufficient quantity');
             $("#order_btn").attr("disabled", true);
             $('#submit').attr('disabled','disabled');
             location.reload();
-        }
+        }*/
          
-        else{
+        if(true){
             $.ajax({
             type: 'post',
             url: "{{ URL::route('postData') }}",

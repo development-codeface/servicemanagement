@@ -271,21 +271,18 @@ class AdminController extends Controller
                 $view = 'admin.asp_admin.view';
                 break;
 
-            case 'jobs':
-
+        case 'jobs':
             $data['faultys'] = DB::table('faultylist')->get();
             $data['status'] = DB::table('job_status')->where('complete_status','=',0)->get();   
             $data['warehouses'] = DB::table('asp_list')->get();
-            
             $data['warehouse'] = DB::table('asp_list')->get();
             $data['symptoms'] = DB::table('symptoms')->get();
             $data['parts_list'] = Parts::get();
-		
             $data['products'] = DB::table('products')->get();
             $data['techs'] = User::leftjoin('jobs','jobs.technician','=','users.id')
-            ->where('users.user_role_id','=',3)
-            ->get();
-           $data['uss'] = DB::table('users')
+                ->where('users.user_role_id','=',3)
+                ->get();
+            $data['uss'] = DB::table('users')
 					  ->leftjoin('asp_tech','asp_tech.asp_technician','=','users.id')
 					  ->leftjoin('asp_list','asp_list.code','=','asp_tech.warehouse_code')  
 					  ->where('users.user_role_id','=',3)
@@ -295,79 +292,63 @@ class AdminController extends Controller
             //$data['techs'] = User::where('users.user_role_id','=',3)   ->get();
             $data['milaeges'] = Mileage::get();
         
-              $data['jobs'] = DB::table('jobs')
-              ->leftjoin('customers','customers.cu_id','=','jobs.customer_id')
-              ->leftjoin('faultylist','faultylist.faulty_id','=','jobs.faulty_code')
-              ->leftjoin('symptoms','symptoms.symptom_id','=','jobs.symptom')
-             ->leftjoin('asp_admin','asp_admin.warehouse_code','=','jobs.asp_location')
-              ->leftjoin('asp_list','asp_list.code','=','jobs.asp_location')
-              ->leftjoin('users','users.id','=','jobs.technician')
-              ->leftjoin('resolutions','resolutions.resolution_id','=','jobs.resolution')
-              ->leftjoin('job_status','job_status.status_id','=','jobs.status')
-              ->leftjoin('parts_order','parts_order.part_order_id','=','jobs.parts_order')
-           
-              ->leftjoin('product_repalcement_order','jobs.product_replacement','=','product_repalcement_order.product_replacement_id')
-              ->leftjoin('grn','grn.order_id','=','product_repalcement_order.product_replacement_id')
-            ->leftjoin('gma','gma.order_id','=','product_repalcement_order.product_replacement_id')
-             ->leftjoin('appointment','appointment.job_id','=','jobs.job_id')
-             ->leftjoin('claim','claim.job_id','=','jobs.job_id')
-             ->select( 'jobs.*','jobs.remark as job_remark','claim.job_id as claimjob_id','jobs.created_at as job_create','claim.created_at as claim_create','jobs.technician as ass_tech','parts_order.delivery_date as part_del','product_repalcement_order.delivery_date as prod_del','parts_order.remark as part_remark','grn.amount as grn_amount','grn.credit_note as grn_credit','grn.ex_number as grn_ex','gma.amount as gma_amount','gma.credit_note as gma_credit','gma.ex_number as gma_ex','gma.spare_part_no as gma_spare','grn.spare_part_no as grn_spare','grn.application_date as grn_appl','grn.purchase_date as grn_purchase','gma.application_date as gma_appl','gma.purchase_date as gma_purchase','grn.seriel_no as grn_seriel','gma.seriel_no as gma_seriel','claim.isapprove as claim_approve','customers.*','faultylist.*','symptoms.*','job_status.*','resolutions.*','parts_order.*','asp_list.*','asp_admin.*','users.*','appointment.appointment_time','appointment.appointment_id','claim.claim_amount','claim.mileage','claim.labour','claim.claim_id','product_repalcement_order.*','grn.*','gma.*')
-             
-			  ->orderBy('jobs.job_date', 'desc')
-			  //->tosql();
-			  //count();
-            ->paginate(15);
-      
+            $data['jobs'] = DB::table('jobs')
+                ->leftjoin('customers','customers.cu_id','=','jobs.customer_id')
+                ->leftjoin('faultylist','faultylist.faulty_id','=','jobs.faulty_code')
+                ->leftjoin('symptoms','symptoms.symptom_id','=','jobs.symptom')
+                ->leftjoin('asp_admin','asp_admin.warehouse_code','=','jobs.asp_location')
+                ->leftjoin('asp_list','asp_list.code','=','jobs.asp_location')
+                ->leftjoin('users','users.id','=','jobs.technician')
+                ->leftjoin('resolutions','resolutions.resolution_id','=','jobs.resolution')
+                ->leftjoin('job_status','job_status.status_id','=','jobs.status')
+                ->leftjoin('parts_order','parts_order.part_order_id','=','jobs.parts_order')
+                ->leftjoin('product_repalcement_order','jobs.product_replacement','=','product_repalcement_order.product_replacement_id')
+                ->leftjoin('grn','grn.order_id','=','product_repalcement_order.product_replacement_id')
+                ->leftjoin('gma','gma.order_id','=','product_repalcement_order.product_replacement_id')
+                ->leftjoin('appointment','appointment.job_id','=','jobs.job_id')
+                ->leftjoin('claim','claim.job_id','=','jobs.job_id')
+                ->select( 'jobs.*','jobs.remark as job_remark','claim.job_id as claimjob_id','jobs.created_at as job_create','claim.created_at as claim_create','jobs.technician as ass_tech','parts_order.delivery_date as part_del','product_repalcement_order.delivery_date as prod_del','parts_order.remark as part_remark','grn.amount as grn_amount','grn.credit_note as grn_credit','grn.ex_number as grn_ex','gma.amount as gma_amount','gma.credit_note as gma_credit','gma.ex_number as gma_ex','gma.spare_part_no as gma_spare','grn.spare_part_no as grn_spare','grn.application_date as grn_appl','grn.purchase_date as grn_purchase','gma.application_date as gma_appl','gma.purchase_date as gma_purchase','grn.seriel_no as grn_seriel','gma.seriel_no as gma_seriel','claim.isapprove as claim_approve','customers.*','faultylist.*','symptoms.*','job_status.*','resolutions.*','parts_order.*','asp_list.*','asp_admin.*','users.*','appointment.appointment_time','appointment.appointment_id','claim.claim_amount','claim.mileage','claim.labour','claim.claim_id','product_repalcement_order.*','grn.*','gma.*')
+			    ->orderBy('jobs.job_date', 'desc')
+			    //->tosql();
+			    //count();
+                ->paginate(15);
             
             $data['appoints'] = Appointment::join('jobs','jobs.job_id','=','appointment.job_id')
-            ->leftjoin('faultylist','faultylist.faulty_id','=','jobs.faulty_code')
-            ->leftjoin('symptoms','symptoms.symptom_id','=','jobs.symptom')
-            ->leftjoin('resolutions','resolutions.resolution_id','=','jobs.resolution')
-            ->orderBy('jobs.job_date', 'desc')
-          ->get();
-
-          $data['parts'] = PartsOrder::leftjoin('parts_list','parts_list.part_id','=','parts_order.parts_item')
-          ->leftjoin('jobs','jobs.parts_order','=','parts_order.part_order_id')
-          ->orderBy('jobs.job_date', 'desc')
-          ->get();
-
-          $data['apps'] = Claim::leftjoin('jobs','jobs.job_id','=','claim.job_id')
-          ->leftjoin('faultylist','faultylist.faulty_id','=','jobs.faulty_code')
-          ->get();
+                ->leftjoin('faultylist','faultylist.faulty_id','=','jobs.faulty_code')
+                ->leftjoin('symptoms','symptoms.symptom_id','=','jobs.symptom')
+                ->leftjoin('resolutions','resolutions.resolution_id','=','jobs.resolution')
+                ->orderBy('jobs.job_date', 'desc')
+                ->get();
+            $data['parts'] = PartsOrder::leftjoin('parts_list','parts_list.part_id','=','parts_order.parts_item')
+                ->leftjoin('jobs','jobs.parts_order','=','parts_order.part_order_id')
+                ->orderBy('jobs.job_date', 'desc')
+                ->get();
+            $data['apps'] = Claim::leftjoin('jobs','jobs.job_id','=','claim.job_id')
+                ->leftjoin('faultylist','faultylist.faulty_id','=','jobs.faulty_code')
+                ->get();
              
-                $view = 'admin.jobs.list';
-                break;
-
-
-                case 'all_jobs':
-
-                $data['jobs'] = Job::leftjoin('customers','customers.cu_id','=','jobs.customer_id')
-              ->leftjoin('faultylist','faultylist.faulty_id','=','jobs.faulty_code')
-              ->leftjoin('symptoms','symptoms.symptom_id','=','jobs.symptom')
-              ->leftjoin('asp_admin','asp_admin.asp_warehouse_id','=','jobs.asp_location') 
-              ->leftjoin('asp_list','asp_admin.asp_warehouse_id','=','asp_list.warehouse_id')
-              ->leftjoin('resolutions','resolutions.resolution_id','=','jobs.resolution')
-              ->leftjoin('job_status','job_status.status_id','=','jobs.status')
-           
-              ->orderBy('jobs.job_date', 'desc')->get();
-           
-                $view = 'admin.jobs.all';
-                break;
-
-                case 'asp_jobs':
-
-               
-                $data['status'] = DB::table('job_status')->where('complete_status','!=',2)->get();  
-
-                $data['techs'] = User::leftjoin('asp_tech','asp_tech.asp_technician','=','users.id')
+            $view = 'admin.jobs.list';
+        break;
+        case 'all_jobs':
+            $data['jobs'] = Job::leftjoin('customers','customers.cu_id','=','jobs.customer_id')
+                ->leftjoin('faultylist','faultylist.faulty_id','=','jobs.faulty_code')
+                ->leftjoin('symptoms','symptoms.symptom_id','=','jobs.symptom')
+                ->leftjoin('asp_admin','asp_admin.asp_warehouse_id','=','jobs.asp_location') 
+                ->leftjoin('asp_list','asp_admin.asp_warehouse_id','=','asp_list.warehouse_id')
+                ->leftjoin('resolutions','resolutions.resolution_id','=','jobs.resolution')
+                ->leftjoin('job_status','job_status.status_id','=','jobs.status')
+                ->orderBy('jobs.job_date', 'desc')->get();
+            $view = 'admin.jobs.all';
+        break;
+        case 'asp_jobs': 
+            $data['status'] = DB::table('job_status')->where('complete_status','!=',2)->get();  
+            $data['techs'] = User::leftjoin('asp_tech','asp_tech.asp_technician','=','users.id')
                 ->leftjoin('asp_admin','asp_tech.warehouse_code','=','asp_admin.warehouse_code')
-               ->where('asp_admin.asp_admin_id','=',Auth::user()->id)
+                ->where('asp_admin.asp_admin_id','=',Auth::user()->id)
                 ->where('users.user_role_id','=',3)
-              
-               ->get();
-               $data['warehouse'] = DB::table('asp_list')->get();
-
-               $data['milaeges'] = Mileage::get();
+                ->get();
+            $data['warehouse'] = DB::table('asp_list')->get();
+            $data['milaeges'] = Mileage::get();
         //         $data['jobs'] = Job::leftjoin('asp_admin','asp_admin.warehouse_code','=','jobs.asp_location') 
         //    //->leftjoin('asp_list','asp_admin.asp_warehouse_id','=','asp_list.warehouse_id') 
         //         ->leftjoin('asp_list','asp_admin.warehouse_code','=','asp_list.code')
@@ -383,14 +364,12 @@ class AdminController extends Controller
         //          ->where('asp_admin.asp_admin_id','=',Auth::user()->id)
                 
         //         ->orderBy('jobs.job_date', 'desc')
-        //         ->get();
-              
-        $data['faultys'] = Faulty::get();
-        $data['products'] = DB::table('products')->get();
-        $data['symptoms'] = Symptom::get();
-
-        $data['resolutions'] = Resolutions::get();
-        $data['parts_list'] = Parts::get();
+        //         ->get();    
+            $data['faultys'] = Faulty::get();
+            $data['products'] = DB::table('products')->get();
+            $data['symptoms'] = Symptom::get();
+            $data['resolutions'] = Resolutions::get();
+            $data['parts_list'] = Parts::get();
                 // $data['jobs'] = Job::leftjoin('asp_admin','asp_admin.warehouse_code','=','jobs.asp_location') 
                 // ->leftjoin('users','users.id','=','jobs.technician')
                 //    ->leftjoin('faultylist','faultylist.faulty_id','=','jobs.faulty_code')
@@ -405,223 +384,159 @@ class AdminController extends Controller
                 //      ->get();
 
 
-                     $data['jobs']= DB::table('jobs')
-                     ->leftjoin('asp_admin','asp_admin.warehouse_code','=','jobs.asp_location')
-                     ->leftjoin('asp_list','asp_list.warehouse_id','=','asp_admin.asp_warehouse_id')
-                     ->leftjoin('users','users.id','=','jobs.technician')
-                        ->leftjoin('faultylist','faultylist.faulty_id','=','jobs.faulty_code')
-                          ->leftjoin('symptoms','symptoms.symptom_id','=','jobs.symptom')
-                        ->leftjoin('resolutions','resolutions.resolution_id','=','jobs.resolution')
-                        ->leftjoin('parts_order','parts_order.part_order_id','=','jobs.parts_order')
-             
-              ->leftjoin('product_repalcement_order','jobs.product_replacement','=','product_repalcement_order.product_replacement_id')
-              ->leftjoin('grn','grn.order_id','=','product_repalcement_order.product_replacement_id')
-            ->leftjoin('gma','gma.order_id','=','product_repalcement_order.product_replacement_id')
-                          ->leftjoin('customers','customers.cu_id','=','jobs.customer_id')
-                          ->leftjoin('job_status','job_status.status_id','=','jobs.status')
-                   
-             ->leftjoin('appointment','appointment.job_id','=','jobs.job_id')
-             ->leftjoin('claim','claim.job_id','=','jobs.job_id')
-                          ->select('appointment.job_id as appjob_id','jobs.created_at as job_create','claim.created_at as claim_create','parts_order.remark as part_remark','grn.amount as grn_amount','grn.credit_note as grn_credit','grn.ex_number as grn_ex','gma.amount as gma_amount','gma.credit_note as gma_credit','gma.ex_number as gma_ex','gma.spare_part_no as gma_spare','grn.spare_part_no as grn_spare','grn.application_date as grn_appl','grn.purchase_date as grn_purchase','gma.application_date as gma_appl','gma.purchase_date as gma_purchase','grn.seriel_no as grn_seriel','gma.seriel_no as gma_seriel', 'jobs.*','claim.job_id as claimjob_id','claim.isapprove as claim_approve','customers.*','faultylist.*','symptoms.*','job_status.*','resolutions.*','parts_order.*','asp_list.*','asp_admin.*','users.*','appointment.appointment_time','appointment.appointment_id','claim.claim_amount','claim.mileage','claim.labour','claim.claim_id','grn.*','gma.*','product_repalcement_order.*')
-
-                           ->where('asp_admin.asp_admin_id','=',Auth::user()->id)
-                          //->where('jobs.status','!=',41)
-                          ->orderBy('jobs.job_date', 'desc')
-                          ->paginate(15);
-
-
-
-
-                     $data['jo_id']=Request::segment(2);
-  
-                     $data['appoints'] = Appointment::join('jobs','jobs.job_id','=','appointment.job_id')
-                     ->leftjoin('faultylist','faultylist.faulty_id','=','jobs.faulty_code')
-                     ->leftjoin('symptoms','symptoms.symptom_id','=','jobs.symptom')
-                     ->leftjoin('resolutions','resolutions.resolution_id','=','jobs.resolution')
-                     ->leftjoin('asp_admin','asp_admin.warehouse_code','=','jobs.asp_location')
-                     ->where('asp_admin.asp_admin_id','=',Auth::user()->id)
-                     ->orderBy('jobs.job_date', 'desc')
-                   ->get();
-                  
-             
-       
-                   $data['parts'] = PartsOrder::leftjoin('parts_list','parts_list.part_id','=','parts_order.parts_item')
-                   ->leftjoin('jobs','jobs.parts_order','=','parts_order.part_order_id')
-                   ->leftjoin('asp_admin','asp_admin.warehouse_code','=','jobs.asp_location')
-                   ->where('asp_admin.asp_admin_id','=',Auth::user()->id) 
-                   ->orderBy('jobs.job_date', 'desc')
-                   ->get();
-       
-                   $data['apps'] = Claim::leftjoin('jobs','jobs.job_id','=','claim.job_id')
-                   ->leftjoin('faultylist','faultylist.faulty_id','=','jobs.faulty_code')
-                   ->leftjoin('asp_admin','asp_admin.warehouse_code','=','jobs.asp_location')
-                   ->where('asp_admin.asp_admin_id','=',Auth::user()->id)                   ->get();
-       
-                   
-
-                  $view = 'admin.asp_jobs.list';
-                  break;
-  
-                  case 'progress_jobs_asp':
-
-                  $data['jobs'] = Job::leftjoin('asp_admin','asp_admin.asp_warehouse_id','=','jobs.asp_location') 
-                  ->leftjoin('asp_list','asp_admin.asp_warehouse_id','=','asp_list.warehouse_id') 
-                  ->leftjoin('faultylist','faultylist.faulty_id','=','jobs.faulty_code')
-                  ->leftjoin('symptoms','symptoms.symptom_id','=','jobs.symptom')
-                  ->leftjoin('resolutions','resolutions.resolution_id','=','jobs.resolution')
-                  ->leftjoin('customers','customers.cu_id','=','jobs.customer_id')
-                  ->leftjoin('job_status','job_status.status_id','=','jobs.status')
-                  ->where('asp_admin.asp_admin_id','=',Auth::user()->id)
-                  ->where('jobs.status','!=','9')
-                  ->orderBy('jobs.job_date', 'desc')
-                  ->get();
-                  
-                 
-                    $view = 'admin.asp_jobs.pending';
-                    break;
-
-                    case 'completed_jobs_asp':
-
-                   
-
-                    $data['jobs']= DB::table('jobs')
-                    ->leftjoin('asp_admin','asp_admin.warehouse_code','=','jobs.asp_location')
-                    ->leftjoin('asp_list','asp_list.warehouse_id','=','asp_admin.asp_warehouse_id')
-                    ->leftjoin('users','users.id','=','jobs.technician')
-                       ->leftjoin('faultylist','faultylist.faulty_id','=','jobs.faulty_code')
-                         ->leftjoin('symptoms','symptoms.symptom_id','=','jobs.symptom')
-                       ->leftjoin('resolutions','resolutions.resolution_id','=','jobs.resolution')
-                       ->leftjoin('parts_order','parts_order.part_order_id','=','jobs.parts_order')
-                       ->leftjoin('parts_list','parts_list.part_id','=','parts_order.parts_item')
-                         ->leftjoin('customers','customers.cu_id','=','jobs.customer_id')
-                         ->leftjoin('job_status','job_status.status_id','=','jobs.status')
-                         ->leftjoin('appointment','appointment.job_id','=','jobs.job_id')
-
-                          ->where('asp_admin.asp_admin_id','=',Auth::user()->id)
-                         ->where('jobs.status','=',63)
-                         ->orderBy('jobs.job_date', 'desc')
-                         ->get();
-                    
-                   
-                      $view = 'admin.asp_jobs.completed';
-                      break;
-
-
-
-
-
-                  case 'tech_jobs':
-
-
-                  $data['status'] = DB::table('job_status')->where('complete_status','=',0)->get();  
-               $data['faultys'] = Faulty::get();
-
-               $data['symptoms'] = Symptom::get(); 
-               $data['parts_list'] = Parts::get();
-               
-               $data['products'] = DB::table('products')->get();
-               $data['milaeges'] =Mileage::get();
-               $data['warehouse'] = DB::table('asp_list')->get();
-
-               $data['resolutions'] = Resolutions::get();
-              $data['jobs'] = Job::leftjoin('users','users.id','=','jobs.technician')
-              ->leftjoin('customers','customers.cu_id','=','jobs.customer_id')
-              ->leftjoin('faultylist','faultylist.faulty_id','=','jobs.faulty_code')
-              ->leftjoin('asp_admin','asp_admin.warehouse_code','=','jobs.asp_location')
-                    ->leftjoin('asp_list','asp_list.warehouse_id','=','asp_admin.asp_warehouse_id')
-              ->leftjoin('symptoms','symptoms.symptom_id','=','jobs.symptom')
-              ->leftjoin('resolutions','resolutions.resolution_id','=','jobs.resolution')
-              ->leftjoin('job_status','job_status.status_id','=','jobs.status')
-              ->leftjoin('parts_order','parts_order.part_order_id','=','jobs.parts_order')
-             
-              ->leftjoin('product_repalcement_order','jobs.product_replacement','=','product_repalcement_order.product_replacement_id')
-              ->leftjoin('grn','grn.order_id','=','product_repalcement_order.product_replacement_id')
-            ->leftjoin('gma','gma.order_id','=','product_repalcement_order.product_replacement_id')
-              ->leftjoin('appointment','appointment.job_id','=','jobs.job_id')
-              ->leftjoin('claim','claim.job_id','=','jobs.job_id')
-              ->select('appointment.job_id as appjob_id','jobs.created_at as job_create','claim.created_at as claim_create', 'jobs.*','claim.job_id as claimjob_id','parts_order.remark as part_remark','grn.amount as grn_amount','grn.credit_note as grn_credit','grn.ex_number as grn_ex','gma.amount as gma_amount','gma.credit_note as gma_credit','gma.ex_number as gma_ex','gma.spare_part_no as gma_spare','grn.spare_part_no as grn_spare','grn.application_date as grn_appl','grn.purchase_date as grn_purchase','gma.application_date as gma_appl','gma.purchase_date as gma_purchase','grn.seriel_no as grn_seriel','gma.seriel_no as gma_seriel','claim.isapprove as claim_approve','customers.*','faultylist.*','symptoms.*','job_status.*','resolutions.*','parts_order.*','users.*','appointment.appointment_time','appointment.appointment_id','claim.claim_amount','claim.mileage','claim.labour','claim.claim_id','asp_list.*','grn.*','gma.*','product_repalcement_order.*')
-             ->where('jobs.technician','=',Auth::user()->id)
-              ->orderBy('jobs.job_date', 'desc')
-              ->paginate(15);
-
-         
-           
-              $data['jo_id']=Request::segment(2);
-  
-              $data['appoints'] = Appointment::join('jobs','jobs.job_id','=','appointment.job_id')
-              ->leftjoin('faultylist','faultylist.faulty_id','=','jobs.faulty_code')
-              ->leftjoin('symptoms','symptoms.symptom_id','=','jobs.symptom')
-              ->leftjoin('resolutions','resolutions.resolution_id','=','jobs.resolution')
-              ->where('jobs.technician','=',Auth::user()->id)
-              ->orderBy('jobs.job_date', 'desc')
-            ->get();
-
-
+            $data['jobs']= DB::table('jobs')
+                ->leftjoin('asp_admin','asp_admin.warehouse_code','=','jobs.asp_location')
+                ->leftjoin('asp_list','asp_list.warehouse_id','=','asp_admin.asp_warehouse_id')
+                ->leftjoin('users','users.id','=','jobs.technician')
+                ->leftjoin('faultylist','faultylist.faulty_id','=','jobs.faulty_code')
+                ->leftjoin('symptoms','symptoms.symptom_id','=','jobs.symptom')
+                ->leftjoin('resolutions','resolutions.resolution_id','=','jobs.resolution')
+                ->leftjoin('parts_order','parts_order.part_order_id','=','jobs.parts_order')
+                ->leftjoin('product_repalcement_order','jobs.product_replacement','=','product_repalcement_order.product_replacement_id')
+                ->leftjoin('grn','grn.order_id','=','product_repalcement_order.product_replacement_id')
+                ->leftjoin('gma','gma.order_id','=','product_repalcement_order.product_replacement_id')
+                ->leftjoin('customers','customers.cu_id','=','jobs.customer_id')
+                ->leftjoin('job_status','job_status.status_id','=','jobs.status')
+                ->leftjoin('appointment','appointment.job_id','=','jobs.job_id')
+                ->leftjoin('claim','claim.job_id','=','jobs.job_id')
+                ->select('appointment.job_id as appjob_id','jobs.created_at as job_create','jobs.remark as job_remark','claim.created_at as claim_create','parts_order.remark as part_remark','grn.amount as grn_amount','grn.credit_note as grn_credit','grn.ex_number as grn_ex','gma.amount as gma_amount','gma.credit_note as gma_credit','gma.ex_number as gma_ex','gma.spare_part_no as gma_spare','grn.spare_part_no as grn_spare','grn.application_date as grn_appl','grn.purchase_date as grn_purchase','gma.application_date as gma_appl','gma.purchase_date as gma_purchase','grn.seriel_no as grn_seriel','gma.seriel_no as gma_seriel', 'jobs.*','claim.job_id as claimjob_id','claim.isapprove as claim_approve','customers.*','faultylist.*','symptoms.*','job_status.*','resolutions.*','parts_order.*','asp_list.*','asp_admin.*','users.*','appointment.appointment_time','appointment.appointment_id','claim.claim_amount','claim.mileage','claim.labour','claim.claim_id','grn.*','gma.*','product_repalcement_order.*')
+                ->where('asp_admin.asp_admin_id','=',Auth::user()->id)
+                //->where('jobs.status','!=',41)
+                ->orderBy('jobs.job_date', 'desc')
+                ->paginate(15);
+            $data['jo_id']=Request::segment(2);
+            $data['appoints'] = Appointment::join('jobs','jobs.job_id','=','appointment.job_id')
+                ->leftjoin('faultylist','faultylist.faulty_id','=','jobs.faulty_code')
+                ->leftjoin('symptoms','symptoms.symptom_id','=','jobs.symptom')
+                ->leftjoin('resolutions','resolutions.resolution_id','=','jobs.resolution')
+                ->leftjoin('asp_admin','asp_admin.warehouse_code','=','jobs.asp_location')
+                ->where('asp_admin.asp_admin_id','=',Auth::user()->id)
+                ->orderBy('jobs.job_date', 'desc')
+                ->get();           
             $data['parts'] = PartsOrder::leftjoin('parts_list','parts_list.part_id','=','parts_order.parts_item')
-            ->leftjoin('jobs','jobs.parts_order','=','parts_order.part_order_id')
-            ->where('jobs.technician','=',Auth::user()->id)
-            ->orderBy('jobs.job_date', 'desc')
-            ->get();
-
+                ->leftjoin('jobs','jobs.parts_order','=','parts_order.part_order_id')
+                ->leftjoin('asp_admin','asp_admin.warehouse_code','=','jobs.asp_location')
+                ->where('asp_admin.asp_admin_id','=',Auth::user()->id) 
+                ->orderBy('jobs.job_date', 'desc')
+                ->get();
             $data['apps'] = Claim::leftjoin('jobs','jobs.job_id','=','claim.job_id')
-            ->leftjoin('faultylist','faultylist.faulty_id','=','jobs.faulty_code')
-            ->where('jobs.technician','=',Auth::user()->id)
-            ->get();
-
-            
-                $view = 'admin.tech_jobs.list';
-
-
-                break;
-
-                case 'tech_jobs_compelted':
-
-
-                $data['status'] = Status::get();
-               $data['jobs'] = Job::leftjoin('users','users.id','=','jobs.technician')
-               ->leftjoin('customers','customers.cu_id','=','jobs.customer_id')
-               ->leftjoin('faultylist','faultylist.faulty_id','=','jobs.faulty_code')
-               ->leftjoin('symptoms','symptoms.symptom_id','=','jobs.symptom')
-               ->leftjoin('resolutions','resolutions.resolution_id','=','jobs.resolution')
-               ->leftjoin('job_status','job_status.status_id','=','jobs.status')
- 
-               ->where('jobs.technician','=',Auth::user()->id)
-               ->where('jobs.status','=',63)
-               ->orderBy('jobs.job_date', 'desc')
-               ->get();
-            
-                 $view = 'admin.tech_jobs.completed';
- 
-                 break;
-
-                 case 'tech_jobs_progress':
-
-
-               $data['status'] = Status::get();
-              $data['jobs'] = Job::leftjoin('users','users.id','=','jobs.technician')
-              ->leftjoin('customers','customers.cu_id','=','jobs.customer_id')
-              ->leftjoin('faultylist','faultylist.faulty_id','=','jobs.faulty_code')
-              ->leftjoin('symptoms','symptoms.symptom_id','=','jobs.symptom')
-              ->leftjoin('resolutions','resolutions.resolution_id','=','jobs.resolution')
-              ->leftjoin('job_status','job_status.status_id','=','jobs.status')
-              ->where('jobs.status','!=',9)
-              ->where('jobs.technician','=',Auth::user()->id)
-              ->orderBy('jobs.job_date', 'desc')
-              ->get();
-           
-                $view = 'admin.tech_jobs.pending';
-
-                break;
-
-
-
-                case 'completed_jobs':
-
-                 $date= Carbon::now();
-            
-                 $fordate = date('Y-m-d', strtotime($date));
-                
-                $data['jobs'] = Job::leftjoin('customers','customers.cu_id','=','jobs.customer_id')
+                ->leftjoin('faultylist','faultylist.faulty_id','=','jobs.faulty_code')
+                ->leftjoin('asp_admin','asp_admin.warehouse_code','=','jobs.asp_location')
+                ->where('asp_admin.asp_admin_id','=',Auth::user()->id)                   ->get();
+            $view = 'admin.asp_jobs.list';
+            break;
+  
+        case 'progress_jobs_asp':
+            $data['jobs'] = Job::leftjoin('asp_admin','asp_admin.asp_warehouse_id','=','jobs.asp_location') 
+                ->leftjoin('asp_list','asp_admin.asp_warehouse_id','=','asp_list.warehouse_id') 
+                ->leftjoin('faultylist','faultylist.faulty_id','=','jobs.faulty_code')
+                ->leftjoin('symptoms','symptoms.symptom_id','=','jobs.symptom')
+                ->leftjoin('resolutions','resolutions.resolution_id','=','jobs.resolution')
+                ->leftjoin('customers','customers.cu_id','=','jobs.customer_id')
+                ->leftjoin('job_status','job_status.status_id','=','jobs.status')
+                ->where('asp_admin.asp_admin_id','=',Auth::user()->id)
+                ->where('jobs.status','!=','9')
+                ->orderBy('jobs.job_date', 'desc')
+                ->get();
+            $view = 'admin.asp_jobs.pending';
+        break;
+        case 'completed_jobs_asp':
+            $data['jobs']= DB::table('jobs')
+                ->leftjoin('asp_admin','asp_admin.warehouse_code','=','jobs.asp_location')
+                ->leftjoin('asp_list','asp_list.warehouse_id','=','asp_admin.asp_warehouse_id')
+                ->leftjoin('users','users.id','=','jobs.technician')
+                ->leftjoin('faultylist','faultylist.faulty_id','=','jobs.faulty_code')
+                ->leftjoin('symptoms','symptoms.symptom_id','=','jobs.symptom')
+                ->leftjoin('resolutions','resolutions.resolution_id','=','jobs.resolution')
+                ->leftjoin('parts_order','parts_order.part_order_id','=','jobs.parts_order')
+                ->leftjoin('parts_list','parts_list.part_id','=','parts_order.parts_item')
+                ->leftjoin('customers','customers.cu_id','=','jobs.customer_id')
+                ->leftjoin('job_status','job_status.status_id','=','jobs.status')
+                ->leftjoin('appointment','appointment.job_id','=','jobs.job_id')
+                ->where('asp_admin.asp_admin_id','=',Auth::user()->id)
+                ->where('jobs.status','=',63)
+                ->orderBy('jobs.job_date', 'desc')
+                ->get();
+            $view = 'admin.asp_jobs.completed';
+        break;
+        case 'tech_jobs':
+            $data['status'] = DB::table('job_status')->where('complete_status','=',0)->get();  
+            $data['faultys'] = Faulty::get();
+            $data['symptoms'] = Symptom::get(); 
+            $data['parts_list'] = Parts::get();
+            $data['products'] = DB::table('products')->get();
+            $data['milaeges'] =Mileage::get();
+            $data['warehouse'] = DB::table('asp_list')->get();
+            $data['resolutions'] = Resolutions::get();
+            $data['jobs'] = Job::leftjoin('users','users.id','=','jobs.technician')
+                ->leftjoin('customers','customers.cu_id','=','jobs.customer_id')
+                ->leftjoin('faultylist','faultylist.faulty_id','=','jobs.faulty_code')
+                ->leftjoin('asp_admin','asp_admin.warehouse_code','=','jobs.asp_location')
+                ->leftjoin('asp_list','asp_list.warehouse_id','=','asp_admin.asp_warehouse_id')
+                ->leftjoin('symptoms','symptoms.symptom_id','=','jobs.symptom')
+                ->leftjoin('resolutions','resolutions.resolution_id','=','jobs.resolution')
+                ->leftjoin('job_status','job_status.status_id','=','jobs.status')
+                ->leftjoin('parts_order','parts_order.part_order_id','=','jobs.parts_order')
+                ->leftjoin('product_repalcement_order','jobs.product_replacement','=','product_repalcement_order.product_replacement_id')
+                ->leftjoin('grn','grn.order_id','=','product_repalcement_order.product_replacement_id')
+                ->leftjoin('gma','gma.order_id','=','product_repalcement_order.product_replacement_id')
+                ->leftjoin('appointment','appointment.job_id','=','jobs.job_id')
+                ->leftjoin('claim','claim.job_id','=','jobs.job_id')
+                ->select('appointment.job_id as appjob_id','jobs.created_at as job_create','claim.created_at as claim_create', 'jobs.*','claim.job_id as claimjob_id','parts_order.remark as part_remark','grn.amount as grn_amount','grn.credit_note as grn_credit','grn.ex_number as grn_ex','gma.amount as gma_amount','gma.credit_note as gma_credit','gma.ex_number as gma_ex','gma.spare_part_no as gma_spare','grn.spare_part_no as grn_spare','grn.application_date as grn_appl','grn.purchase_date as grn_purchase','gma.application_date as gma_appl','gma.purchase_date as gma_purchase','grn.seriel_no as grn_seriel','gma.seriel_no as gma_seriel','claim.isapprove as claim_approve','customers.*','faultylist.*','symptoms.*','job_status.*','resolutions.*','parts_order.*','users.*','appointment.appointment_time','appointment.appointment_id','claim.claim_amount','claim.mileage','claim.labour','claim.claim_id','asp_list.*','grn.*','gma.*','product_repalcement_order.*')
+                ->where('jobs.technician','=',Auth::user()->id)
+                ->orderBy('jobs.job_date', 'desc')
+                ->paginate(15);
+            $data['jo_id']=Request::segment(2);
+            $data['appoints'] = Appointment::join('jobs','jobs.job_id','=','appointment.job_id')
+                ->leftjoin('faultylist','faultylist.faulty_id','=','jobs.faulty_code')
+                ->leftjoin('symptoms','symptoms.symptom_id','=','jobs.symptom')
+                ->leftjoin('resolutions','resolutions.resolution_id','=','jobs.resolution')
+                ->where('jobs.technician','=',Auth::user()->id)
+                ->orderBy('jobs.job_date', 'desc')
+                ->get();
+            $data['parts'] = PartsOrder::leftjoin('parts_list','parts_list.part_id','=','parts_order.parts_item')
+                ->leftjoin('jobs','jobs.parts_order','=','parts_order.part_order_id')
+                ->where('jobs.technician','=',Auth::user()->id)
+                ->orderBy('jobs.job_date', 'desc')
+                ->get();
+            $data['apps'] = Claim::leftjoin('jobs','jobs.job_id','=','claim.job_id')
+                ->leftjoin('faultylist','faultylist.faulty_id','=','jobs.faulty_code')
+                ->where('jobs.technician','=',Auth::user()->id)
+                ->get();
+            $view = 'admin.tech_jobs.list';
+        break;
+        case 'tech_jobs_compelted':
+            $data['status'] = Status::get();
+            $data['jobs'] = Job::leftjoin('users','users.id','=','jobs.technician')
+                ->leftjoin('customers','customers.cu_id','=','jobs.customer_id')
+                ->leftjoin('faultylist','faultylist.faulty_id','=','jobs.faulty_code')
+                ->leftjoin('symptoms','symptoms.symptom_id','=','jobs.symptom')
+                ->leftjoin('resolutions','resolutions.resolution_id','=','jobs.resolution')
+                ->leftjoin('job_status','job_status.status_id','=','jobs.status')
+                ->where('jobs.technician','=',Auth::user()->id)
+                ->where('jobs.status','=',63)
+                ->orderBy('jobs.job_date', 'desc')
+                ->get();
+            $view = 'admin.tech_jobs.completed';
+        break;
+        case 'tech_jobs_progress':
+            $data['status'] = Status::get();
+            $data['jobs'] = Job::leftjoin('users','users.id','=','jobs.technician')
+                ->leftjoin('customers','customers.cu_id','=','jobs.customer_id')
+                ->leftjoin('faultylist','faultylist.faulty_id','=','jobs.faulty_code')
+                ->leftjoin('symptoms','symptoms.symptom_id','=','jobs.symptom')
+                ->leftjoin('resolutions','resolutions.resolution_id','=','jobs.resolution')
+                ->leftjoin('job_status','job_status.status_id','=','jobs.status')
+                ->where('jobs.status','!=',9)
+                ->where('jobs.technician','=',Auth::user()->id)
+                ->orderBy('jobs.job_date', 'desc')
+                ->get();
+            $view = 'admin.tech_jobs.pending';
+        break;
+        case 'completed_jobs':
+            $date= Carbon::now();
+            $fordate = date('Y-m-d', strtotime($date));   
+            $data['jobs'] = Job::leftjoin('customers','customers.cu_id','=','jobs.customer_id')
                 ->leftjoin('faultylist','faultylist.faulty_id','=','jobs.faulty_code')
                 ->leftjoin('symptoms','symptoms.symptom_id','=','jobs.symptom')
                 ->leftjoin('asp_admin','asp_admin.warehouse_code','=','jobs.asp_location') 
@@ -630,27 +545,22 @@ class AdminController extends Controller
                 ->leftjoin('job_status','job_status.status_id','=','jobs.status')
                 ->leftjoin('parts_order','parts_order.part_order_id','=','jobs.parts_order')
                 ->leftjoin('parts_list','parts_list.part_id','=','parts_order.parts_item')
-               ->leftjoin('appointment','appointment.job_id','=','jobs.job_id')
-
+                ->leftjoin('appointment','appointment.job_id','=','jobs.job_id')
                 ->where('jobs.status','=',63)
-              //->where('job_date','=',$fordate)
+                ->select( 'jobs.*','customers.*','faultylist.*','symptoms.*','asp_admin.*','users.*','resolutions.*','job_status.*','parts_order.*','parts_list.*','appointment.*','jobs.remark as job_remark')   
+            //->where('job_date','=',$fordate)
                 ->orderBy('jobs.job_date', 'desc')
                 ->paginate(15);
-               
-                $data['warehouse'] = DB::table('asp_list')->get();
-                $data['techs'] = User::leftjoin('asp_admin','asp_admin.asp_admin_id','=','users.id')
+            $data['warehouse'] = DB::table('asp_list')->get();
+            $data['techs'] = User::leftjoin('asp_admin','asp_admin.asp_admin_id','=','users.id')
                 ->leftjoin('jobs','jobs.asp_location','=','asp_admin.warehouse_code')
-        
                 ->where('users.user_role_id','=',3)
-             //->where('asp_admin.asp_admin_id','=',Auth::user()->id)
-            
-               ->get();
-               $data['status'] = Status::get();
-                  $view = 'admin.jobs.completed_list';
-                  break;
-                  
-                  case 'pending_jobs':
-
+                //->where('asp_admin.asp_admin_id','=',Auth::user()->id)
+                ->get();
+            $data['status'] = Status::get();
+            $view = 'admin.jobs.completed_list';
+        break;   
+        case 'pending_jobs':
                   $data['jobs'] = Job::leftjoin('customers','customers.cu_id','=','jobs.customer_id')
                   ->leftjoin('faultylist','faultylist.faulty_id','=','jobs.faulty_code')
                   ->leftjoin('symptoms','symptoms.symptom_id','=','jobs.symptom')
@@ -679,481 +589,396 @@ class AdminController extends Controller
 
             case 'edit-job':
            
-                   $data['products'] = DB::table('products')->get();
-                $data['warehouse'] = WareHouse::get();
-				  $data['parts'] = Parts::get(); 
-				 $data['milaeges'] =Mileage::get();
- $data['parts_list'] = Parts::get();
-$data['faultys'] = DB::table('faultylist')->get();
-				 $data['resolutions'] =DB::table('resolutions')->get();
-				$data['symptoms'] = DB::table('symptoms')->get();
-      $data['jo_id'] =Request::segment(2);
-	 
-	  
-	   $data['job'] = DB::table('jobs')
-              
-              ->leftjoin('customers','customers.cu_id','=','jobs.customer_id')
-              ->leftjoin('faultylist','faultylist.faulty_id','=','jobs.faulty_code')
-              ->leftjoin('symptoms','symptoms.symptom_id','=','jobs.symptom')
-             ->leftjoin('asp_admin','asp_admin.warehouse_code','=','jobs.asp_location')
-              ->leftjoin('asp_list','asp_list.code','=','jobs.asp_location')
-              //->leftjoin('asp_list','asp_list.warehouse_id','=','asp_admin.asp_warehouse_id')
-              ->leftjoin('users','users.id','=','jobs.technician')
-              ->leftjoin('resolutions','resolutions.resolution_id','=','jobs.resolution')
-              ->leftjoin('job_status','job_status.status_id','=','jobs.status')
-             ->leftjoin('parts_order','parts_order.part_order_id','=','jobs.parts_order')
-              //->leftjoin('muliple_parts','muliple_parts.order_id','=','parts_order.part_order_id')
-              //->leftjoin('parts_list','parts_list.part_id','=','muliple_parts.parts')
-              ->leftjoin('product_repalcement_order','jobs.product_replacement','=','product_repalcement_order.product_replacement_id')
-			  ->leftjoin('products','products.product_no','=','product_repalcement_order.product_id')
-
-              ->leftjoin('grn','grn.order_id','=','product_repalcement_order.product_replacement_id')
-            ->leftjoin('gma','gma.order_id','=','product_repalcement_order.product_replacement_id')
-             ->leftjoin('appointment','appointment.job_id','=','jobs.job_id')
-             ->leftjoin('claim','claim.job_id','=','jobs.job_id')
-
-             ->select( 'jobs.*','products.*','claim.job_id as claimjob_id','jobs.technician as job_tech','claim.isapprove as claim_approv','claim.remarks as claim_remarks','parts_order.isapprove as part_appr','jobs.remark as job_remark','parts_order.remark as part_remark','product_repalcement_order.delivery_date as prod_deliver','grn.amount as grn_amount','grn.credit_note as grn_credit','grn.issue_image as grn_image','grn.ex_number as grn_ex','gma.amount as gma_amount','gma.credit_note as gma_credit','gma.issue_image as gma_image','gma.ex_number as gma_ex','gma.spare_part_no as gma_spare','grn.spare_part_no as grn_spare','grn.application_date as grn_appl','grn.purchase_date as grn_purchase','gma.application_date as gma_appl','gma.purchase_date as gma_purchase','grn.seriel_no as grn_seriel','gma.seriel_no as gma_seriel','claim.isapprove as claim_approve','customers.*','faultylist.*','symptoms.*','job_status.*','resolutions.*','asp_list.*','asp_admin.*','users.*','appointment.appointment_time','appointment.appointment_id','appointment.time','claim.claim_amount','claim.mileage','claim.labour','claim.claim_id','product_repalcement_order.*','grn.*','gma.*','asp_admin.*','parts_order.*')
-
-                    ->where('jobs.job_id','=',$id)
-                    ->first();
-					
-					 $varj=$data['job']->asp_location;
-	   $data['techs'] = User::leftjoin('asp_tech','asp_tech.asp_technician','=','users.id')
-                    ->leftjoin('asp_admin','asp_tech.warehouse_code','=','asp_admin.warehouse_code')
-                   //->where('asp_admin.asp_admin_id','=',Auth::user()->id)
-                    ->where('asp_tech.warehouse_code','=',$varj)
-                    ->where('users.user_role_id','=',3)
-                  
-                   ->get();
-				
-					$data['mul_parts'] = PartsOrder::leftjoin('jobs','jobs.parts_order','=','parts_order.part_order_id')
-                ->leftjoin('muliple_parts','muliple_parts.order_id','=','parts_order.part_order_id')
-                ->leftjoin('parts_list','parts_list.part_id','=','muliple_parts.parts')
-                ->where('jobs.job_id','=',$id)
-                ->get();
-					   $data['part'] = DB::table('parts_order')
-                ->leftjoin('parts_list','parts_list.part_id','=','parts_order.parts_item')
-                ->leftjoin('muliple_parts','muliple_parts.order_id','=','parts_order.part_order_id')
-
-                ->leftjoin('jobs','jobs.parts_order','=','parts_order.part_order_id')
-                ->leftjoin('customers','customers.cu_id','=','jobs.customer_id')
-
-                ->leftjoin('faultylist','faultylist.faulty_id','=','jobs.faulty_code')
-                ->leftjoin('symptoms','symptoms.symptom_id','=','jobs.symptom')
-                ->leftjoin('resolutions','resolutions.resolution_id','=','jobs.resolution')
-                ->select( 'parts_list.*','muliple_parts.parts as mul_parts','customers.*','faultylist.*','symptoms.*','resolutions.*','parts_order.*','parts_list.*','jobs.job_id','jobs.job_location','jobs.repaire_order_no')
-
-                ->where('jobs.job_id','=',$id)
-                ->first();
-				
-				  $data['claim'] = Job::leftjoin('claim','claim.job_id','=','jobs.job_id') 
-				  			  ->leftjoin('data_mileage','data_mileage.mil_id','=','claim.mileage')
-
-           
-          ->where('jobs.job_id',$id)->first();
-             
-              $varj=$data['job']->asp_location;
-           
-                    $data['techs'] = User::leftjoin('asp_tech','asp_tech.asp_technician','=','users.id')
-                    ->leftjoin('asp_admin','asp_tech.warehouse_code','=','asp_admin.warehouse_code')
-                   //->where('asp_admin.asp_admin_id','=',Auth::user()->id)
-                    ->where('asp_tech.warehouse_code','=',$varj)
-                    ->where('users.user_role_id','=',3)
-                  
-                   ->get();
-                   
-                $view = 'admin.jobs.edit';
-                break;
-                
-
-                case 'tech_edit-job':
-
-                $data['products'] = DB::table('products')->get();
-        
-                $data['warehouse'] = WareHouse::get();
-          $data['parts'] = Parts::get(); 
-         $data['milaeges'] =Mileage::get();
- $data['parts_list'] = Parts::get();
-$data['faultys'] = DB::table('faultylist')->get();
-         $data['resolutions'] =DB::table('resolutions')->get();
-        $data['symptoms'] = DB::table('symptoms')->get();
-      $data['jo_id'] =Request::segment(2);
-   
-    
-     $data['job'] = DB::table('jobs')
-              
-              ->leftjoin('customers','customers.cu_id','=','jobs.customer_id')
-              ->leftjoin('faultylist','faultylist.faulty_id','=','jobs.faulty_code')
-              ->leftjoin('symptoms','symptoms.symptom_id','=','jobs.symptom')
-             ->leftjoin('asp_admin','asp_admin.warehouse_code','=','jobs.asp_location')
-              ->leftjoin('asp_list','asp_list.code','=','jobs.asp_location')
-              //->leftjoin('asp_list','asp_list.warehouse_id','=','asp_admin.asp_warehouse_id')
-              ->leftjoin('users','users.id','=','jobs.technician')
-              ->leftjoin('resolutions','resolutions.resolution_id','=','jobs.resolution')
-              ->leftjoin('job_status','job_status.status_id','=','jobs.status')
-             ->leftjoin('parts_order','parts_order.part_order_id','=','jobs.parts_order')
-              //->leftjoin('muliple_parts','muliple_parts.order_id','=','parts_order.part_order_id')
-              //->leftjoin('parts_list','parts_list.part_id','=','muliple_parts.parts')
-              ->leftjoin('product_repalcement_order','jobs.product_replacement','=','product_repalcement_order.product_replacement_id')
-        ->leftjoin('products','products.product_no','=','product_repalcement_order.product_id')
-
-              ->leftjoin('grn','grn.order_id','=','product_repalcement_order.product_replacement_id')
-            ->leftjoin('gma','gma.order_id','=','product_repalcement_order.product_replacement_id')
-             ->leftjoin('appointment','appointment.job_id','=','jobs.job_id')
-             ->leftjoin('claim','claim.job_id','=','jobs.job_id')
-
-             ->select( 'jobs.*','products.*','claim.job_id as claimjob_id','jobs.technician as jo_tc','claim.remarks as claim_remarks','claim.isapprove as claim_approv','parts_order.isapprove as part_appr','jobs.remark as job_remark','parts_order.remark as part_remark','product_repalcement_order.delivery_date as prod_deliver','grn.amount as grn_amount','grn.credit_note as grn_credit','grn.issue_image as grn_image','grn.ex_number as grn_ex','gma.amount as gma_amount','gma.credit_note as gma_credit','gma.ex_number as gma_ex','gma.spare_part_no as gma_spare','grn.spare_part_no as grn_spare','grn.application_date as grn_appl','grn.purchase_date as grn_purchase','gma.application_date as gma_appl','gma.issue_image as gma_image','gma.issue_image as gma_image','gma.purchase_date as gma_purchase','grn.seriel_no as grn_seriel','gma.seriel_no as gma_seriel','claim.isapprove as claim_approve','customers.*','faultylist.*','symptoms.*','job_status.*','resolutions.*','asp_list.*','asp_admin.*','users.*','appointment.appointment_time','appointment.appointment_id','appointment.time','claim.claim_amount','claim.mileage','claim.labour','claim.claim_id','product_repalcement_order.*','grn.*','gma.*','asp_admin.*','parts_order.*','claim.*')
-
-                    ->where('jobs.job_id','=',$id)
-                    ->first();
-        
-           $varj=$data['job']->asp_location;
-     $data['techs'] = User::leftjoin('asp_tech','asp_tech.asp_technician','=','users.id')
-                    ->leftjoin('asp_admin','asp_tech.warehouse_code','=','asp_admin.warehouse_code')
-                   //->where('asp_admin.asp_admin_id','=',Auth::user()->id)
-                    ->where('asp_tech.warehouse_code','=',$varj)
-                    ->where('users.user_role_id','=',3)
-                  
-                   ->get();
-        
-          $data['mul_parts'] = PartsOrder::leftjoin('jobs','jobs.parts_order','=','parts_order.part_order_id')
-                ->leftjoin('muliple_parts','muliple_parts.order_id','=','parts_order.part_order_id')
-                ->leftjoin('parts_list','parts_list.part_id','=','muliple_parts.parts')
-                ->where('jobs.job_id','=',$id)
-                ->get();
-        
-             $data['part'] = DB::table('parts_order')
-                ->leftjoin('parts_list','parts_list.part_id','=','parts_order.parts_item')
-                ->leftjoin('muliple_parts','muliple_parts.order_id','=','parts_order.part_order_id')
-
-                ->leftjoin('jobs','jobs.parts_order','=','parts_order.part_order_id')
-                ->leftjoin('customers','customers.cu_id','=','jobs.customer_id')
-
-                ->leftjoin('faultylist','faultylist.faulty_id','=','jobs.faulty_code')
-                ->leftjoin('symptoms','symptoms.symptom_id','=','jobs.symptom')
-                ->leftjoin('resolutions','resolutions.resolution_id','=','jobs.resolution')
-                ->select( 'parts_list.*','muliple_parts.parts as mul_parts','customers.*','faultylist.*','symptoms.*','resolutions.*','parts_order.*','parts_list.*','jobs.job_id','jobs.job_location','jobs.repaire_order_no')
-
-                ->where('jobs.job_id','=',$id)
-                ->first();
-        
-          $data['claim'] = Job::leftjoin('claim','claim.job_id','=','jobs.job_id') 
-                  ->leftjoin('data_mileage','data_mileage.mil_id','=','claim.mileage')
-
-           
-          ->where('jobs.job_id',$id)->first();
-
-
-                $view = 'admin.assign_technician.tech_job_edit';
-                break;
-   
-
-                case 'view-asp_job':
-
                 $data['products'] = DB::table('products')->get();
                 $data['warehouse'] = WareHouse::get();
-				  $data['parts'] = Parts::get(); 
-				 $data['milaeges'] =Mileage::get();
- $data['parts_list'] = Parts::get();
- $data['faultys'] = Faulty::get();
-  $data['symptoms'] = Symptom::get();
-   $data['resolutions'] = Resolutions::get();
-      $data['jo_id'] =Request::segment(2);
-	    $data['job'] = DB::table('jobs')
-              
-              ->leftjoin('customers','customers.cu_id','=','jobs.customer_id')
-              ->leftjoin('faultylist','faultylist.faulty_id','=','jobs.faulty_code')
-              ->leftjoin('symptoms','symptoms.symptom_id','=','jobs.symptom')
-             ->leftjoin('asp_admin','asp_admin.warehouse_code','=','jobs.asp_location')
-              ->leftjoin('asp_list','asp_list.code','=','jobs.asp_location')
-              //->leftjoin('asp_list','asp_list.warehouse_id','=','asp_admin.asp_warehouse_id')
-              ->leftjoin('users','users.id','=','jobs.technician')
-              ->leftjoin('resolutions','resolutions.resolution_id','=','jobs.resolution')
-              ->leftjoin('job_status','job_status.status_id','=','jobs.status')
-             ->leftjoin('parts_order','parts_order.part_order_id','=','jobs.parts_order')
-              //->leftjoin('muliple_parts','muliple_parts.order_id','=','parts_order.part_order_id')
-              //->leftjoin('parts_list','parts_list.part_id','=','muliple_parts.parts')
-              ->leftjoin('product_repalcement_order','jobs.product_replacement','=','product_repalcement_order.product_replacement_id')
-			  ->leftjoin('products','products.product_no','=','product_repalcement_order.product_id')
-
-              ->leftjoin('grn','grn.order_id','=','product_repalcement_order.product_replacement_id')
-            ->leftjoin('gma','gma.order_id','=','product_repalcement_order.product_replacement_id')
-             ->leftjoin('appointment','appointment.job_id','=','jobs.job_id')
-             ->leftjoin('claim','claim.job_id','=','jobs.job_id')
-
-             ->select( 'jobs.*','products.*','jobs.created_at as job_create','claim.remarks as claim_remarks','claim.created_at as claim_create','appointment.time','jobs.remark as job_remark','parts_order.delivery_date as part_del','product_repalcement_order.delivery_date as prod_del','claim.job_id as claimjob_id', 'grn.amount as grn_amount','grn.credit_note as grn_credit','grn.ex_number as grn_ex','grn.issue_image as grn_image','gma.issue_image as gma_image','gma.amount as gma_amount','gma.credit_note as gma_credit','gma.ex_number as gma_ex','gma.spare_part_no as gma_spare','grn.spare_part_no as grn_spare','grn.application_date as grn_appl','grn.purchase_date as grn_purchase','gma.application_date as gma_appl','gma.purchase_date as gma_purchase','grn.seriel_no as grn_seriel','gma.seriel_no as gma_seriel','claim.isapprove as claim_approve','customers.*','faultylist.*','symptoms.*','job_status.*','resolutions.*','asp_list.*','asp_admin.*','users.*','appointment.appointment_time','appointment.appointment_id','claim.claim_amount','claim.mileage','claim.labour','claim.claim_id','product_repalcement_order.*','grn.*','gma.*','asp_admin.*','parts_order.*')
-						   ->where('asp_admin.asp_admin_id','=',Auth::user()->id)
-
-                    ->where('jobs.job_id','=',$id)
-                    ->first();
-					
-					 $varj=$data['job']->asp_location;
-	   $data['techs'] = User::leftjoin('asp_tech','asp_tech.asp_technician','=','users.id')
-                    ->leftjoin('asp_admin','asp_tech.warehouse_code','=','asp_admin.warehouse_code')
-                   //->where('asp_admin.asp_admin_id','=',Auth::user()->id)
-                    ->where('asp_tech.warehouse_code','=',$varj)
-                    ->where('users.user_role_id','=',3)
-                  
-                   ->get();
-				
-						   		$data['mul_parts'] = PartsOrder::leftjoin('jobs','jobs.parts_order','=','parts_order.part_order_id')
-                ->leftjoin('muliple_parts','muliple_parts.order_id','=','parts_order.part_order_id')
-                ->leftjoin('parts_list','parts_list.part_id','=','muliple_parts.parts')
-                ->where('jobs.job_id','=',$id)
-                ->get();
-					   $data['part'] = DB::table('parts_order')
-                ->leftjoin('parts_list','parts_list.part_id','=','parts_order.parts_item')
-                ->leftjoin('muliple_parts','muliple_parts.order_id','=','parts_order.part_order_id')
-
-                ->leftjoin('jobs','jobs.parts_order','=','parts_order.part_order_id')
-                ->leftjoin('customers','customers.cu_id','=','jobs.customer_id')
-
-                ->leftjoin('faultylist','faultylist.faulty_id','=','jobs.faulty_code')
-                ->leftjoin('symptoms','symptoms.symptom_id','=','jobs.symptom')
-                ->leftjoin('resolutions','resolutions.resolution_id','=','jobs.resolution')
-                ->select( 'parts_list.*','muliple_parts.parts as mul_parts','customers.*','faultylist.*','symptoms.*','resolutions.*','parts_order.*','parts_list.*','jobs.job_id','jobs.job_location','jobs.repaire_order_no')
-
-                ->where('jobs.job_id','=',$id)
-                ->first();
-				  $data['claim'] = Job::leftjoin('claim','claim.job_id','=','jobs.job_id') 
-				  			  ->leftjoin('data_mileage','data_mileage.mil_id','=','claim.mileage')
-
-           
-          ->where('jobs.job_id',$id)->first();
-		  
-                    $view = 'admin.asp_jobs.view';
-                break;
-
-                case 'asp_edit-job':
-
-                
-                 $data['products'] = DB::table('products')->get();
-                $data['warehouse'] = WareHouse::get();
-				  $data['parts'] = Parts::get(); 
-				 $data['milaeges'] =Mileage::get();
- $data['parts_list'] = Parts::get();
- 
+				$data['parts'] = Parts::get(); 
+				$data['milaeges'] =Mileage::get();
+                $data['parts_list'] = Parts::get();
                 $data['faultys'] = DB::table('faultylist')->get();
-				 $data['resolutions'] =DB::table('resolutions')->get();
+				$data['resolutions'] =DB::table('resolutions')->get();
 				$data['symptoms'] = DB::table('symptoms')->get();
+                $data['jo_id'] =Request::segment(2);
+	            $data['job'] = DB::table('jobs')
+                    ->leftjoin('customers','customers.cu_id','=','jobs.customer_id')
+                    ->leftjoin('faultylist','faultylist.faulty_id','=','jobs.faulty_code')
+                    ->leftjoin('symptoms','symptoms.symptom_id','=','jobs.symptom')
+                    ->leftjoin('asp_admin','asp_admin.warehouse_code','=','jobs.asp_location')
+                    ->leftjoin('asp_list','asp_list.code','=','jobs.asp_location')
+                    //->leftjoin('asp_list','asp_list.warehouse_id','=','asp_admin.asp_warehouse_id')
+                    ->leftjoin('users','users.id','=','jobs.technician')
+                    ->leftjoin('resolutions','resolutions.resolution_id','=','jobs.resolution')
+                    ->leftjoin('job_status','job_status.status_id','=','jobs.status')
+                    ->leftjoin('parts_order','parts_order.part_order_id','=','jobs.parts_order')
+                    //->leftjoin('muliple_parts','muliple_parts.order_id','=','parts_order.part_order_id')
+                    //->leftjoin('parts_list','parts_list.part_id','=','muliple_parts.parts')
+                    ->leftjoin('product_repalcement_order','jobs.product_replacement','=','product_repalcement_order.product_replacement_id')
+                    ->leftjoin('products','products.product_no','=','product_repalcement_order.product_id')
+                    ->leftjoin('grn','grn.order_id','=','product_repalcement_order.product_replacement_id')
+                    ->leftjoin('gma','gma.order_id','=','product_repalcement_order.product_replacement_id')
+                    ->leftjoin('appointment','appointment.job_id','=','jobs.job_id')
+                    ->leftjoin('claim','claim.job_id','=','jobs.job_id')
+                    ->select( 'jobs.*','products.*','claim.job_id as claimjob_id','jobs.technician as job_tech','jobs.seriel_number as job_seriel_number','claim.isapprove as claim_approv','claim.remarks as claim_remarks','parts_order.isapprove as part_appr','jobs.remark as job_remark','parts_order.remark as part_remark','parts_order.apprv_remarks as appr_remark','product_repalcement_order.delivery_date as prod_deliver','grn.amount as grn_amount','grn.credit_note as grn_credit','grn.issue_image as grn_image','grn.ex_number as grn_ex','gma.amount as gma_amount','gma.credit_note as gma_credit','gma.ex_number as rma_ex_number','gma.rma_remarks as rma_remarks','gma.issue_image as gma_image','gma.ex_number as gma_ex','gma.spare_part_no as gma_spare','grn.spare_part_no as grn_spare','grn.application_date as grn_appl','grn.purchase_date as grn_purchase','gma.application_date as gma_appl','gma.purchase_date as gma_purchase','grn.seriel_no as grn_seriel','gma.seriel_no as gma_seriel','claim.isapprove as claim_approve','customers.*','faultylist.*','symptoms.*','job_status.*','resolutions.*','asp_list.*','asp_admin.*','users.*','appointment.appointment_time','appointment.appointment_id','appointment.time','claim.claim_amount','claim.mileage','claim.labour','claim.claim_id','product_repalcement_order.*','grn.*','gma.*','asp_admin.*','parts_order.*')
+                    ->where('jobs.job_id','=',$id)
+                    ->first();
+                     $varj=$data['job']->asp_location;
+                $data['is_proof_image']   =  $this->isImageExstesion($data['job']->attach_proof);
+                $data['is_symptom_image'] =  $this->isImageExstesion($data['job']->grn_image);
+                     
+	            $data['techs'] = User::leftjoin('asp_tech','asp_tech.asp_technician','=','users.id')
+                    ->leftjoin('asp_admin','asp_tech.warehouse_code','=','asp_admin.warehouse_code')
+                   //->where('asp_admin.asp_admin_id','=',Auth::user()->id)
+                    ->where('asp_tech.warehouse_code','=',$varj)
+                    ->where('users.user_role_id','=',3)
+                    ->get();
+				$data['mul_parts'] = PartsOrder::leftjoin('jobs','jobs.parts_order','=','parts_order.part_order_id')
+                    ->leftjoin('muliple_parts','muliple_parts.order_id','=','parts_order.part_order_id')
+                    ->leftjoin('parts_list','parts_list.part_id','=','muliple_parts.parts')
+                    ->where('jobs.job_id','=',$id)
+                    ->get();
+				$data['part'] = DB::table('parts_order')
+                    ->leftjoin('parts_list','parts_list.part_id','=','parts_order.parts_item')
+                    ->leftjoin('muliple_parts','muliple_parts.order_id','=','parts_order.part_order_id')
+                    ->leftjoin('jobs','jobs.parts_order','=','parts_order.part_order_id')
+                    ->leftjoin('customers','customers.cu_id','=','jobs.customer_id')
+                    ->leftjoin('faultylist','faultylist.faulty_id','=','jobs.faulty_code')
+                    ->leftjoin('symptoms','symptoms.symptom_id','=','jobs.symptom')
+                    ->leftjoin('resolutions','resolutions.resolution_id','=','jobs.resolution')
+                    ->select( 'parts_list.*','muliple_parts.parts as mul_parts','customers.*','faultylist.*','symptoms.*','resolutions.*','parts_order.*','parts_list.*','jobs.job_id','jobs.job_location','jobs.repaire_order_no')
+                    ->where('jobs.job_id','=',$id)
+                    ->first();
+				$data['claim'] = Job::leftjoin('claim','claim.job_id','=','jobs.job_id') 
+				  	->leftjoin('data_mileage','data_mileage.mil_id','=','claim.mileage')
+                    ->where('jobs.job_id',$id)->first();
+                $varj=$data['job']->asp_location;
+                $data['techs'] = User::leftjoin('asp_tech','asp_tech.asp_technician','=','users.id')
+                    ->leftjoin('asp_admin','asp_tech.warehouse_code','=','asp_admin.warehouse_code')
+                   //->where('asp_admin.asp_admin_id','=',Auth::user()->id)
+                    ->where('asp_tech.warehouse_code','=',$varj)
+                    ->where('users.user_role_id','=',3)
+                    ->get();
+                $view = 'admin.jobs.edit';
+            break;
+                
 
-      $data['jo_id'] =Request::segment(2);
-	   $data['job']= DB::table('jobs')
-                     ->leftjoin('asp_admin','asp_admin.warehouse_code','=','jobs.asp_location')
-                     ->leftjoin('asp_list','asp_list.warehouse_id','=','asp_admin.asp_warehouse_id')
-                     ->leftjoin('users','users.id','=','jobs.technician')
+            case 'tech_edit-job':
+                $data['products'] = DB::table('products')->get();
+                $data['warehouse'] = WareHouse::get();
+                $data['parts'] = Parts::get(); 
+                $data['milaeges'] =Mileage::get();
+                $data['parts_list'] = Parts::get();
+                $data['faultys'] = DB::table('faultylist')->get();
+                $data['resolutions'] =DB::table('resolutions')->get();
+                $data['symptoms'] = DB::table('symptoms')->get();
+                $data['jo_id'] =Request::segment(2);
+                $data['job']= DB::table('jobs')
+                        ->leftjoin('asp_admin','asp_admin.warehouse_code','=','jobs.asp_location')
+                        ->leftjoin('asp_list','asp_list.warehouse_id','=','asp_admin.asp_warehouse_id')
+                        ->leftjoin('users','users.id','=','jobs.technician')
                         ->leftjoin('faultylist','faultylist.faulty_id','=','jobs.faulty_code')
-                          ->leftjoin('symptoms','symptoms.symptom_id','=','jobs.symptom')
+                        ->leftjoin('symptoms','symptoms.symptom_id','=','jobs.symptom')
                         ->leftjoin('resolutions','resolutions.resolution_id','=','jobs.resolution')
                         ->leftjoin('parts_order','parts_order.part_order_id','=','jobs.parts_order')
-            
-              ->leftjoin('product_repalcement_order','jobs.product_replacement','=','product_repalcement_order.product_replacement_id')
-			  			  ->leftjoin('products','products.product_no','=','product_repalcement_order.product_id')
+                        ->leftjoin('product_repalcement_order','jobs.product_replacement','=','product_repalcement_order.product_replacement_id')
+                        ->leftjoin('products','products.product_no','=','product_repalcement_order.product_id')
+                        ->leftjoin('grn','grn.order_id','=','product_repalcement_order.product_replacement_id')
+                        ->leftjoin('gma','gma.order_id','=','product_repalcement_order.product_replacement_id')
+                        ->leftjoin('customers','customers.cu_id','=','jobs.customer_id')
+                        ->leftjoin('job_status','job_status.status_id','=','jobs.status')
+                        ->leftjoin('appointment','appointment.job_id','=','jobs.job_id')
+                        ->leftjoin('claim','claim.job_id','=','jobs.job_id')
+                        ->select('jobs.*','appointment.job_id as appjob_id','jobs.technician as jo_tc','jobs.seriel_number as job_seriel_number','parts_order.delivery_date as part_del','product_repalcement_order.delivery_date as prod_del','claim.remarks as claim_remarks','claim.isapprove as claim_approv','grn.issue_image as grn_image','gma.issue_image as gma_image','jobs.remark as job_remark','appointment.time','parts_order.remark as part_remark','products.*','grn.amount as grn_amount','grn.credit_note as grn_credit','grn.ex_number as grn_ex','gma.amount as gma_amount','gma.credit_note as gma_credit','gma.ex_number as rma_ex_number','gma.rma_remarks as rma_remarks','gma.spare_part_no as gma_spare','grn.spare_part_no as grn_spare','grn.application_date as grn_appl','grn.purchase_date as grn_purchase','gma.application_date as gma_appl','gma.purchase_date as gma_purchase','grn.seriel_no as grn_seriel','gma.seriel_no as gma_seriel', 'jobs.*','claim.job_id as claimjob_id','claim.isapprove as claim_approve','customers.*','faultylist.*','symptoms.*','job_status.*','resolutions.*','parts_order.*','asp_list.*','asp_admin.*','users.*','appointment.appointment_time','appointment.appointment_id','claim.claim_amount','claim.mileage','claim.labour','claim.claim_id','grn.*','gma.*','product_repalcement_order.*','parts_order.*')
+                        ->where('jobs.technician','=',Auth::user()->id)
+                        ->where('jobs.job_id','=',$id)
+                        ->first();
+                $data['is_proof_image']   =  $this->isImageExstesion($data['job']->attach_proof);
+                $data['is_symptom_image'] =  $this->isImageExstesion($data['job']->grn_image);
+                $varj=$data['job']->asp_location;
+                $data['techs'] = User::leftjoin('asp_tech','asp_tech.asp_technician','=','users.id')
+                        ->leftjoin('asp_admin','asp_tech.warehouse_code','=','asp_admin.warehouse_code')
+                    //->where('asp_admin.asp_admin_id','=',Auth::user()->id)
+                        ->where('asp_tech.warehouse_code','=',$varj)
+                        ->where('users.user_role_id','=',3)
+                    ->get();
+                $data['mul_parts'] = PartsOrder::leftjoin('jobs','jobs.parts_order','=','parts_order.part_order_id')
+                        ->leftjoin('muliple_parts','muliple_parts.order_id','=','parts_order.part_order_id')
+                        ->leftjoin('parts_list','parts_list.part_id','=','muliple_parts.parts')
+                        ->where('jobs.job_id','=',$id)
+                        ->get();
+                $data['part'] = DB::table('parts_order')
+                        ->leftjoin('parts_list','parts_list.part_id','=','parts_order.parts_item')
+                        ->leftjoin('muliple_parts','muliple_parts.order_id','=','parts_order.part_order_id')
+                        ->leftjoin('jobs','jobs.parts_order','=','parts_order.part_order_id')
+                        ->leftjoin('customers','customers.cu_id','=','jobs.customer_id')
+                        ->leftjoin('faultylist','faultylist.faulty_id','=','jobs.faulty_code')
+                        ->leftjoin('symptoms','symptoms.symptom_id','=','jobs.symptom')
+                        ->leftjoin('resolutions','resolutions.resolution_id','=','jobs.resolution')
+                        ->select( 'parts_list.*','muliple_parts.parts as mul_parts','customers.*','faultylist.*','symptoms.*','resolutions.*','parts_order.*','parts_list.*','jobs.job_id','jobs.job_location','jobs.repaire_order_no')
+                        ->where('jobs.job_id','=',$id)
+                        ->first();
+                $data['claim'] = Job::leftjoin('claim','claim.job_id','=','jobs.job_id') 
+                        ->leftjoin('data_mileage','data_mileage.mil_id','=','claim.mileage')
+                        ->where('jobs.job_id',$id)->first();
+                $view = 'admin.assign_technician.tech_job_edit';
+            break;
+   
 
-              ->leftjoin('grn','grn.order_id','=','product_repalcement_order.product_replacement_id')
-            ->leftjoin('gma','gma.order_id','=','product_repalcement_order.product_replacement_id')
-                          ->leftjoin('customers','customers.cu_id','=','jobs.customer_id')
-                          ->leftjoin('job_status','job_status.status_id','=','jobs.status')
-                   
-             ->leftjoin('appointment','appointment.job_id','=','jobs.job_id')
-             ->leftjoin('claim','claim.job_id','=','jobs.job_id')
-                          ->select('jobs.*','appointment.job_id as appjob_id','jobs.technician as jo_tc','parts_order.delivery_date as part_del','product_repalcement_order.delivery_date as prod_del','claim.remarks as claim_remarks','claim.isapprove as claim_approv','grn.issue_image as grn_image','gma.issue_image as gma_image','jobs.remark as job_remark','appointment.time','parts_order.remark as part_remark','products.*','grn.amount as grn_amount','grn.credit_note as grn_credit','grn.ex_number as grn_ex','gma.amount as gma_amount','gma.credit_note as gma_credit','gma.ex_number as gma_ex','gma.spare_part_no as gma_spare','grn.spare_part_no as grn_spare','grn.application_date as grn_appl','grn.purchase_date as grn_purchase','gma.application_date as gma_appl','gma.purchase_date as gma_purchase','grn.seriel_no as grn_seriel','gma.seriel_no as gma_seriel', 'jobs.*','claim.job_id as claimjob_id','claim.isapprove as claim_approve','customers.*','faultylist.*','symptoms.*','job_status.*','resolutions.*','parts_order.*','asp_list.*','asp_admin.*','users.*','appointment.appointment_time','appointment.appointment_id','claim.claim_amount','claim.mileage','claim.labour','claim.claim_id','grn.*','gma.*','product_repalcement_order.*')
-
-                           ->where('asp_admin.asp_admin_id','=',Auth::user()->id)
-						    ->where('jobs.job_id','=',$id)
-						   ->first();
-						
-						
-					 $varj=$data['job']->asp_location;
-	   $data['techs'] = User::leftjoin('asp_tech','asp_tech.asp_technician','=','users.id')
-                    ->leftjoin('asp_admin','asp_tech.warehouse_code','=','asp_admin.warehouse_code')
-                   //->where('asp_admin.asp_admin_id','=',Auth::user()->id)
-                    ->where('asp_tech.warehouse_code','=',$varj)
-                    ->where('users.user_role_id','=',3)
-                  
-                   ->get();
+        case 'view-asp_job':
+            $data['products'] = DB::table('products')->get();
+            $data['warehouse'] = WareHouse::get();
+            $data['parts'] = Parts::get(); 
+            $data['milaeges'] =Mileage::get();
+            $data['parts_list'] = Parts::get();
+            $data['faultys'] = Faulty::get();
+            $data['symptoms'] = Symptom::get();
+            $data['resolutions'] = Resolutions::get();
+            $data['jo_id'] =Request::segment(2);
+	        $data['job'] = DB::table('jobs')
+                ->leftjoin('customers','customers.cu_id','=','jobs.customer_id')
+                ->leftjoin('faultylist','faultylist.faulty_id','=','jobs.faulty_code')
+                ->leftjoin('symptoms','symptoms.symptom_id','=','jobs.symptom')
+                ->leftjoin('asp_admin','asp_admin.warehouse_code','=','jobs.asp_location')
+                ->leftjoin('asp_list','asp_list.code','=','jobs.asp_location')
+                //->leftjoin('asp_list','asp_list.warehouse_id','=','asp_admin.asp_warehouse_id')
+                ->leftjoin('users','users.id','=','jobs.technician')
+                ->leftjoin('resolutions','resolutions.resolution_id','=','jobs.resolution')
+                ->leftjoin('job_status','job_status.status_id','=','jobs.status')
+                ->leftjoin('parts_order','parts_order.part_order_id','=','jobs.parts_order')
+                //->leftjoin('muliple_parts','muliple_parts.order_id','=','parts_order.part_order_id')
+                //->leftjoin('parts_list','parts_list.part_id','=','muliple_parts.parts')
+                ->leftjoin('product_repalcement_order','jobs.product_replacement','=','product_repalcement_order.product_replacement_id')
+			    ->leftjoin('products','products.product_no','=','product_repalcement_order.product_id')
+                ->leftjoin('grn','grn.order_id','=','product_repalcement_order.product_replacement_id')
+                ->leftjoin('gma','gma.order_id','=','product_repalcement_order.product_replacement_id')
+                ->leftjoin('appointment','appointment.job_id','=','jobs.job_id')
+                ->leftjoin('claim','claim.job_id','=','jobs.job_id')
+                ->select( 'jobs.*','products.*','jobs.created_at as job_create','jobs.seriel_number as job_seriel_number','claim.remarks as claim_remarks','claim.created_at as claim_create','appointment.time','jobs.remark as job_remark','claim.isapprove as claim_approve','parts_order.delivery_date as part_del','product_repalcement_order.delivery_date as prod_del','claim.job_id as claimjob_id', 'grn.amount as grn_amount','grn.credit_note as grn_credit','grn.ex_number as grn_ex','grn.issue_image as grn_image','gma.issue_image as gma_image','gma.amount as gma_amount','gma.credit_note as gma_credit','gma.ex_number as rma_ex_number','gma.rma_remarks as rma_remarks','gma.spare_part_no as gma_spare','grn.spare_part_no as grn_spare','grn.application_date as grn_appl','grn.purchase_date as grn_purchase','gma.application_date as gma_appl','gma.purchase_date as gma_purchase','grn.seriel_no as grn_seriel','gma.seriel_no as gma_seriel','customers.*','faultylist.*','symptoms.*','job_status.*','resolutions.*','asp_list.*','asp_admin.*','users.*','appointment.appointment_time','appointment.appointment_id','claim.claim_amount','claim.mileage','claim.labour','claim.claim_id','product_repalcement_order.*','grn.*','gma.*','asp_admin.*','parts_order.*')
+				->where('asp_admin.asp_admin_id','=',Auth::user()->id)
+                ->where('jobs.job_id','=',$id)
+                ->first();
+            $data['is_proof_image']   =  $this->isImageExstesion($data['job']->attach_proof);
+            $data['is_symptom_image'] =  $this->isImageExstesion($data['job']->grn_image);		
+			$varj=$data['job']->asp_location;
+	        $data['techs'] = User::leftjoin('asp_tech','asp_tech.asp_technician','=','users.id')
+                ->leftjoin('asp_admin','asp_tech.warehouse_code','=','asp_admin.warehouse_code')
+                //->where('asp_admin.asp_admin_id','=',Auth::user()->id)
+                ->where('asp_tech.warehouse_code','=',$varj)
+                ->where('users.user_role_id','=',3)
+                ->get();
 				
-						   		$data['mul_parts'] = PartsOrder::leftjoin('jobs','jobs.parts_order','=','parts_order.part_order_id')
+			$data['mul_parts'] = PartsOrder::leftjoin('jobs','jobs.parts_order','=','parts_order.part_order_id')
                 ->leftjoin('muliple_parts','muliple_parts.order_id','=','parts_order.part_order_id')
                 ->leftjoin('parts_list','parts_list.part_id','=','muliple_parts.parts')
                 ->where('jobs.job_id','=',$id)
                 ->get();
-					   $data['part'] = DB::table('parts_order')
+			$data['part'] = DB::table('parts_order')
                 ->leftjoin('parts_list','parts_list.part_id','=','parts_order.parts_item')
                 ->leftjoin('muliple_parts','muliple_parts.order_id','=','parts_order.part_order_id')
-
                 ->leftjoin('jobs','jobs.parts_order','=','parts_order.part_order_id')
                 ->leftjoin('customers','customers.cu_id','=','jobs.customer_id')
-
                 ->leftjoin('faultylist','faultylist.faulty_id','=','jobs.faulty_code')
                 ->leftjoin('symptoms','symptoms.symptom_id','=','jobs.symptom')
                 ->leftjoin('resolutions','resolutions.resolution_id','=','jobs.resolution')
                 ->select( 'parts_list.*','muliple_parts.parts as mul_parts','customers.*','faultylist.*','symptoms.*','resolutions.*','parts_order.*','parts_list.*','jobs.job_id','jobs.job_location','jobs.repaire_order_no')
-
                 ->where('jobs.job_id','=',$id)
                 ->first();
-				  $data['claim'] = Job::leftjoin('claim','claim.job_id','=','jobs.job_id') 
-				  			  ->leftjoin('data_mileage','data_mileage.mil_id','=','claim.mileage')
+			$data['claim'] = Job::leftjoin('claim','claim.job_id','=','jobs.job_id') 
+				->leftjoin('data_mileage','data_mileage.mil_id','=','claim.mileage')
+                ->where('jobs.job_id',$id)->first();
+            $view = 'admin.asp_jobs.view';
+        break;
 
-           
-          ->where('jobs.job_id',$id)->first();
+        case 'asp_edit-job':
+            $data['products'] = DB::table('products')->get();
+            $data['warehouse'] = WareHouse::get();
+			$data['parts'] = Parts::get(); 
+			$data['milaeges'] =Mileage::get();
+            $data['parts_list'] = Parts::get();
+            $data['faultys'] = DB::table('faultylist')->get();
+			$data['resolutions'] =DB::table('resolutions')->get();
+		    $data['symptoms'] = DB::table('symptoms')->get();
+            $data['jo_id'] =Request::segment(2);
+	        $data['job']= DB::table('jobs')
+                    ->leftjoin('asp_admin','asp_admin.warehouse_code','=','jobs.asp_location')
+                    ->leftjoin('asp_list','asp_list.warehouse_id','=','asp_admin.asp_warehouse_id')
+                    ->leftjoin('users','users.id','=','jobs.technician')
+                    ->leftjoin('faultylist','faultylist.faulty_id','=','jobs.faulty_code')
+                    ->leftjoin('symptoms','symptoms.symptom_id','=','jobs.symptom')
+                    ->leftjoin('resolutions','resolutions.resolution_id','=','jobs.resolution')
+                    ->leftjoin('parts_order','parts_order.part_order_id','=','jobs.parts_order')
+                    ->leftjoin('product_repalcement_order','jobs.product_replacement','=','product_repalcement_order.product_replacement_id')
+			  		->leftjoin('products','products.product_no','=','product_repalcement_order.product_id')
+                    ->leftjoin('grn','grn.order_id','=','product_repalcement_order.product_replacement_id')
+                    ->leftjoin('gma','gma.order_id','=','product_repalcement_order.product_replacement_id')
+                    ->leftjoin('customers','customers.cu_id','=','jobs.customer_id')
+                    ->leftjoin('job_status','job_status.status_id','=','jobs.status')
+                    ->leftjoin('appointment','appointment.job_id','=','jobs.job_id')
+                    ->leftjoin('claim','claim.job_id','=','jobs.job_id')
+                    ->select('jobs.*','appointment.job_id as appjob_id','jobs.technician as jo_tc','jobs.seriel_number as job_seriel_number','parts_order.delivery_date as part_del','product_repalcement_order.delivery_date as prod_del','claim.remarks as claim_remarks','claim.isapprove as claim_approv','grn.issue_image as grn_image','gma.issue_image as gma_image','jobs.remark as job_remark','appointment.time','parts_order.remark as part_remark','products.*','grn.amount as grn_amount','grn.credit_note as grn_credit','grn.ex_number as grn_ex','gma.amount as gma_amount','gma.credit_note as gma_credit','gma.ex_number as rma_ex_number','gma.rma_remarks as rma_remarks','gma.spare_part_no as gma_spare','grn.spare_part_no as grn_spare','grn.application_date as grn_appl','grn.purchase_date as grn_purchase','gma.application_date as gma_appl','gma.purchase_date as gma_purchase','grn.seriel_no as grn_seriel','gma.seriel_no as gma_seriel', 'jobs.*','claim.job_id as claimjob_id','claim.isapprove as claim_approve','customers.*','faultylist.*','symptoms.*','job_status.*','resolutions.*','parts_order.*','asp_list.*','asp_admin.*','users.*','appointment.appointment_time','appointment.appointment_id','claim.claim_amount','claim.mileage','claim.labour','claim.claim_id','grn.*','gma.*','product_repalcement_order.*','parts_order.*')
+                    ->where('asp_admin.asp_admin_id','=',Auth::user()->id)
+					->where('jobs.job_id','=',$id)
+                    ->first();
+            $data['is_proof_image']   =  $this->isImageExstesion($data['job']->attach_proof);
+            $data['is_symptom_image'] =  $this->isImageExstesion($data['job']->grn_image);
+			$varj=$data['job']->asp_location;
+	        $data['techs'] = User::leftjoin('asp_tech','asp_tech.asp_technician','=','users.id')
+                    ->leftjoin('asp_admin','asp_tech.warehouse_code','=','asp_admin.warehouse_code')
+                   //->where('asp_admin.asp_admin_id','=',Auth::user()->id)
+                    ->where('asp_tech.warehouse_code','=',$varj)
+                    ->where('users.user_role_id','=',3)
+                   ->get();
+			$data['mul_parts'] = PartsOrder::leftjoin('jobs','jobs.parts_order','=','parts_order.part_order_id')
+                    ->leftjoin('muliple_parts','muliple_parts.order_id','=','parts_order.part_order_id')
+                    ->leftjoin('parts_list','parts_list.part_id','=','muliple_parts.parts')
+                    ->where('jobs.job_id','=',$id)
+                    ->get();
+			$data['part'] = DB::table('parts_order')
+                    ->leftjoin('parts_list','parts_list.part_id','=','parts_order.parts_item')
+                    ->leftjoin('muliple_parts','muliple_parts.order_id','=','parts_order.part_order_id')
+                    ->leftjoin('jobs','jobs.parts_order','=','parts_order.part_order_id')
+                    ->leftjoin('customers','customers.cu_id','=','jobs.customer_id')
+                    ->leftjoin('faultylist','faultylist.faulty_id','=','jobs.faulty_code')
+                    ->leftjoin('symptoms','symptoms.symptom_id','=','jobs.symptom')
+                    ->leftjoin('resolutions','resolutions.resolution_id','=','jobs.resolution')
+                    ->select( 'parts_list.*','muliple_parts.parts as mul_parts','customers.*','faultylist.*','symptoms.*','resolutions.*','parts_order.*','parts_list.*','jobs.job_id','jobs.job_location','jobs.repaire_order_no')
+                    ->where('jobs.job_id','=',$id)
+                    ->first();
+			$data['claim'] = Job::leftjoin('claim','claim.job_id','=','jobs.job_id') 
+				  	->leftjoin('data_mileage','data_mileage.mil_id','=','claim.mileage')
+                    ->where('jobs.job_id',$id)->first();
+            $view = 'admin.asp_jobs.asp_job_edit';
+        break;
 
-
-                $view = 'admin.asp_jobs.asp_job_edit';
-                break;
-            case 'view-job':
+    case 'view-job':
 
                 $data['products'] = DB::table('products')->get();
                 $data['warehouse'] = WareHouse::get();
-				  $data['parts'] = Parts::get(); 
-				 $data['milaeges'] =Mileage::get();
- $data['parts_list'] = Parts::get();
- $data['faultys'] = Faulty::get();
-  $data['symptoms'] = Symptom::get();
-   $data['resolutions'] = Resolutions::get();
-      $data['jo_id'] =Request::segment(2);
-	 
-	  
-	   $data['job'] = DB::table('jobs')
-              
-              ->leftjoin('customers','customers.cu_id','=','jobs.customer_id')
-              ->leftjoin('faultylist','faultylist.faulty_id','=','jobs.faulty_code')
-              ->leftjoin('symptoms','symptoms.symptom_id','=','jobs.symptom')
-             ->leftjoin('asp_admin','asp_admin.warehouse_code','=','jobs.asp_location')
-              ->leftjoin('asp_list','asp_list.code','=','jobs.asp_location')
-              //->leftjoin('asp_list','asp_list.warehouse_id','=','asp_admin.asp_warehouse_id')
-              ->leftjoin('users','users.id','=','jobs.technician')
-              ->leftjoin('resolutions','resolutions.resolution_id','=','jobs.resolution')
-              ->leftjoin('job_status','job_status.status_id','=','jobs.status')
-             ->leftjoin('parts_order','parts_order.part_order_id','=','jobs.parts_order')
-              //->leftjoin('muliple_parts','muliple_parts.order_id','=','parts_order.part_order_id')
-              //->leftjoin('parts_list','parts_list.part_id','=','muliple_parts.parts')
-              ->leftjoin('product_repalcement_order','jobs.product_replacement','=','product_repalcement_order.product_replacement_id')
-			  ->leftjoin('products','products.product_no','=','product_repalcement_order.product_id')
-
-              ->leftjoin('grn','grn.order_id','=','product_repalcement_order.product_replacement_id')
-            ->leftjoin('gma','gma.order_id','=','product_repalcement_order.product_replacement_id')
-             ->leftjoin('appointment','appointment.job_id','=','jobs.job_id')
-             ->leftjoin('claim','claim.job_id','=','jobs.job_id')
-
-             ->select( 'jobs.*','products.*','appointment.time','parts_order.delivery_date as part_del','claim.remarks as claim_remarks','jobs.created_at as job_create','claim.created_at as claim_create','product_repalcement_order.delivery_date as prod_del','jobs.remark as job_remark','grn.issue_image as grn_image','gma.issue_image as gma_image','claim.job_id as claimjob_id', 'grn.amount as grn_amount','grn.credit_note as grn_credit','grn.ex_number as grn_ex','gma.amount as gma_amount','gma.credit_note as gma_credit','gma.ex_number as gma_ex','gma.spare_part_no as gma_spare','grn.spare_part_no as grn_spare','grn.application_date as grn_appl','grn.purchase_date as grn_purchase','gma.application_date as gma_appl','gma.purchase_date as gma_purchase','grn.seriel_no as grn_seriel','gma.seriel_no as gma_seriel','claim.isapprove as claim_approve','customers.*','faultylist.*','symptoms.*','job_status.*','resolutions.*','asp_list.*','asp_admin.*','users.*','appointment.appointment_time','appointment.appointment_id','claim.claim_amount','claim.mileage','claim.labour','claim.claim_id','product_repalcement_order.*','grn.*','gma.*','asp_admin.*','parts_order.*')
-
+				$data['parts'] = Parts::get(); 
+				$data['milaeges'] =Mileage::get();
+                $data['parts_list'] = Parts::get();
+                $data['faultys'] = Faulty::get();
+                $data['symptoms'] = Symptom::get();
+                $data['resolutions'] = Resolutions::get();
+                $data['jo_id'] =Request::segment(2); 
+	            $data['job'] = DB::table('jobs')
+                    ->leftjoin('customers','customers.cu_id','=','jobs.customer_id')
+                    ->leftjoin('faultylist','faultylist.faulty_id','=','jobs.faulty_code')
+                    ->leftjoin('symptoms','symptoms.symptom_id','=','jobs.symptom')
+                    ->leftjoin('asp_admin','asp_admin.warehouse_code','=','jobs.asp_location')
+                    ->leftjoin('asp_list','asp_list.code','=','jobs.asp_location')
+                    //->leftjoin('asp_list','asp_list.warehouse_id','=','asp_admin.asp_warehouse_id')
+                    ->leftjoin('users','users.id','=','jobs.technician')
+                    ->leftjoin('resolutions','resolutions.resolution_id','=','jobs.resolution')
+                    ->leftjoin('job_status','job_status.status_id','=','jobs.status')
+                    ->leftjoin('parts_order','parts_order.part_order_id','=','jobs.parts_order')
+                    //->leftjoin('muliple_parts','muliple_parts.order_id','=','parts_order.part_order_id')
+                    //->leftjoin('parts_list','parts_list.part_id','=','muliple_parts.parts')
+                    ->leftjoin('product_repalcement_order','jobs.product_replacement','=','product_repalcement_order.product_replacement_id')
+                    ->leftjoin('products','products.product_no','=','product_repalcement_order.product_id')
+                    ->leftjoin('grn','grn.order_id','=','product_repalcement_order.product_replacement_id')
+                    ->leftjoin('gma','gma.order_id','=','product_repalcement_order.product_replacement_id')
+                    ->leftjoin('appointment','appointment.job_id','=','jobs.job_id')
+                    ->leftjoin('claim','claim.job_id','=','jobs.job_id')
+                    ->select( 'jobs.*','products.*','appointment.time','parts_order.delivery_date as part_del','claim.remarks as claim_remarks','jobs.seriel_number as job_seriel_number','jobs.created_at as job_create','claim.created_at as claim_create','product_repalcement_order.delivery_date as prod_del','jobs.remark as job_remark','grn.issue_image as grn_image','gma.issue_image as gma_image','claim.job_id as claimjob_id', 'grn.amount as grn_amount','grn.credit_note as grn_credit','grn.ex_number as grn_ex','gma.amount as gma_amount','gma.credit_note as gma_credit','gma.ex_number as rma_ex_number','gma.rma_remarks as rma_remarks','gma.spare_part_no as gma_spare','grn.spare_part_no as grn_spare','grn.application_date as grn_appl','grn.purchase_date as grn_purchase','gma.application_date as gma_appl','gma.purchase_date as gma_purchase','grn.seriel_no as grn_seriel','gma.seriel_no as gma_seriel','claim.isapprove as claim_approve','customers.*','faultylist.*','symptoms.*','job_status.*','resolutions.*','asp_list.*','asp_admin.*','users.*','appointment.appointment_time','appointment.appointment_id','claim.claim_amount','claim.mileage','claim.labour','claim.claim_id','product_repalcement_order.*','grn.*','gma.*','asp_admin.*','parts_order.*')
                     ->where('jobs.job_id','=',$id)
                     ->first();
+                $data['is_proof_image']   =  $this->isImageExstesion($data['job']->attach_proof);
+                $data['is_symptom_image'] =  $this->isImageExstesion($data['job']->grn_image);    
 			
-					 $varj=$data['job']->asp_location;
-	   $data['techs'] = User::leftjoin('asp_tech','asp_tech.asp_technician','=','users.id')
+				$varj=$data['job']->asp_location;
+	            $data['techs'] = User::leftjoin('asp_tech','asp_tech.asp_technician','=','users.id')
                     ->leftjoin('asp_admin','asp_tech.warehouse_code','=','asp_admin.warehouse_code')
                    //->where('asp_admin.asp_admin_id','=',Auth::user()->id)
                     ->where('asp_tech.warehouse_code','=',$varj)
                     ->where('users.user_role_id','=',3)
-                  
-                   ->get();
-				
-					$data['mul_parts'] = PartsOrder::leftjoin('jobs','jobs.parts_order','=','parts_order.part_order_id')
-                ->leftjoin('muliple_parts','muliple_parts.order_id','=','parts_order.part_order_id')
-                ->leftjoin('parts_list','parts_list.part_id','=','muliple_parts.parts')
-                ->where('jobs.job_id','=',$id)
-                ->get();
-					   $data['part'] = DB::table('parts_order')
-                ->leftjoin('parts_list','parts_list.part_id','=','parts_order.parts_item')
-                ->leftjoin('muliple_parts','muliple_parts.order_id','=','parts_order.part_order_id')
-
-                ->leftjoin('jobs','jobs.parts_order','=','parts_order.part_order_id')
-                ->leftjoin('customers','customers.cu_id','=','jobs.customer_id')
-
-                ->leftjoin('faultylist','faultylist.faulty_id','=','jobs.faulty_code')
-                ->leftjoin('symptoms','symptoms.symptom_id','=','jobs.symptom')
-                ->leftjoin('resolutions','resolutions.resolution_id','=','jobs.resolution')
-                ->select( 'parts_list.*','muliple_parts.parts as mul_parts','customers.*','faultylist.*','symptoms.*','resolutions.*','parts_order.*','parts_list.*','jobs.job_id','jobs.job_location','jobs.repaire_order_no')
-
-                ->where('jobs.job_id','=',$id)
-                ->first();
-				
-				    $data['claim'] = Job::leftjoin('claim','claim.job_id','=','jobs.job_id') 
-				  			  ->leftjoin('data_mileage','data_mileage.mil_id','=','claim.mileage')
-
-           
-          ->where('jobs.job_id',$id)->first();
-
-                $view = 'admin.jobs.view';
-                break;
-
-                case 'view-tech_job':
-
-                 $data['products'] = DB::table('products')->get();
-                $data['warehouse'] = WareHouse::get();
-				  $data['parts'] = Parts::get(); 
-				 $data['milaeges'] =Mileage::get();
- $data['parts_list'] = Parts::get();
- $data['faultys'] = Faulty::get();
-  $data['symptoms'] = Symptom::get();
-   $data['resolutions'] = Resolutions::get();
-      $data['jo_id'] =Request::segment(2);
-	   $data['job'] = DB::table('jobs')
-              
-              ->leftjoin('customers','customers.cu_id','=','jobs.customer_id')
-              ->leftjoin('faultylist','faultylist.faulty_id','=','jobs.faulty_code')
-              ->leftjoin('symptoms','symptoms.symptom_id','=','jobs.symptom')
-             ->leftjoin('asp_admin','asp_admin.warehouse_code','=','jobs.asp_location')
-              ->leftjoin('asp_list','asp_list.code','=','jobs.asp_location')
-              //->leftjoin('asp_list','asp_list.warehouse_id','=','asp_admin.asp_warehouse_id')
-              ->leftjoin('users','users.id','=','jobs.technician')
-              ->leftjoin('resolutions','resolutions.resolution_id','=','jobs.resolution')
-              ->leftjoin('job_status','job_status.status_id','=','jobs.status')
-             ->leftjoin('parts_order','parts_order.part_order_id','=','jobs.parts_order')
-              //->leftjoin('muliple_parts','muliple_parts.order_id','=','parts_order.part_order_id')
-              //->leftjoin('parts_list','parts_list.part_id','=','muliple_parts.parts')
-              ->leftjoin('product_repalcement_order','jobs.product_replacement','=','product_repalcement_order.product_replacement_id')
-			  ->leftjoin('products','products.product_no','=','product_repalcement_order.product_id')
-
-              ->leftjoin('grn','grn.order_id','=','product_repalcement_order.product_replacement_id')
-            ->leftjoin('gma','gma.order_id','=','product_repalcement_order.product_replacement_id')
-             ->leftjoin('appointment','appointment.job_id','=','jobs.job_id')
-             ->leftjoin('claim','claim.job_id','=','jobs.job_id')
-
-             ->select( 'jobs.*','products.*','appointment.time','jobs.created_at as job_create','claim.remarks as claim_remarks','claim.created_at as claim_create','jobs.remark as job_remark','parts_order.delivery_date as part_del','product_repalcement_order.delivery_date as prod_del','grn.issue_image as grn_image','gma.issue_image as gma_image','claim.job_id as claimjob_id', 'grn.amount as grn_amount','grn.credit_note as grn_credit','grn.ex_number as grn_ex','gma.amount as gma_amount','gma.credit_note as gma_credit','gma.ex_number as gma_ex','gma.spare_part_no as gma_spare','grn.spare_part_no as grn_spare','grn.application_date as grn_appl','grn.purchase_date as grn_purchase','gma.application_date as gma_appl','gma.purchase_date as gma_purchase','grn.seriel_no as grn_seriel','gma.seriel_no as gma_seriel','claim.isapprove as claim_approve','customers.*','faultylist.*','symptoms.*','job_status.*','resolutions.*','asp_list.*','asp_admin.*','users.*','appointment.appointment_time','appointment.appointment_id','claim.claim_amount','claim.mileage','claim.labour','claim.claim_id','product_repalcement_order.*','grn.*','gma.*','asp_admin.*','parts_order.*')
-						                              ->where('jobs.technician','=',Auth::user()->id)
-
+                    ->get();
+				$data['mul_parts'] = PartsOrder::leftjoin('jobs','jobs.parts_order','=','parts_order.part_order_id')
+                    ->leftjoin('muliple_parts','muliple_parts.order_id','=','parts_order.part_order_id')
+                    ->leftjoin('parts_list','parts_list.part_id','=','muliple_parts.parts')
+                    ->where('jobs.job_id','=',$id)
+                    ->get();
+				$data['part'] = DB::table('parts_order')
+                    ->leftjoin('parts_list','parts_list.part_id','=','parts_order.parts_item')
+                    ->leftjoin('muliple_parts','muliple_parts.order_id','=','parts_order.part_order_id')
+                    ->leftjoin('jobs','jobs.parts_order','=','parts_order.part_order_id')
+                    ->leftjoin('customers','customers.cu_id','=','jobs.customer_id')
+                    ->leftjoin('faultylist','faultylist.faulty_id','=','jobs.faulty_code')
+                    ->leftjoin('symptoms','symptoms.symptom_id','=','jobs.symptom')
+                    ->leftjoin('resolutions','resolutions.resolution_id','=','jobs.resolution')
+                    ->select( 'parts_list.*','muliple_parts.parts as mul_parts','customers.*','faultylist.*','symptoms.*','resolutions.*','parts_order.*','parts_list.*','jobs.job_id','jobs.job_location','jobs.repaire_order_no')
                     ->where('jobs.job_id','=',$id)
                     ->first();
+				
+				$data['claim'] = Job::leftjoin('claim','claim.job_id','=','jobs.job_id') 
+				  	->leftjoin('data_mileage','data_mileage.mil_id','=','claim.mileage')
+                    ->where('jobs.job_id',$id)->first();
+                $view = 'admin.jobs.view';
+            break;
 
-					 $varj=$data['job']->asp_location;
-	   $data['techs'] = User::leftjoin('asp_tech','asp_tech.asp_technician','=','users.id')
+            case 'view-tech_job':
+
+                $data['products'] = DB::table('products')->get();
+                $data['warehouse'] = WareHouse::get();
+                $data['parts'] = Parts::get(); 
+                $data['milaeges'] =Mileage::get();
+                $data['parts_list'] = Parts::get();
+                $data['faultys'] = Faulty::get();
+                $data['symptoms'] = Symptom::get();
+                $data['resolutions'] = Resolutions::get();
+                $data['jo_id'] =Request::segment(2);
+                $data['job'] = DB::table('jobs')
+                    ->leftjoin('customers','customers.cu_id','=','jobs.customer_id')
+                    ->leftjoin('faultylist','faultylist.faulty_id','=','jobs.faulty_code')
+                    ->leftjoin('symptoms','symptoms.symptom_id','=','jobs.symptom')
+                    ->leftjoin('asp_admin','asp_admin.warehouse_code','=','jobs.asp_location')
+                    ->leftjoin('asp_list','asp_list.code','=','jobs.asp_location')
+                    //->leftjoin('asp_list','asp_list.warehouse_id','=','asp_admin.asp_warehouse_id')
+                    ->leftjoin('users','users.id','=','jobs.technician')
+                    ->leftjoin('resolutions','resolutions.resolution_id','=','jobs.resolution')
+                    ->leftjoin('job_status','job_status.status_id','=','jobs.status')
+                    ->leftjoin('parts_order','parts_order.part_order_id','=','jobs.parts_order')
+                    //->leftjoin('muliple_parts','muliple_parts.order_id','=','parts_order.part_order_id')
+                    //->leftjoin('parts_list','parts_list.part_id','=','muliple_parts.parts')
+                    ->leftjoin('product_repalcement_order','jobs.product_replacement','=','product_repalcement_order.product_replacement_id')
+                    ->leftjoin('products','products.product_no','=','product_repalcement_order.product_id')
+                    ->leftjoin('grn','grn.order_id','=','product_repalcement_order.product_replacement_id')
+                    ->leftjoin('gma','gma.order_id','=','product_repalcement_order.product_replacement_id')
+                    ->leftjoin('appointment','appointment.job_id','=','jobs.job_id')
+                    ->leftjoin('claim','claim.job_id','=','jobs.job_id')
+                    ->select( 'jobs.*','products.*','jobs.created_at as job_create','jobs.seriel_number as job_seriel_number','claim.remarks as claim_remarks','claim.created_at as claim_create','appointment.time','jobs.remark as job_remark','claim.isapprove as claim_approve','parts_order.delivery_date as part_del','product_repalcement_order.delivery_date as prod_del','claim.job_id as claimjob_id', 'grn.amount as grn_amount','grn.credit_note as grn_credit','grn.ex_number as grn_ex','grn.issue_image as grn_image','gma.issue_image as gma_image','gma.amount as gma_amount','gma.credit_note as gma_credit','gma.ex_number as rma_ex_number','gma.rma_remarks as rma_remarks','gma.spare_part_no as gma_spare','grn.spare_part_no as grn_spare','grn.application_date as grn_appl','grn.purchase_date as grn_purchase','gma.application_date as gma_appl','gma.purchase_date as gma_purchase','grn.seriel_no as grn_seriel','gma.seriel_no as gma_seriel','customers.*','faultylist.*','symptoms.*','job_status.*','resolutions.*','asp_list.*','asp_admin.*','users.*','appointment.appointment_time','appointment.appointment_id','claim.claim_amount','claim.mileage','claim.labour','claim.claim_id','product_repalcement_order.*','grn.*','gma.*','asp_admin.*','parts_order.*')
+                    ->where('jobs.technician','=',Auth::user()->id)
+                    ->where('jobs.job_id','=',$id)
+                    ->first();
+                $data['is_proof_image']   =  $this->isImageExstesion($data['job']->attach_proof);
+                $data['is_symptom_image'] =  $this->isImageExstesion($data['job']->grn_image);		
+                $varj=$data['job']->asp_location;
+                $data['techs'] = User::leftjoin('asp_tech','asp_tech.asp_technician','=','users.id')
                     ->leftjoin('asp_admin','asp_tech.warehouse_code','=','asp_admin.warehouse_code')
-                   //->where('asp_admin.asp_admin_id','=',Auth::user()->id)
+                    //->where('asp_admin.asp_admin_id','=',Auth::user()->id)
                     ->where('asp_tech.warehouse_code','=',$varj)
                     ->where('users.user_role_id','=',3)
-                  
-                   ->get();
-				
-						   		$data['mul_parts'] = PartsOrder::leftjoin('jobs','jobs.parts_order','=','parts_order.part_order_id')
-                ->leftjoin('muliple_parts','muliple_parts.order_id','=','parts_order.part_order_id')
-                ->leftjoin('parts_list','parts_list.part_id','=','muliple_parts.parts')
-                ->where('jobs.job_id','=',$id)
-                ->get();
-					   $data['part'] = DB::table('parts_order')
-                ->leftjoin('parts_list','parts_list.part_id','=','parts_order.parts_item')
-                ->leftjoin('muliple_parts','muliple_parts.order_id','=','parts_order.part_order_id')
-
-                ->leftjoin('jobs','jobs.parts_order','=','parts_order.part_order_id')
-                ->leftjoin('customers','customers.cu_id','=','jobs.customer_id')
-
-                ->leftjoin('faultylist','faultylist.faulty_id','=','jobs.faulty_code')
-                ->leftjoin('symptoms','symptoms.symptom_id','=','jobs.symptom')
-                ->leftjoin('resolutions','resolutions.resolution_id','=','jobs.resolution')
-                ->select( 'parts_list.*','muliple_parts.parts as mul_parts','customers.*','faultylist.*','symptoms.*','resolutions.*','parts_order.*','parts_list.*','jobs.job_id','jobs.job_location','jobs.repaire_order_no')
-
-                ->where('jobs.job_id','=',$id)
-                ->first();
-				  $data['claim'] = Job::leftjoin('claim','claim.job_id','=','jobs.job_id') 
-				  			  ->leftjoin('data_mileage','data_mileage.mil_id','=','claim.mileage')
-
-           
-          ->where('jobs.job_id',$id)->first();
-
+                    ->get();
+                    
+                $data['mul_parts'] = PartsOrder::leftjoin('jobs','jobs.parts_order','=','parts_order.part_order_id')
+                    ->leftjoin('muliple_parts','muliple_parts.order_id','=','parts_order.part_order_id')
+                    ->leftjoin('parts_list','parts_list.part_id','=','muliple_parts.parts')
+                    ->where('jobs.job_id','=',$id)
+                    ->get();
+                $data['part'] = DB::table('parts_order')
+                    ->leftjoin('parts_list','parts_list.part_id','=','parts_order.parts_item')
+                    ->leftjoin('muliple_parts','muliple_parts.order_id','=','parts_order.part_order_id')
+                    ->leftjoin('jobs','jobs.parts_order','=','parts_order.part_order_id')
+                    ->leftjoin('customers','customers.cu_id','=','jobs.customer_id')
+                    ->leftjoin('faultylist','faultylist.faulty_id','=','jobs.faulty_code')
+                    ->leftjoin('symptoms','symptoms.symptom_id','=','jobs.symptom')
+                    ->leftjoin('resolutions','resolutions.resolution_id','=','jobs.resolution')
+                    ->select( 'parts_list.*','muliple_parts.parts as mul_parts','customers.*','faultylist.*','symptoms.*','resolutions.*','parts_order.*','parts_list.*','jobs.job_id','jobs.job_location','jobs.repaire_order_no')
+                    ->where('jobs.job_id','=',$id)
+                    ->first();
+                $data['claim'] = Job::leftjoin('claim','claim.job_id','=','jobs.job_id') 
+                    ->leftjoin('data_mileage','data_mileage.mil_id','=','claim.mileage')
+                    ->where('jobs.job_id',$id)->first();
                 $view = 'admin.assign_technician.view';
-                break;
+            break;
 
             case 'new-csv':
 
@@ -2509,230 +2334,194 @@ $data['faultys'] = DB::table('faultylist')->get();
 
 	  
      case 'pending_part':
-                $data['products'] = DB::table('products')->get();
-				
+                $data['products'] = DB::table('products')->get();	
                 $data['warehouse'] = WareHouse::get();
-				  $data['parts'] = Parts::get(); 
-				 $data['milaeges'] =Mileage::get();
- $data['parts_list'] = Parts::get();
-$data['faultys'] = DB::table('faultylist')->get();
-				 $data['resolutions'] =DB::table('resolutions')->get();
+				$data['parts'] = Parts::get(); 
+				$data['milaeges'] =Mileage::get();
+                $data['parts_list'] = Parts::get();
+                $data['faultys'] = DB::table('faultylist')->get();
+				$data['resolutions'] =DB::table('resolutions')->get();
 				$data['symptoms'] = DB::table('symptoms')->get();
-      $data['jo_id'] =Request::segment(2);
-	 
-	  
-	   $data['job'] = DB::table('jobs')
-              
-              ->leftjoin('customers','customers.cu_id','=','jobs.customer_id')
-              ->leftjoin('faultylist','faultylist.faulty_id','=','jobs.faulty_code')
-              ->leftjoin('symptoms','symptoms.symptom_id','=','jobs.symptom')
-             ->leftjoin('asp_admin','asp_admin.warehouse_code','=','jobs.asp_location')
-              ->leftjoin('asp_list','asp_list.code','=','jobs.asp_location')
-              //->leftjoin('asp_list','asp_list.warehouse_id','=','asp_admin.asp_warehouse_id')
-              ->leftjoin('users','users.id','=','jobs.technician')
-              ->leftjoin('resolutions','resolutions.resolution_id','=','jobs.resolution')
-              ->leftjoin('job_status','job_status.status_id','=','jobs.status')
-             ->leftjoin('parts_order','parts_order.part_order_id','=','jobs.parts_order')
-              //->leftjoin('muliple_parts','muliple_parts.order_id','=','parts_order.part_order_id')
-              //->leftjoin('parts_list','parts_list.part_id','=','muliple_parts.parts')
-              ->leftjoin('product_repalcement_order','jobs.product_replacement','=','product_repalcement_order.product_replacement_id')
-			  ->leftjoin('products','products.product_no','=','product_repalcement_order.product_id')
-
-              ->leftjoin('grn','grn.order_id','=','product_repalcement_order.product_replacement_id')
-            ->leftjoin('gma','gma.order_id','=','product_repalcement_order.product_replacement_id')
-             ->leftjoin('appointment','appointment.job_id','=','jobs.job_id')
-             ->leftjoin('claim','claim.job_id','=','jobs.job_id')
-
-             ->select( 'jobs.*','products.*','claim.job_id as claimjob_id','jobs.technician as jo_tc','claim.remarks as claim_remarks','claim.isapprove as claim_approv','parts_order.isapprove as part_appr','jobs.remark as job_remark','parts_order.remark as part_remark','product_repalcement_order.delivery_date as prod_deliver','grn.amount as grn_amount','grn.credit_note as grn_credit','grn.issue_image as grn_image','grn.ex_number as grn_ex','gma.amount as gma_amount','gma.credit_note as gma_credit','gma.ex_number as gma_ex','gma.spare_part_no as gma_spare','grn.spare_part_no as grn_spare','grn.application_date as grn_appl','grn.purchase_date as grn_purchase','gma.application_date as gma_appl','gma.issue_image as gma_image','gma.issue_image as gma_image','gma.purchase_date as gma_purchase','grn.seriel_no as grn_seriel','gma.seriel_no as gma_seriel','claim.isapprove as claim_approve','customers.*','faultylist.*','symptoms.*','job_status.*','resolutions.*','asp_list.*','asp_admin.*','users.*','appointment.appointment_time','appointment.appointment_id','appointment.time','claim.claim_amount','claim.mileage','claim.labour','claim.claim_id','product_repalcement_order.*','grn.*','gma.*','asp_admin.*','parts_order.*','claim.*')
-
+                $data['jo_id'] =Request::segment(2);
+	            $data['job'] = DB::table('jobs')
+                    ->leftjoin('customers','customers.cu_id','=','jobs.customer_id')
+                    ->leftjoin('faultylist','faultylist.faulty_id','=','jobs.faulty_code')
+                    ->leftjoin('symptoms','symptoms.symptom_id','=','jobs.symptom')
+                    ->leftjoin('asp_admin','asp_admin.warehouse_code','=','jobs.asp_location')
+                    ->leftjoin('asp_list','asp_list.code','=','jobs.asp_location')
+                    //->leftjoin('asp_list','asp_list.warehouse_id','=','asp_admin.asp_warehouse_id')
+                    ->leftjoin('users','users.id','=','jobs.technician')
+                    ->leftjoin('resolutions','resolutions.resolution_id','=','jobs.resolution')
+                    ->leftjoin('job_status','job_status.status_id','=','jobs.status')
+                    ->leftjoin('parts_order','parts_order.part_order_id','=','jobs.parts_order')
+                    //->leftjoin('muliple_parts','muliple_parts.order_id','=','parts_order.part_order_id')
+                    //->leftjoin('parts_list','parts_list.part_id','=','muliple_parts.parts')
+                    ->leftjoin('product_repalcement_order','jobs.product_replacement','=','product_repalcement_order.product_replacement_id')
+			        ->leftjoin('products','products.product_no','=','product_repalcement_order.product_id')
+                    ->leftjoin('grn','grn.order_id','=','product_repalcement_order.product_replacement_id')
+                    ->leftjoin('gma','gma.order_id','=','product_repalcement_order.product_replacement_id')
+                    ->leftjoin('appointment','appointment.job_id','=','jobs.job_id')
+                    ->leftjoin('claim','claim.job_id','=','jobs.job_id')
+                    ->select( 'jobs.*','products.*','claim.job_id as claimjob_id','jobs.technician as jo_tc','jobs.seriel_number as job_seriel_number','claim.remarks as claim_remarks','claim.isapprove as claim_approv','parts_order.isapprove as part_appr','jobs.remark as job_remark','parts_order.remark as part_remark','parts_order.apprv_remarks as appr_remark','product_repalcement_order.delivery_date as prod_deliver','grn.amount as grn_amount','grn.credit_note as grn_credit','grn.issue_image as grn_image','grn.ex_number as grn_ex','gma.amount as gma_amount','gma.credit_note as gma_credit','gma.ex_number as rma_ex_number','gma.rma_remarks as rma_remarks','gma.spare_part_no as gma_spare','grn.spare_part_no as grn_spare','grn.application_date as grn_appl','grn.purchase_date as grn_purchase','gma.application_date as gma_appl','gma.issue_image as gma_image','gma.issue_image as gma_image','gma.purchase_date as gma_purchase','grn.seriel_no as grn_seriel','gma.seriel_no as gma_seriel','claim.isapprove as claim_approve','customers.*','faultylist.*','symptoms.*','job_status.*','resolutions.*','asp_list.*','asp_admin.*','users.*','appointment.appointment_time','appointment.appointment_id','appointment.time','claim.claim_amount','claim.mileage','claim.labour','claim.claim_id','product_repalcement_order.*','grn.*','gma.*','asp_admin.*','parts_order.*','claim.*')
                     ->where('jobs.job_id','=',$id)
                     ->first();
-				
-					 $varj=$data['job']->asp_location;
-	   $data['techs'] = User::leftjoin('asp_tech','asp_tech.asp_technician','=','users.id')
+                    
+                $data['is_proof_image']   =  $this->isImageExstesion($data['job']->attach_proof);
+                $data['is_symptom_image'] =  $this->isImageExstesion($data['job']->grn_image);
+				$varj=$data['job']->asp_location;
+	            $data['techs'] = User::leftjoin('asp_tech','asp_tech.asp_technician','=','users.id')
                     ->leftjoin('asp_admin','asp_tech.warehouse_code','=','asp_admin.warehouse_code')
                    //->where('asp_admin.asp_admin_id','=',Auth::user()->id)
                     ->where('asp_tech.warehouse_code','=',$varj)
                     ->where('users.user_role_id','=',3)
-                  
-                   ->get();
+                    ->get();
+				$data['mul_parts'] = PartsOrder::leftjoin('jobs','jobs.parts_order','=','parts_order.part_order_id')
+                    ->leftjoin('muliple_parts','muliple_parts.order_id','=','parts_order.part_order_id')
+                    ->leftjoin('parts_list','parts_list.part_id','=','muliple_parts.parts')
+                    ->where('jobs.job_id','=',$id)
+                    ->get();
 				
-					$data['mul_parts'] = PartsOrder::leftjoin('jobs','jobs.parts_order','=','parts_order.part_order_id')
-                ->leftjoin('muliple_parts','muliple_parts.order_id','=','parts_order.part_order_id')
-                ->leftjoin('parts_list','parts_list.part_id','=','muliple_parts.parts')
-                ->where('jobs.job_id','=',$id)
-                ->get();
-				
-					   $data['part'] = DB::table('parts_order')
-                ->leftjoin('parts_list','parts_list.part_id','=','parts_order.parts_item')
-                ->leftjoin('muliple_parts','muliple_parts.order_id','=','parts_order.part_order_id')
-
-                ->leftjoin('jobs','jobs.parts_order','=','parts_order.part_order_id')
-                ->leftjoin('customers','customers.cu_id','=','jobs.customer_id')
-
-                ->leftjoin('faultylist','faultylist.faulty_id','=','jobs.faulty_code')
-                ->leftjoin('symptoms','symptoms.symptom_id','=','jobs.symptom')
-                ->leftjoin('resolutions','resolutions.resolution_id','=','jobs.resolution')
-                ->select( 'parts_list.*','muliple_parts.parts as mul_parts','customers.*','faultylist.*','symptoms.*','resolutions.*','parts_order.*','parts_list.*','jobs.job_id','jobs.job_location','jobs.repaire_order_no')
-
-                ->where('jobs.job_id','=',$id)
-                ->first();
-				
-				  $data['claim'] = Job::leftjoin('claim','claim.job_id','=','jobs.job_id') 
-				  			  ->leftjoin('data_mileage','data_mileage.mil_id','=','claim.mileage')
-
-           
-          ->where('jobs.job_id',$id)->first();
-				
-			
-     $view = 'admin.jobs.pending_part';
-	 
-	 
-     break;
+				$data['part'] = DB::table('parts_order')
+                    ->leftjoin('parts_list','parts_list.part_id','=','parts_order.parts_item')
+                    ->leftjoin('muliple_parts','muliple_parts.order_id','=','parts_order.part_order_id')
+                    ->leftjoin('jobs','jobs.parts_order','=','parts_order.part_order_id')
+                    ->leftjoin('customers','customers.cu_id','=','jobs.customer_id')
+                    ->leftjoin('faultylist','faultylist.faulty_id','=','jobs.faulty_code')
+                    ->leftjoin('symptoms','symptoms.symptom_id','=','jobs.symptom')
+                    ->leftjoin('resolutions','resolutions.resolution_id','=','jobs.resolution')
+                    ->select( 'parts_list.*','muliple_parts.parts as mul_parts','customers.*','faultylist.*','symptoms.*','resolutions.*','parts_order.*','parts_list.*','jobs.job_id','jobs.job_location','jobs.repaire_order_no')
+                    ->where('jobs.job_id','=',$id)
+                    ->first();
+				$data['claim'] = Job::leftjoin('claim','claim.job_id','=','jobs.job_id') 
+				  	->leftjoin('data_mileage','data_mileage.mil_id','=','claim.mileage')
+                    ->where('jobs.job_id',$id)->first();		
+                $view = 'admin.jobs.pending_part';
+        break;
 	 
 	 
 	 case 'pending_asp':
 	 
-	     $data['products'] = DB::table('products')->get();
+	            $data['products'] = DB::table('products')->get();
                 $data['warehouse'] = WareHouse::get();
-				  $data['parts'] = Parts::get(); 
-				 $data['milaeges'] =Mileage::get();
- $data['parts_list'] = Parts::get();
- 
+				$data['parts'] = Parts::get(); 
+				$data['milaeges'] =Mileage::get();
+                $data['parts_list'] = Parts::get();
                 $data['faultys'] = DB::table('faultylist')->get();
-				 $data['resolutions'] =DB::table('resolutions')->get();
+				$data['resolutions'] =DB::table('resolutions')->get();
 				$data['symptoms'] = DB::table('symptoms')->get();
-
-      $data['jo_id'] =Request::segment(2);
-	   $data['job']= DB::table('jobs')
-                     ->leftjoin('asp_admin','asp_admin.warehouse_code','=','jobs.asp_location')
-                     ->leftjoin('asp_list','asp_list.warehouse_id','=','asp_admin.asp_warehouse_id')
-                     ->leftjoin('users','users.id','=','jobs.technician')
-                        ->leftjoin('faultylist','faultylist.faulty_id','=','jobs.faulty_code')
-                          ->leftjoin('symptoms','symptoms.symptom_id','=','jobs.symptom')
-                        ->leftjoin('resolutions','resolutions.resolution_id','=','jobs.resolution')
-                        ->leftjoin('parts_order','parts_order.part_order_id','=','jobs.parts_order')
-            
-              ->leftjoin('product_repalcement_order','jobs.product_replacement','=','product_repalcement_order.product_replacement_id')
-			  			  ->leftjoin('products','products.product_no','=','product_repalcement_order.product_id')
-
-              ->leftjoin('grn','grn.order_id','=','product_repalcement_order.product_replacement_id')
-            ->leftjoin('gma','gma.order_id','=','product_repalcement_order.product_replacement_id')
-                          ->leftjoin('customers','customers.cu_id','=','jobs.customer_id')
-                          ->leftjoin('job_status','job_status.status_id','=','jobs.status')
-                   
-             ->leftjoin('appointment','appointment.job_id','=','jobs.job_id')
-             ->leftjoin('claim','claim.job_id','=','jobs.job_id')
-                          ->select('jobs.*','appointment.job_id as appjob_id','jobs.technician as jo_tc','parts_order.delivery_date as part_del','product_repalcement_order.delivery_date as prod_del','claim.remarks as claim_remarks','claim.isapprove as claim_approv','jobs.remark as job_remark','appointment.time','parts_order.remark as part_remark','products.*','grn.amount as grn_amount','grn.credit_note as grn_credit','grn.issue_image as grn_image','grn.ex_number as grn_ex','gma.amount as gma_amount','gma.credit_note as gma_credit','gma.ex_number as gma_ex','gma.issue_image as gma_image','gma.spare_part_no as gma_spare','grn.spare_part_no as grn_spare','grn.application_date as grn_appl','grn.purchase_date as grn_purchase','gma.application_date as gma_appl','gma.purchase_date as gma_purchase','grn.seriel_no as grn_seriel','gma.seriel_no as gma_seriel', 'jobs.*','claim.job_id as claimjob_id','claim.isapprove as claim_approve','customers.*','faultylist.*','symptoms.*','job_status.*','resolutions.*','parts_order.*','asp_list.*','asp_admin.*','users.*','appointment.appointment_time','appointment.appointment_id','claim.claim_amount','claim.mileage','claim.labour','claim.claim_id','grn.*','gma.*','product_repalcement_order.*')
-
-                           ->where('asp_admin.asp_admin_id','=',Auth::user()->id)
-						    ->where('jobs.job_id','=',$id)
-						   ->first();
-						
-					 $varj=$data['job']->asp_location;
-	   $data['techs'] = User::leftjoin('asp_tech','asp_tech.asp_technician','=','users.id')
+                $data['jo_id'] =Request::segment(2);
+	            $data['job']= DB::table('jobs')
+                    ->leftjoin('asp_admin','asp_admin.warehouse_code','=','jobs.asp_location')
+                    ->leftjoin('asp_list','asp_list.warehouse_id','=','asp_admin.asp_warehouse_id')
+                    ->leftjoin('users','users.id','=','jobs.technician')
+                    ->leftjoin('faultylist','faultylist.faulty_id','=','jobs.faulty_code')
+                    ->leftjoin('symptoms','symptoms.symptom_id','=','jobs.symptom')
+                    ->leftjoin('resolutions','resolutions.resolution_id','=','jobs.resolution')
+                    ->leftjoin('parts_order','parts_order.part_order_id','=','jobs.parts_order')
+                    ->leftjoin('product_repalcement_order','jobs.product_replacement','=','product_repalcement_order.product_replacement_id')
+			  		->leftjoin('products','products.product_no','=','product_repalcement_order.product_id')
+                    ->leftjoin('grn','grn.order_id','=','product_repalcement_order.product_replacement_id')
+                    ->leftjoin('gma','gma.order_id','=','product_repalcement_order.product_replacement_id')
+                    ->leftjoin('customers','customers.cu_id','=','jobs.customer_id')
+                    ->leftjoin('job_status','job_status.status_id','=','jobs.status')
+                    ->leftjoin('appointment','appointment.job_id','=','jobs.job_id')
+                    ->leftjoin('claim','claim.job_id','=','jobs.job_id')
+                    ->select('jobs.*','appointment.job_id as appjob_id','jobs.seriel_number as job_seriel_number','jobs.technician as jo_tc','parts_order.delivery_date as part_del','product_repalcement_order.delivery_date as prod_del','claim.remarks as claim_remarks','claim.isapprove as claim_approv','jobs.remark as job_remark','parts_order.apprv_remarks as appr_remark','appointment.time','parts_order.remark as part_remark','products.*','grn.amount as grn_amount','grn.credit_note as grn_credit','grn.issue_image as grn_image','grn.ex_number as grn_ex','gma.amount as gma_amount','gma.credit_note as gma_credit','gma.ex_number as rma_ex_number','gma.rma_remarks as rma_remarks','gma.issue_image as gma_image','gma.spare_part_no as gma_spare','grn.spare_part_no as grn_spare','grn.application_date as grn_appl','grn.purchase_date as grn_purchase','gma.application_date as gma_appl','gma.purchase_date as gma_purchase','grn.seriel_no as grn_seriel','gma.seriel_no as gma_seriel', 'jobs.*','claim.job_id as claimjob_id','claim.isapprove as claim_approve','customers.*','faultylist.*','symptoms.*','job_status.*','resolutions.*','parts_order.*','asp_list.*','asp_admin.*','users.*','appointment.appointment_time','appointment.appointment_id','claim.claim_amount','claim.mileage','claim.labour','claim.claim_id','grn.*','gma.*','product_repalcement_order.*')
+                    ->where('asp_admin.asp_admin_id','=',Auth::user()->id)
+					->where('jobs.job_id','=',$id)
+					->first();
+                $data['is_proof_image']   =  $this->isImageExstesion($data['job']->attach_proof);
+                $data['is_symptom_image'] =  $this->isImageExstesion($data['job']->grn_image);	
+				$varj=$data['job']->asp_location;
+	            $data['techs'] = User::leftjoin('asp_tech','asp_tech.asp_technician','=','users.id')
                     ->leftjoin('asp_admin','asp_tech.warehouse_code','=','asp_admin.warehouse_code')
                    //->where('asp_admin.asp_admin_id','=',Auth::user()->id)
                     ->where('asp_tech.warehouse_code','=',$varj)
                     ->where('users.user_role_id','=',3)
-                  
                    ->get();
-				
-						   		$data['mul_parts'] = PartsOrder::leftjoin('jobs','jobs.parts_order','=','parts_order.part_order_id')
-                ->leftjoin('muliple_parts','muliple_parts.order_id','=','parts_order.part_order_id')
-                ->leftjoin('parts_list','parts_list.part_id','=','muliple_parts.parts')
-                ->where('jobs.job_id','=',$id)
-                ->get();
-					   $data['part'] = DB::table('parts_order')
-                ->leftjoin('parts_list','parts_list.part_id','=','parts_order.parts_item')
-                ->leftjoin('muliple_parts','muliple_parts.order_id','=','parts_order.part_order_id')
-
-                ->leftjoin('jobs','jobs.parts_order','=','parts_order.part_order_id')
-                ->leftjoin('customers','customers.cu_id','=','jobs.customer_id')
-
-                ->leftjoin('faultylist','faultylist.faulty_id','=','jobs.faulty_code')
-                ->leftjoin('symptoms','symptoms.symptom_id','=','jobs.symptom')
-                ->leftjoin('resolutions','resolutions.resolution_id','=','jobs.resolution')
-                ->select( 'parts_list.*','muliple_parts.parts as mul_parts','customers.*','faultylist.*','symptoms.*','resolutions.*','parts_order.*','parts_list.*','jobs.job_id','jobs.job_location','jobs.repaire_order_no')
-
-                ->where('jobs.job_id','=',$id)
-                ->first();
-				  $data['claim'] = Job::leftjoin('claim','claim.job_id','=','jobs.job_id') 
-				  			  ->leftjoin('data_mileage','data_mileage.mil_id','=','claim.mileage')
-
-          ->where('jobs.job_id',$id)->first();
-		  
-	      $view = 'admin.asp_jobs.pending_asp';
-	 break;
+				$data['mul_parts'] = PartsOrder::leftjoin('jobs','jobs.parts_order','=','parts_order.part_order_id')
+                    ->leftjoin('muliple_parts','muliple_parts.order_id','=','parts_order.part_order_id')
+                    ->leftjoin('parts_list','parts_list.part_id','=','muliple_parts.parts')
+                    ->where('jobs.job_id','=',$id)
+                    ->get();
+				$data['part'] = DB::table('parts_order')
+                    ->leftjoin('parts_list','parts_list.part_id','=','parts_order.parts_item')
+                    ->leftjoin('muliple_parts','muliple_parts.order_id','=','parts_order.part_order_id')
+                    ->leftjoin('jobs','jobs.parts_order','=','parts_order.part_order_id')
+                    ->leftjoin('customers','customers.cu_id','=','jobs.customer_id')
+                    ->leftjoin('faultylist','faultylist.faulty_id','=','jobs.faulty_code')
+                    ->leftjoin('symptoms','symptoms.symptom_id','=','jobs.symptom')
+                    ->leftjoin('resolutions','resolutions.resolution_id','=','jobs.resolution')
+                    ->select( 'parts_list.*','muliple_parts.parts as mul_parts','customers.*','faultylist.*','symptoms.*','resolutions.*','parts_order.*','parts_list.*','jobs.job_id','jobs.job_location','jobs.repaire_order_no')
+                    ->where('jobs.job_id','=',$id)
+                    ->first();
+				$data['claim'] = Job::leftjoin('claim','claim.job_id','=','jobs.job_id') 
+				  	->leftjoin('data_mileage','data_mileage.mil_id','=','claim.mileage')
+                    ->where('jobs.job_id',$id)->first();
+	            $view = 'admin.asp_jobs.pending_asp';
+	        break;
 	 
 	 
 	 case 'pending_tech':
-	  $data['products'] = DB::table('products')->get();
-                $data['warehouse'] = WareHouse::get();
-				  $data['parts'] = Parts::get(); 
-				 $data['milaeges'] =Mileage::get();
- $data['parts_list'] = Parts::get();
-$data['faultys'] = DB::table('faultylist')->get();
-				 $data['resolutions'] =DB::table('resolutions')->get();
-				$data['symptoms'] = DB::table('symptoms')->get();
-      $data['jo_id'] =Request::segment(2);
-	   $data['job'] = Job::leftjoin('users','users.id','=','jobs.technician')
-              ->leftjoin('customers','customers.cu_id','=','jobs.customer_id')
-              ->leftjoin('faultylist','faultylist.faulty_id','=','jobs.faulty_code')
-              ->leftjoin('asp_admin','asp_admin.warehouse_code','=','jobs.asp_location')
-                    ->leftjoin('asp_list','asp_list.warehouse_id','=','asp_admin.asp_warehouse_id')
-              ->leftjoin('symptoms','symptoms.symptom_id','=','jobs.symptom')
-              ->leftjoin('resolutions','resolutions.resolution_id','=','jobs.resolution')
-              ->leftjoin('job_status','job_status.status_id','=','jobs.status')
-              ->leftjoin('parts_order','parts_order.part_order_id','=','jobs.parts_order')
-             
-              ->leftjoin('product_repalcement_order','jobs.product_replacement','=','product_repalcement_order.product_replacement_id')
-              ->leftjoin('grn','grn.order_id','=','product_repalcement_order.product_replacement_id')
-            ->leftjoin('gma','gma.order_id','=','product_repalcement_order.product_replacement_id')
-              ->leftjoin('appointment','appointment.job_id','=','jobs.job_id')
-              ->leftjoin('claim','claim.job_id','=','jobs.job_id')
-              ->select('appointment.job_id as appjob_id' ,'jobs.remark as job_remark','jobs.*','claim.remarks as claim_remarks','claim.isapprove as claim_approv','grn.issue_image as grn_image','gma.issue_image as gma_image','claim.job_id as claimjob_id','parts_order.remark as part_remark','grn.amount as grn_amount','grn.credit_note as grn_credit','grn.ex_number as grn_ex','gma.amount as gma_amount','gma.credit_note as gma_credit','gma.ex_number as gma_ex','gma.spare_part_no as gma_spare','grn.spare_part_no as grn_spare','grn.application_date as grn_appl','grn.purchase_date as grn_purchase','gma.application_date as gma_appl','gma.purchase_date as gma_purchase','grn.seriel_no as grn_seriel','gma.seriel_no as gma_seriel','claim.isapprove as claim_approve','customers.*','faultylist.*','symptoms.*','job_status.*','resolutions.*','parts_order.*','users.*','appointment.appointment_time','appointment.appointment_id','claim.claim_amount','claim.mileage','claim.labour','claim.claim_id','asp_list.*','grn.*','gma.*','product_repalcement_order.*')
-             ->where('jobs.technician','=',Auth::user()->id)
-			  ->where('jobs.job_id','=',$id)
-			 ->first();
-			 
-			  
-					 $varj=$data['job']->asp_location;
-	   $data['techs'] = User::leftjoin('asp_tech','asp_tech.asp_technician','=','users.id')
-                    ->leftjoin('asp_admin','asp_tech.warehouse_code','=','asp_admin.warehouse_code')
-                   //->where('asp_admin.asp_admin_id','=',Auth::user()->id)
-                    ->where('asp_tech.warehouse_code','=',$varj)
-                    ->where('users.user_role_id','=',3)
-                  
-                   ->get();
-				
-			 	$data['mul_parts'] = PartsOrder::leftjoin('jobs','jobs.parts_order','=','parts_order.part_order_id')
+            $data['products'] = DB::table('products')->get();
+            $data['warehouse'] = WareHouse::get();
+            $data['parts'] = Parts::get(); 
+            $data['milaeges'] =Mileage::get();
+            $data['parts_list'] = Parts::get();
+            $data['faultys'] = DB::table('faultylist')->get();
+            $data['resolutions'] =DB::table('resolutions')->get();
+            $data['symptoms'] = DB::table('symptoms')->get();
+            $data['jo_id'] =Request::segment(2);
+            $data['job']= DB::table('jobs')
+                ->leftjoin('asp_admin','asp_admin.warehouse_code','=','jobs.asp_location')
+                ->leftjoin('asp_list','asp_list.warehouse_id','=','asp_admin.asp_warehouse_id')
+                ->leftjoin('users','users.id','=','jobs.technician')
+                ->leftjoin('faultylist','faultylist.faulty_id','=','jobs.faulty_code')
+                ->leftjoin('symptoms','symptoms.symptom_id','=','jobs.symptom')
+                ->leftjoin('resolutions','resolutions.resolution_id','=','jobs.resolution')
+                ->leftjoin('parts_order','parts_order.part_order_id','=','jobs.parts_order')
+                ->leftjoin('product_repalcement_order','jobs.product_replacement','=','product_repalcement_order.product_replacement_id')
+                ->leftjoin('products','products.product_no','=','product_repalcement_order.product_id')
+                ->leftjoin('grn','grn.order_id','=','product_repalcement_order.product_replacement_id')
+                ->leftjoin('gma','gma.order_id','=','product_repalcement_order.product_replacement_id')
+                ->leftjoin('customers','customers.cu_id','=','jobs.customer_id')
+                ->leftjoin('job_status','job_status.status_id','=','jobs.status')
+                ->leftjoin('appointment','appointment.job_id','=','jobs.job_id')
+                ->leftjoin('claim','claim.job_id','=','jobs.job_id')
+                ->select('jobs.*','appointment.job_id as appjob_id','jobs.seriel_number as job_seriel_number','jobs.technician as jo_tc','parts_order.delivery_date as part_del','product_repalcement_order.delivery_date as prod_del','claim.remarks as claim_remarks','claim.isapprove as claim_approv','jobs.remark as job_remark','parts_order.apprv_remarks as appr_remark','appointment.time','parts_order.remark as part_remark','products.*','grn.amount as grn_amount','grn.credit_note as grn_credit','grn.issue_image as grn_image','grn.ex_number as grn_ex','gma.amount as gma_amount','gma.credit_note as gma_credit','gma.ex_number as rma_ex_number','gma.rma_remarks as rma_remarks','gma.issue_image as gma_image','gma.spare_part_no as gma_spare','grn.spare_part_no as grn_spare','grn.application_date as grn_appl','grn.purchase_date as grn_purchase','gma.application_date as gma_appl','gma.purchase_date as gma_purchase','grn.seriel_no as grn_seriel','gma.seriel_no as gma_seriel', 'jobs.*','claim.job_id as claimjob_id','claim.isapprove as claim_approve','customers.*','faultylist.*','symptoms.*','job_status.*','resolutions.*','parts_order.*','asp_list.*','asp_admin.*','users.*','appointment.appointment_time','appointment.appointment_id','claim.claim_amount','claim.mileage','claim.labour','claim.claim_id','grn.*','gma.*','product_repalcement_order.*')
+                ->where('jobs.technician','=',Auth::user()->id)
+                ->where('jobs.job_id','=',$id)
+                ->first();
+            $data['is_proof_image']   =  $this->isImageExstesion($data['job']->attach_proof);
+            $data['is_symptom_image'] =  $this->isImageExstesion($data['job']->grn_image);	
+            $varj=$data['job']->asp_location;
+            $data['techs'] = User::leftjoin('asp_tech','asp_tech.asp_technician','=','users.id')
+                ->leftjoin('asp_admin','asp_tech.warehouse_code','=','asp_admin.warehouse_code')
+                //->where('asp_admin.asp_admin_id','=',Auth::user()->id)
+                ->where('asp_tech.warehouse_code','=',$varj)
+                ->where('users.user_role_id','=',3)
+                ->get();
+            $data['mul_parts'] = PartsOrder::leftjoin('jobs','jobs.parts_order','=','parts_order.part_order_id')
                 ->leftjoin('muliple_parts','muliple_parts.order_id','=','parts_order.part_order_id')
                 ->leftjoin('parts_list','parts_list.part_id','=','muliple_parts.parts')
                 ->where('jobs.job_id','=',$id)
                 ->get();
-					   $data['part'] = DB::table('parts_order')
+            $data['part'] = DB::table('parts_order')
                 ->leftjoin('parts_list','parts_list.part_id','=','parts_order.parts_item')
                 ->leftjoin('muliple_parts','muliple_parts.order_id','=','parts_order.part_order_id')
-
                 ->leftjoin('jobs','jobs.parts_order','=','parts_order.part_order_id')
                 ->leftjoin('customers','customers.cu_id','=','jobs.customer_id')
-
                 ->leftjoin('faultylist','faultylist.faulty_id','=','jobs.faulty_code')
                 ->leftjoin('symptoms','symptoms.symptom_id','=','jobs.symptom')
                 ->leftjoin('resolutions','resolutions.resolution_id','=','jobs.resolution')
                 ->select( 'parts_list.*','muliple_parts.parts as mul_parts','customers.*','faultylist.*','symptoms.*','resolutions.*','parts_order.*','parts_list.*','jobs.job_id','jobs.job_location','jobs.repaire_order_no')
-
                 ->where('jobs.job_id','=',$id)
                 ->first();
-				  $data['claim'] = Job::leftjoin('claim','claim.job_id','=','jobs.job_id') 
-				  			  ->leftjoin('data_mileage','data_mileage.mil_id','=','claim.mileage')
-
-           
-          ->where('jobs.job_id',$id)->first();
-		
-	  $view = 'admin.tech_jobs.pending_tech';
-	 break;
+            $data['claim'] = Job::leftjoin('claim','claim.job_id','=','jobs.job_id') 
+                ->leftjoin('data_mileage','data_mileage.mil_id','=','claim.mileage')
+                ->where('jobs.job_id',$id)->first();
+	            $view = 'admin.tech_jobs.pending_tech';
+	        break;
 	    
 		case 'reports':
 		 $data['techs'] = User::leftjoin('jobs','jobs.technician','=','users.id')
@@ -3100,6 +2889,14 @@ $data['faultys'] = DB::table('faultylist')->get();
 
 
         $upload_handler = new UploadFileHandler($option);
+    }
+
+    public function isImageExstesion($path){
+        if($path != null){
+            return (preg_match("/\.(gif|png|jpg)$/", $path));
+        }else {
+            return false;
+        }
     }
 
 

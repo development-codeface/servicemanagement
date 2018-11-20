@@ -108,11 +108,9 @@
 								@else
 									<td></td>@endif
                                
-								  @if($job->appointment_time)
-                                <td>{{date('d-m-Y', strtotime($job->appointment_time))}}</td>
-							@else<td></td>
-							@endif
-                                <td>{{date('d-m-Y', strtotime($job->order_date))}}</td>
+								@if($job->appointment_time)<td>{{date('d-m-Y', strtotime($job->appointment_time))}}</td>@else<td></td>@endif
+
+                                @if($job->order_date)<td>{{date('d-m-Y', strtotime($job->order_date))}}</td>@else<td></td>@endif
                                
                                 <td>{{$job->product}}</td>
                                 <td>{{$job->seriel_number}}</td>

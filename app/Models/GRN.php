@@ -40,7 +40,8 @@ class GRN extends Model implements AuthenticatableContract, CanResetPasswordCont
 		'dealer_acc',
 		'dealer_address',
 		'sell_price',
-		'attach_proof',
+        'attach_proof',
+        'grn_remarks',
     ];
 
 }

@@ -94,14 +94,14 @@
                 <td>SERVICE BRANCH</td>
 				  <td></td>
                 <td>APPLICATION DATE</td>
-                <td>{{date('d-m-Y', strtotime($user->order_date))}}</td>
+                @if($user->order_date)<td>{{date('d-m-Y', strtotime($user->order_date))}}</td>@else <td></td>@endif
 
             </tr>
             <tr>
                 <td>MODEL</td>
 				  <td>{{$user->product_id}}</td>
                 <td>DATE OF PURCHASE</td>
-				  <td>{{date('d-m-Y', strtotime($user->purchase_date))}}</td>
+				@if($user->purchase_date)<td>{{date('d-m-Y', strtotime($user->purchase_date))}}</td>@else <td></td>@endif
 
             </tr>
 

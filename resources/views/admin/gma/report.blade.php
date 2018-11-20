@@ -94,19 +94,19 @@
                                     </tr>
                                     <tr>
                                         <td width="50%"><strong>COMPLAINT DATE</strong></td>
-                                        @if($user->order_date)<td>{{date('d-m-Y', strtotime($user->order_date))}}</td>@endif
+                                        @if($user->order_date)<td>{{date('d-m-Y', strtotime($user->order_date))}}</td>@else <td></td> @endif
 
                                     </tr>
 
 									 <tr>
                                         <td width="50%"><strong>APPLICATION DATE</strong></td>
-                                        <td>{{date('d-m-Y', strtotime($user->order_date))}}</td>
+                                        @if($user->order_date)<td>{{date('d-m-Y', strtotime($user->order_date))}}</td>@else <td></td> @endif
 
                                     </tr>
 									
 									 <tr>
                                         <td  width="50%"><strong>DELIVERY ORDER DATE</strong></td>
-                                        <td>{{date('d-m-Y', strtotime($user->delivery_date))}}</td>
+                                        @if($user->delivery_date) <td>{{date('d-m-Y', strtotime($user->delivery_date))}}</td>@else <td></td> @endif
 
                                     </tr>
 									 <tr>
@@ -357,7 +357,7 @@
                                         <td width="50%" colspan="2"style="    padding-left: 0px;">   
 		<!-- <img src="{{ url('data/products/'.$user->issue_image) }}" style="width: 300px;  height: 200px;" /> -->
 		<img src="{{ url('data/products/'.$user->issue_image) }}" style="    width: 400px;
-    height: 300px;
+    height: 250px;
 " />
 		</td>
                                     </tr>

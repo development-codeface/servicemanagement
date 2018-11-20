@@ -61,7 +61,7 @@
                                 </td>
                                 
                                
-                                <td>{{date('d-m-Y', strtotime($job->order_date))}}</td>
+                                @if($job->order_date)<td>{{date('d-m-Y', strtotime($job->order_date))}}</td>@else <td></td>@endif
                                 <td>{{$job->name}}</td>
                               
                                 @if($job->isapprove == 1)

@@ -220,33 +220,14 @@
                                 <td>{{$job->symptom_description}}</td>
                                 <td>{{$job->resolution_description}}</td>
                                 <td>{{$job->change_code}}</td>
-                               @if($job->claim_create)
-								   <?php $d1 = App\Models\Job::where('job_id',$job->job_id)->first();
-							        $dat1 = $d1->created_at;
-									    $vv = date('d-m-Y', strtotime($dat1));
-										
-									$d2 = App\Models\Claim::where('job_id',$job->job_id)->first();
-									$dat2 = $d2->created_at;
-									  $nn =  date('d-m-Y', strtotime($dat2));
-									 $formatted_dt1=Carbon::parse($vv);
-
-                                 $formatted_dt2=Carbon::parse($nn);
-
-                          $date_diff=$formatted_dt1->diffInDays($formatted_dt2);
-									
-									//echo round($diff / (60 * 60 * 24));
-
-									
-							   ?>@endif
-                                @if($job->claim_approve)<td>{{$date_diff}} days<td>
+                               @if($job->turn_fround_time)
+								   <td>{{$job->turn_fround_time}} days<td>
 								@else
-									<td></td>@endif
+									<td></td>
+                                @endif
                                
-								  @if($job->appointment_time)
-                                <td>{{date('d-m-Y', strtotime($job->appointment_time))}}</td>
-							@else<td></td>
-							@endif
-                                <td>{{date('d-m-Y', strtotime($job->order_date))}}</td>
+								  @if($job->appointment_time)<td>{{date('d-m-Y', strtotime($job->appointment_time))}}</td>@else<td></td>@endif
+                                  @if($job->order_date)<td>{{date('d-m-Y', strtotime($job->order_date))}}</td>@else <td></td>@endif
                                
                                 <td>{{$job->product}}</td>
                                 <td>{{$job->seriel_number}}</td>
@@ -3338,23 +3319,16 @@ $('#mileage').change(function() {
     }
 
 })  
-            $('.changestatus').on('change', function() {
-            
-                var status =this.value;
-              
-         //var job_id = $(this).attr("data-id");
-        // if(status == 15){
-            
+    $('.changestatus').on('change', function() {
+        var status =this.value;
+        //var job_id = $(this).attr("data-id");
+        // if(status == 15){   
         //     $('#apptModal').modal('show');
         // }
-        
         var job_id = $(this).attr("data-id");
-       
-     var sympt = $(this).attr("data-sym");
-     var fal_id = $(this).attr("data-fal");
-
-     var res_id = $(this).attr("data-res");
-
+        var sympt = $(this).attr("data-sym");
+        var fal_id = $(this).attr("data-fal");
+        var res_id = $(this).attr("data-res");
      var symptom = $(this).attr("data-symptom");
      var faulty = $(this).attr("data-faulty");
      var resol = $(this).attr("data-resol");
@@ -3976,33 +3950,9 @@ $("#CustomerNotInForm").validate({
                     });
                     return false;
                 }
-
             });
-
-        //    var type = 'ChangeStatus';
-
-        //                         $.ajax({
-
-        //                             type:'post',
-
-        //                             url:"{{ URL::route('postData') }}",
-
-        //                             data:{status:status,job_id:job_id,_token: '{{ csrf_token() }}',type:type},
-
-        //                             success:function(data){
-
-        //                                 if(data.status==1){
-
-        //                                     // $("#modal-body lodgif").html("Your form has been successfully submited, you are now being redirected ...");
-        //                                     //     $('#myModal').modal('show');
-        //                                         //location.reload();
-        //                                 }
-
-        //                             }
-
-        //                         });
-})
+        })
  
-        });
+    });
     </script>
 @endsection

@@ -215,13 +215,13 @@
                             
 
                             @if(isset($job->username))
-                                <option value="{{$job->id}}"> {{$job->username}}</option>
+                                <option value="{{$job->id}}"> {{$job->email}}</option>
                               
                             @endif
 							 <option value="0">Select Technician</option> 
                                 @foreach($techs as $tech) 
                            								
-                                   <option  value="{{$tech->id}}">{{$tech->username}}</option>
+                                   <option  value="{{$tech->id}}">{{$tech->email}}</option>
                                    @endforeach
                             </select>
                                 </td>
@@ -233,43 +233,27 @@
                                 <td>{{str_limit($job->cu_address,25)}}</td>
                                 
                                 <td>{{$job->phone_no}}</td>
-                                <td>{{$job->remark}}</td>
+                                <td>{{$job->job_remark}}</td>
                                 <td>{{$job->symptom_description}}</td>
                                 <td>{{$job->resolution_description}}</td>
                                 <td>{{$job->change_code}}</td>
-                               @if($job->claim_create)
-								   <?php $d1 = App\Models\Job::where('job_id',$job->job_id)->first();
-							        $dat1 = $d1->created_at;
-									    $vv = date('d-m-Y', strtotime($dat1));
-										
-									$d2 = App\Models\Claim::where('job_id',$job->job_id)->first();
-									$dat2 = $d2->created_at;
-									  $nn =  date('d-m-Y', strtotime($dat2));
-									 $formatted_dt1=Carbon::parse($vv);
-
-                                 $formatted_dt2=Carbon::parse($nn);
-
-                          $date_diff=$formatted_dt1->diffInDays($formatted_dt2);
-									
-									//echo round($diff / (60 * 60 * 24));
-
-									
-							   ?>@endif
-                                @if($job->claim_approve)<td>{{$date_diff}} days<td>
-								@else
-									<td></td>@endif
+                                @if($job->turn_fround_time)
+                                    <td>{{$job->turn_fround_time}} days</td>
+                                @else
+									<td></td>
+                                @endif
                                
-								  @if($job->appointment_time)
-                                <td>{{date('d-m-Y', strtotime($job->appointment_time))}}</td>
-							@else<td></td>
-							@endif
-                                <td>{{date('d-m-Y', strtotime($job->order_date))}}</td>
-                               
+								@if($job->appointment_time)
+                                    <td>{{date('d-m-Y', strtotime($job->appointment_time))}}</td>
+							    @else
+                                    <td></td>
+							    @endif
+                                
+                                @if($job->order_date)<td>{{date('d-m-Y', strtotime($job->order_date))}}</td>@else<td></td>@endif
                                 <td>{{$job->product}}</td>
                                 <td>{{$job->seriel_number}}</td>
                                 <td>{{$job->servicetype}}</td>
-                                @if($job->purchase_date)<td>{{date('d-m-Y', strtotime($job->purchase_date))}}</td>
-								@else<td></td>@endif
+                                @if($job->purchase_date)<td>{{date('d-m-Y', strtotime($job->purchase_date))}}</td>@else<td></td>@endif
                              <?php $var = App\Models\PartsOrder::leftjoin('jobs','jobs.parts_order','=','parts_order.part_order_id')
                 ->leftjoin('muliple_parts','muliple_parts.order_id','=','parts_order.part_order_id')
                 ->leftjoin('parts_list','parts_list.part_id','=','muliple_parts.parts')
@@ -3094,919 +3078,821 @@
         $("table").tableExport({formats: ["xlsx","xls", "csv", "txt"],    });
     </script> -->
     <script>
-  jQuery('#datepicker').datetimepicker({
-    format: 'd-m-Y',
-    minDate:new Date()
-   });
-   jQuery('#datepicker_appt').datetimepicker({
-    format: 'd-m-Y',
-    minDate:new Date()
-   });
-   jQuery('#datepicker1').datetimepicker({
-                format: 'd-m-Y',
-                minDate:new Date()
- 
-});
-$('#value_Date_Listed_1').wickedpicker({
-    showInputs: false,
-});
-$('#value_Date_Listed_2').wickedpicker({
-    showInputs: false,
-});
-jQuery('#appl_date1').datetimepicker({
-                format: 'd-m-Y',
-                minDate:new Date()
- 
-});
-jQuery('#appl_date2').datetimepicker({
-                format: 'd-m-Y',
-                minDate:new Date()
- 
-});
-jQuery('#compl_date1').datetimepicker({
-                format: 'd-m-Y',
-                minDate:new Date()
- 
-});
-jQuery('#date_rece2').datetimepicker({
-                format: 'd-m-Y',
-                minDate:new Date()
- 
-});
+    jQuery('#datepicker').datetimepicker({
+        format: 'd-m-Y',
+        minDate: new Date()
+    });
+    jQuery('#datepicker_appt').datetimepicker({
+        format: 'd-m-Y',
+        minDate: new Date()
+    });
+    jQuery('#datepicker1').datetimepicker({
+        format: 'd-m-Y',
+        minDate: new Date()
 
-jQuery('#purchase_date').datetimepicker({
-                format: 'd-m-Y',
-                minDate:new Date()
-});
-   jQuery('#goods_date').datetimepicker({
-                format: 'd-m-Y',
-                minDate:new Date()
-});
-   jQuery('#purchase_date1').datetimepicker({
-                format: 'd-m-Y',
-                minDate:new Date()
-});
-        $(document).ready(function(){
+    });
+    $('#value_Date_Listed_1').wickedpicker({
+        showInputs: false,
+    });
+    $('#value_Date_Listed_2').wickedpicker({
+        showInputs: false,
+    });
+    jQuery('#appl_date1').datetimepicker({
+        format: 'd-m-Y',
+        minDate: new Date()
 
-    
-            $(".close").click(function(){
-    location.reload(true);
-});
-$(".cl_no").click(function(){
-    location.reload(true);
+    });
+    jQuery('#appl_date2').datetimepicker({
+        format: 'd-m-Y',
+        minDate: new Date()
 
-});
-var max_fields      = 3; //maximum input boxes allowed
-            var Rows         = $("#Rows"); //Fields wrapper
-            var answer_next      = $(".answer_next"); //Add button ID
+    });
+    jQuery('#compl_date1').datetimepicker({
+        format: 'd-m-Y',
+        minDate: new Date()
 
-            $(answer_next).click(function(e){ e.preventDefault()
-                $( "#removediv" ).removeClass("hidden");
-$(Rows).append('<div class="container">'+'<div class="row">'+' <div class="col-lg-6">'+
-                        '<fieldset class="form-group">'+
-                        ' <label>Parts</label>'+
-                        ' <select class="form-control" name="parts[]">'+
-                        '<option value="">Select Parts</option> '+
-                        @foreach($parts_list as $part)
-                        ' <option value="{{$part->part_id}}">{{$part->part_no}}</option>'
-                +                @endforeach
-                        ' </select>'+
-                        ' </fieldset>'+
-                        ' </div>'+
-                        '<div class="col-lg-6">'+
-                        '<fieldset class="form-group">'+
-                        ' <label> Parts Quantity</label>'+
-                        ' <input class="form-control" name="qnty[]" value="1"   id="placeholderInput"  type="text" readonly>'+
-                        ' </fieldset>'+
-                        '</div>'+
-						'</div>'+
-                        '</div>'
-                        
-                    
-                );
+    });
+    jQuery('#date_rece2').datetimepicker({
+        format: 'd-m-Y',
+        minDate: new Date()
 
-
-   });
-
-
-            $('.assigntech').on('change', function() {
-           var user_id=this.value;
-           $('#user_id').val(user_id);
-         var job_id = $(this).attr("data-id");
-         $('#job_id').val(job_id);
-         $('#AssignModal').modal('show');
-        //    var type = 'JobAssignTech';
-
-        //                         $.ajax({
-
-        //                             type:'post',
-
-        //                             url:"{{ URL::route('postData') }}",
-
-        //                             data:{user_id:user_id,job_id:job_id,_token: '{{ csrf_token() }}',type:type},
-
-        //                             success:function(data){
-
-        //                                 if(data.status==1){
-
-        //                                       $('.modal-body11').html('Succesfully assigned');
-        //                         $('#modalFooter').addClass('hidden');
-        //                         // setTimeout(function(){
-        //                         //     location.reload();
-        //                         // },1000);
-                                             
-        //                                 }
-
-        //                             }
-
-        //                         });
-})
-
-$('#removediv').on('click', function() {
-    $(".remdiv").addClass('hidden');
-    $(".removediv").addClass('hidden');
-
-});
-      $("#deleteModalForm").validate({
-                errorPlacement: function(error, element) {
-                    console.log(element.attr('name'));
-                    $( error ).insertAfter( element);
-                },
-
-                submitHandler: function(form) {
-
-                    // do other things for a valid form
-                    var formData = $("#deleteModalForm").serialize();
-
-                    $.ajax({
-                        type: 'post',
-                        url: "{{ URL::route('postData') }}",
-                        data:formData,
-                        success: function(data){
-                            if(data.status == 1){
-
-                                $('.modal-body').html('Successfully Assigned');
-                                $('#modalFooter').addClass('hidden');
-                                setTimeout(function(){
-                                    location.reload();
-                                },1000);
-
-                            }
-                        }
-                    });
-                    return false;
-                }
-
-            });
-$("#deleteModalForm").validate({
-                errorPlacement: function(error, element) {
-                    console.log(element.attr('name'));
-                    $( error ).insertAfter( element);
-                },
-
-                submitHandler: function(form) {
-
-                    // do other things for a valid form
-                    var formData = $("#deleteModalForm").serialize();
-
-                    $.ajax({
-                        type: 'post',
-                        url: "{{ URL::route('postData') }}",
-                        data:formData,
-                        success: function(data){
-                            if(data.status == 1){
-
-                                $('.modal-body').html('Successfully Assigned');
-                                $('#modalFooter').addClass('hidden');
-                                setTimeout(function(){
-                                    location.reload();
-                                },1000);
-
-                            }
-                        }
-                    });
-                    return false;
-                }
-
-            });
-
-            $("#ajaxForm").validate({
-    rules: {
-        email: {
-            required: true,
-        },password: {
-            required: true,
-        },qnty: {
-            required: true,
-        }
-    },
-    messages: {
-        name: {
-            required: "Please enter  name ",
-        }
-    },
-    errorPlacement: function(error, element) {
-        console.log(element.attr('name'));
-        $( error ).insertAfter( element);
-    },
-    submitHandler: function(form) {
-
-        // do other things for a valid form
-        var formData = $("#ajaxForm").serialize();
-       
-        $("#modal-body lodgif").html("Your formhas been successfully submitting...");
-        $('#myModal').modal('show');
-        $.ajax({
-            type: 'post',
-            url: "{{ URL::route('postData') }}",
-            data:formData,
-            success: function(data){
-                setInterval(function(){
-                    $("#modal-body lodgif").html("Your form has been successfully submited, you are now being redirected ...");
-                    $('#myModal').modal('show');
-                  window.location.href="{{URL::route('AspJobs')}}";
-                }, 1500);
-
-            }
-        });
-        return false;
-    }
-});
-
-$(' #qnty').on('keyup', function () {
-  if ($('#parts').val() == '') {
-    $('#message').html('Matching').css('color', 'green');
-  } else 
-    $('#message').html('Not Matching').css('color', 'red');
-});
-$("#partsform").validate({
-    rules: {
-      qnty: {
-           
-      require_from_group: [1, ".phone-group"]
-  
-        }
-    },
-    messages: {
-        name: {
-            required: "Please enter  name ",
-        }
-    },
-    errorPlacement: function(error, element) {
-        console.log(element.attr('name'));
-        $( error ).insertAfter( element);
-    },
-    submitHandler: function(form) {
-
-        // do other things for a valid form
-        var formData = $("#partsform").serialize();
-      
-        $("#modal-body lodgif").html("Your formhas been successfully submitting...");
-        $('#myModal').modal('show');
-        $.ajax({
-            type: 'post',
-            url: "{{ URL::route('postData') }}",
-            data:formData,
-            success: function(data){
-                setInterval(function(){
-                    $("#modal-body lodgif").html("Your form has been successfully submited, you are now being redirected ...");
-                    $('#myModal').modal('show');
-                   window.location.href="{{URL::route('AspJobs')}}";
-                }, 1500);
-
-            }
-        });
-        return false;
-    }
-});
-$('#mileage').change(function() {
-        var status =this.value;
-        var token = "{{ csrf_token() }}";
-     var type = 'claim_amount';
-         $.ajax({
-             type: 'post',
-             url: '{{ URL::route("postData") }}',
-             data: { type:type,status:status,_token:token},
-             success: function(data){
-                if(data.status==1){
-                     
-                     $("#claim_amount").val(data.amount);
-                    
-                 }
-                 else if(data.status==3){
-                     alert('Data Not Found');
-                 }
-
-             }
-         });
     });
 
-$("#claimform").validate({
-    rules: {
-        email: {
-            required: true,
-        },password: {
-            required: true,
-        },files: {
-            required: true,
-        }
-    },
-    messages: {
-        name: {
-            required: "Please enter  name ",
-        }
-    },
-    errorPlacement: function(error, element) {
-        console.log(element.attr('name'));
-        $( error ).insertAfter( element);
-    },
-    submitHandler: function(form) {
+    jQuery('#purchase_date').datetimepicker({
+        format: 'd-m-Y',
+        minDate: new Date()
+    });
+    jQuery('#goods_date').datetimepicker({
+        format: 'd-m-Y',
+        minDate: new Date()
+    });
+    jQuery('#purchase_date1').datetimepicker({
+        format: 'd-m-Y',
+        minDate: new Date()
+    });
+    $(document).ready(function() {
+        $(".close").click(function() {
+            location.reload(true);
+        });
+        $(".cl_no").click(function() {
+            location.reload(true);
 
-        // do other things for a valid form
-        var formData = $("#claimform").serialize();
-        $("#modal-body lodgif").html("Your formhas been successfully submitting...");
-        $('#myModal').modal('show');
-        $.ajax({
-            type: 'post',
-            url: "{{ URL::route('postData') }}",
-            data:formData,
-            success: function(data){
-                setInterval(function(){
-                    $("#modal-body lodgif").html("Your form has been successfully submited, you are now being redirected ...");
-                    $('#myModal').modal('show');
-                  window.location.href="{{URL::route('AspJobs')}}";
-                }, 1500);
+        });
+        var max_fields = 3; //maximum input boxes allowed
+        var Rows = $("#Rows"); //Fields wrapper
+        var answer_next = $(".answer_next"); //Add button ID
 
+        $(answer_next).click(function(e) {
+            e.preventDefault()
+            $("#removediv").removeClass("hidden");
+            $(Rows).append('<div class="container">' + '<div class="row">' + ' <div class="col-lg-6">' +
+                '<fieldset class="form-group">' +
+                ' <label>Parts</label>' +
+                ' <select class="form-control" name="parts[]">' +
+                '<option value="">Select Parts</option> ' +
+                @foreach($parts_list as $part)
+                ' <option value="{{$part->part_id}}">{{$part->part_no}}</option>' +
+                @endforeach ' </select>' +
+                ' </fieldset>' +
+                ' </div>' +
+                '<div class="col-lg-6">' +
+                '<fieldset class="form-group">' +
+                ' <label> Parts Quantity</label>' +
+                ' <input class="form-control" name="qnty[]" value="1"   id="placeholderInput"  type="text" readonly>' +
+                ' </fieldset>' +
+                '</div>' +
+                '</div>' +
+                '</div>'
+
+
+            );
+
+
+        });
+
+
+        $('.assigntech').on('change', function() {
+            var user_id = this.value;
+            $('#user_id').val(user_id);
+            var job_id = $(this).attr("data-id");
+            $('#job_id').val(job_id);
+            $('#AssignModal').modal('show');
+        })
+
+        $('#removediv').on('click', function() {
+            $(".remdiv").addClass('hidden');
+            $(".removediv").addClass('hidden');
+
+        });
+        $("#deleteModalForm").validate({
+            errorPlacement: function(error, element) {
+                console.log(element.attr('name'));
+                $(error).insertAfter(element);
+            },
+
+            submitHandler: function(form) {
+
+                // do other things for a valid form
+                var formData = $("#deleteModalForm").serialize();
+
+                $.ajax({
+                    type: 'post',
+                    url: "{{ URL::route('postData') }}",
+                    data: formData,
+                    success: function(data) {
+                        if (data.status == 1) {
+
+                            $('.modal-body').html('Successfully Assigned');
+                            $('#modalFooter').addClass('hidden');
+                            setTimeout(function() {
+                                location.reload();
+                            }, 1000);
+
+                        }
+                    }
+                });
+                return false;
+            }
+
+        });
+        $("#deleteModalForm").validate({
+            errorPlacement: function(error, element) {
+                console.log(element.attr('name'));
+                $(error).insertAfter(element);
+            },
+
+            submitHandler: function(form) {
+
+                // do other things for a valid form
+                var formData = $("#deleteModalForm").serialize();
+
+                $.ajax({
+                    type: 'post',
+                    url: "{{ URL::route('postData') }}",
+                    data: formData,
+                    success: function(data) {
+                        if (data.status == 1) {
+
+                            $('.modal-body').html('Successfully Assigned');
+                            $('#modalFooter').addClass('hidden');
+                            setTimeout(function() {
+                                location.reload();
+                            }, 1000);
+
+                        }
+                    }
+                });
+                return false;
+            }
+
+        });
+
+        $("#ajaxForm").validate({
+            rules: {
+                email: {
+                    required: true,
+                },
+                password: {
+                    required: true,
+                },
+                qnty: {
+                    required: true,
+                }
+            },
+            messages: {
+                name: {
+                    required: "Please enter  name ",
+                }
+            },
+            errorPlacement: function(error, element) {
+                console.log(element.attr('name'));
+                $(error).insertAfter(element);
+            },
+            submitHandler: function(form) {
+
+                // do other things for a valid form
+                var formData = $("#ajaxForm").serialize();
+
+                $("#modal-body lodgif").html("Your formhas been successfully submitting...");
+                $('#myModal').modal('show');
+                $.ajax({
+                    type: 'post',
+                    url: "{{ URL::route('postData') }}",
+                    data: formData,
+                    success: function(data) {
+                        setInterval(function() {
+                            $("#modal-body lodgif").html("Your form has been successfully submited, you are now being redirected ...");
+                            $('#myModal').modal('show');
+                            window.location.href = "{{URL::route('AspJobs')}}";
+                        }, 1500);
+
+                    }
+                });
+                return false;
             }
         });
-        return false;
-    }
-});
 
-$("#apptform").validate({
-    rules: {
-        email: {
-            required: true,
-        },password: {
-            required: true,
-        },files: {
-            required: true,
-        }
-    },
-    messages: {
-        name: {
-            required: "Please enter  name ",
-        }
-    },
-    errorPlacement: function(error, element) {
-        console.log(element.attr('name'));
-        $( error ).insertAfter( element);
-    },
-    submitHandler: function(form) {
+        $(' #qnty').on('keyup', function() {
+            if ($('#parts').val() == '') {
+                $('#message').html('Matching').css('color', 'green');
+            } else
+                $('#message').html('Not Matching').css('color', 'red');
+        });
+        $("#partsform").validate({
+            rules: {
+                qnty: {
 
-        // do other things for a valid form
-        var formData = $("#apptform").serialize();
-        $("#modal-body lodgif").html("Your formhas been successfully submitting...");
-        $('#myModal').modal('show');
-        $.ajax({
-            type: 'post',
-            url: "{{ URL::route('postData') }}",
-            data:formData,
-            success: function(data){
-                setInterval(function(){
-                    $("#modal-body lodgif").html("Your form has been successfully submited, you are now being redirected ...");
-                    $('#myModal').modal('show');
-                  window.location.href="{{URL::route('AspJobs')}}";
-                }, 1500);
+                    require_from_group: [1, ".phone-group"]
 
+                }
+            },
+            messages: {
+                name: {
+                    required: "Please enter  name ",
+                }
+            },
+            errorPlacement: function(error, element) {
+                console.log(element.attr('name'));
+                $(error).insertAfter(element);
+            },
+            submitHandler: function(form) {
+
+                // do other things for a valid form
+                var formData = $("#partsform").serialize();
+
+                $("#modal-body lodgif").html("Your formhas been successfully submitting...");
+                $('#myModal').modal('show');
+                $.ajax({
+                    type: 'post',
+                    url: "{{ URL::route('postData') }}",
+                    data: formData,
+                    success: function(data) {
+                        setInterval(function() {
+                            $("#modal-body lodgif").html("Your form has been successfully submited, you are now being redirected ...");
+                            $('#myModal').modal('show');
+                            window.location.href = "{{URL::route('AspJobs')}}";
+                        }, 1500);
+
+                    }
+                });
+                return false;
             }
         });
-        return false;
-    }
-});
-
-
-
-   
-
-
-//  $('#mileage').on('change', function() {
-//     var mil =this.value;
-//     if(mil == 1){
-//         $( "#amount" ).val( "200" );
-//     }
-//     if(mil == 2){
-//         $( "#amount" ).val( "400" );
-//     }
-//     if(mil == 3){
-//         $( "#amount" ).val( "600" );
-//     }
-    
-// })
-$('input:radio').change(function() {      
-        var crd = $("input[name='approve']:checked").val(); 
-    
-    if(crd==1)
-    {
-        $(".amont").show();
-        $(".credit_not").show();
-        $(".ex_number").hide();
-    }else{
-        $(".ex_number").show();
-        $(".amont").hide();
-        $(".credit_not").show();
-    }
-
-})  
-  $('.changestatus').on('change', function() {
-            
-            var status =this.value;
-           $('#status').val(status);
-           
-     var job_id = $(this).attr("data-id");
-    
-    
-     var sympt = $(this).attr("data-sym");
-     var fal_id = $(this).attr("data-fal");
-     var res_id = $(this).attr("data-res");
-     var symptom = $(this).attr("data-symptom");
-     var faulty = $(this).attr("data-faulty");
-     var resol = $(this).attr("data-resol");
-     var repair = $(this).attr("data-repair");
-     var fname = $(this).attr("data-fname");
-     var lname = $(this).attr("data-lname");
-     var addrs = $(this).attr("data-addrs");
-     var phn = $(this).attr("data-phn");
-     var tech = $(this).attr("data-tech");
-     var bus = $(this).attr("data-bus");
-
-     var part_no =$(this).attr("data-partno");
-     var part_desc =$(this).attr("data-partdesc");
-     var part_qty =$(this).attr("data-partqty");
-     var part_id =$(this).attr("data-partid");
-     var part_rem =$(this).attr("data-partrem");
-
-     var grn_spare =$(this).attr("data-grnspare");
-     
-     var tech_prob =$(this).attr("data-techprob");
- //GRN  
-     var dented =$(this).attr("data-dented");
-     var photogr =$(this).attr("data-photogr");
-     var returnacc =$(this).attr("data-returnacc");
-     var pur_date =$(this).attr("data-purdate");
-     var appl_date =$(this).attr("data-appldate");
-     var comp_date =$(this).attr("data-compdate");
-     var goods_date =$(this).attr("data-gooddate");
-     var model =$(this).attr("data-mod");
-     var grn_res =$(this).attr("data-grnres");
-     var grn_seriel =$(this).attr("data-grnseriel");
-//RMA
-    var rma_spare =$(this).attr("data-rmaspare");
-    var rma_seriel =$(this).attr("data-rmaseriel");
-    var warcard =$(this).attr("data-warcard");
-    var panser =$(this).attr("data-panser");
-    var panmod =$(this).attr("data-panmod");
-    var accnt =$(this).attr("data-accnt");
-    var compl =$(this).attr("data-compl");
-    var rmares =$(this).attr("data-rmares");
-    var rmaappl =$(this).attr("data-rmaappl");
-    var rma_pur =$(this).attr("data-rmapurchase");
-    var date_rec =$(this).attr("data-daterec");
-    var other =$(this).attr("data-othe");
-	  var grnid =$(this).attr("data-grnid");
-
-			    var rmaid =$(this).attr("data-rmaid");
-				
-			    var prdrepid =$(this).attr("data-prdrepid");
-//Claim
-
- var mileage =$(this).attr("data-mileage");
-    var cl_amount =$(this).attr("data-clamount");
-    var labour =$(this).attr("data-labour");
-
-    //JOB
-var job_loc =$(this).attr("data-jobloc");
-
-var remar_job =$(this).attr("data-jobremark");
-    var fround =$(this).attr("data-fround");
-    var descr =$(this).attr("data-jobdesc");
-   
-    var asp_loc =$(this).attr("data-asploc");
-     if(status == 71){
-            $('#apptModal').modal('show');
-            $('#job22id').val(job_id);
-    $('#resol').val(resol);
-    $('#faulty').val(faulty);
-    $('#symptom').val(symptom);
-    $('#firstname').val(fname);
-    $('#lastname').val(lname);
-   
-    $('#address').val(addrs);
-    $('#phone22').val(phn);
-    $('#business').val(bus);
-
-         }
-    if(status == 76){
-       
-                window.location = "{{ URL::route("PendingAsp") }}/"+job_id; 
-
-    }
-    if(status == 63){
-window.location = "{{ URL::route("PendingAsp") }}/"+job_id;
-       
-    }
-
-          if(status == 64){
-           window.location = "{{ URL::route("PendingAsp") }}/"+job_id;
-        }
-        if(status == 67){
-            window.location = "{{ URL::route("PendingAsp") }}/"+job_id;
-        }
-        if(status == 80){
-            $('#jobidcus').val(job_id);
-            $('#CustomerNotModal').modal('show');
-
-        }
-        if(status == 75){
-            $('#jo_id_spoil').val(job_id);
-            $('#AspSpoil').modal('show');
-
-        }
-        if(status == 83){
-            $('#jo_id_est').val(job_id);
-            $('#Estimate').modal('show');
-
-        }
-        if(status == 84){
-            $('#jo_id_email').val(job_id);
-            $('#EmailUpdate').modal('show');
-
-        }
-        if(status == 87){
-            $('#jo_id_cn').val(job_id);
-            $('#RequestCn').modal('show');
-
-        }
-        if(status == 88){
-            $('#jo_id_ex').val(job_id);
-            $('#RequestEx').modal('show');
-
-        }
-        if(status == 92){
-            $('#jo_id_cpy').val(job_id);
-            $('#HardCopy').modal('show');
-
-        }
-        if(status == 95){
-            $('#jo_id_suport').val(job_id);
-            $('#TechSup').modal('show');
-
-        }
-        if(status == 96){
-            $('#jo_id_ex_com').val(job_id);
-            $('#ExhangeComp').modal('show');
-
-        }
-        if(status == 101){
-            $('#jo_id_part').val(job_id);
-            $('#PendPart').modal('show');
-
-        }
-        if(status == 102){
-            $('#jo_id_grn').val(job_id);
-            $('#DelGrn').modal('show');
-
-        }
-        if(status == 103){
-            $('#jo_id_rma').val(job_id);
-            $('#DelRma').modal('show');
-
-        }
-        $("#del_rma").validate({
-           
-           errorPlacement: function(error, element) {
-               console.log(element.attr('name'));
-               $( error ).insertAfter( element);
-           },
-
-           submitHandler: function(form) {
-
-               // do other things for a valid form
-               var formData = $("#del_rma").serialize();
-
-               $.ajax({
-                   type: 'post',
-                   url: "{{ URL::route('postData') }}",
-                   data:formData,
-                   success: function(data){
-                       if(data.status == 1){
-
-                           $('.modal-body').html('Successfully Assigned');
-                           $('#modalFooter').addClass('hidden');
-                           setTimeout(function(){
-                               location.reload();
-                           },1000);
-
-                       }
-                   }
-               });
-               return false;
-           }
-
-       });
-        $("#del_grn").validate({
-           
-           errorPlacement: function(error, element) {
-               console.log(element.attr('name'));
-               $( error ).insertAfter( element);
-           },
-
-           submitHandler: function(form) {
-
-               // do other things for a valid form
-               var formData = $("#del_grn").serialize();
-
-               $.ajax({
-                   type: 'post',
-                   url: "{{ URL::route('postData') }}",
-                   data:formData,
-                   success: function(data){
-                       if(data.status == 1){
-
-                           $('.modal-body').html('Successfully Assigned');
-                           $('#modalFooter').addClass('hidden');
-                           setTimeout(function(){
-                               location.reload();
-                           },1000);
-
-                       }
-                   }
-               });
-               return false;
-           }
-
-       });
-        $("#pend_part").validate({
-           
-           errorPlacement: function(error, element) {
-               console.log(element.attr('name'));
-               $( error ).insertAfter( element);
-           },
-
-           submitHandler: function(form) {
-
-               // do other things for a valid form
-               var formData = $("#pend_part").serialize();
-
-               $.ajax({
-                   type: 'post',
-                   url: "{{ URL::route('postData') }}",
-                   data:formData,
-                   success: function(data){
-                       if(data.status == 1){
-
-                           $('.modal-body').html('Successfully Assigned');
-                           $('#modalFooter').addClass('hidden');
-                           setTimeout(function(){
-                               location.reload();
-                           },1000);
-
-                       }
-                   }
-               });
-               return false;
-           }
-
-       });
-        $("#tech_support").validate({
-           
-           errorPlacement: function(error, element) {
-               console.log(element.attr('name'));
-               $( error ).insertAfter( element);
-           },
-
-           submitHandler: function(form) {
-
-               // do other things for a valid form
-               var formData = $("#tech_support").serialize();
-
-               $.ajax({
-                   type: 'post',
-                   url: "{{ URL::route('postData') }}",
-                   data:formData,
-                   success: function(data){
-                       if(data.status == 1){
-
-                           $('.modal-body').html('Successfully Assigned');
-                           $('#modalFooter').addClass('hidden');
-                           setTimeout(function(){
-                               location.reload();
-                           },1000);
-
-                       }
-                   }
-               });
-               return false;
-           }
-
-       });
-       $("#exchange_comp").validate({
-           
-           errorPlacement: function(error, element) {
-               console.log(element.attr('name'));
-               $( error ).insertAfter( element);
-           },
-
-           submitHandler: function(form) {
-
-               // do other things for a valid form
-               var formData = $("#exchange_comp").serialize();
-
-               $.ajax({
-                   type: 'post',
-                   url: "{{ URL::route('postData') }}",
-                   data:formData,
-                   success: function(data){
-                       if(data.status == 1){
-
-                           $('.modal-body').html('Successfully Assigned');
-                           $('#modalFooter').addClass('hidden');
-                           setTimeout(function(){
-                               location.reload();
-                           },1000);
-
-                       }
-                   }
-               });
-               return false;
-           }
-
-       });
-        $("#hard_copy").validate({
-           
-           errorPlacement: function(error, element) {
-               console.log(element.attr('name'));
-               $( error ).insertAfter( element);
-           },
-
-           submitHandler: function(form) {
-
-               // do other things for a valid form
-               var formData = $("#hard_copy").serialize();
-
-               $.ajax({
-                   type: 'post',
-                   url: "{{ URL::route('postData') }}",
-                   data:formData,
-                   success: function(data){
-                       if(data.status == 1){
-
-                           $('.modal-body').html('Successfully Assigned');
-                           $('#modalFooter').addClass('hidden');
-                           setTimeout(function(){
-                               location.reload();
-                           },1000);
-
-                       }
-                   }
-               });
-               return false;
-           }
-
-       });
-        $("#req_ex").validate({
-           
-           errorPlacement: function(error, element) {
-               console.log(element.attr('name'));
-               $( error ).insertAfter( element);
-           },
-
-           submitHandler: function(form) {
-
-               // do other things for a valid form
-               var formData = $("#req_ex").serialize();
-
-               $.ajax({
-                   type: 'post',
-                   url: "{{ URL::route('postData') }}",
-                   data:formData,
-                   success: function(data){
-                       if(data.status == 1){
-
-                           $('.modal-body').html('Successfully Assigned');
-                           $('#modalFooter').addClass('hidden');
-                           setTimeout(function(){
-                               location.reload();
-                           },1000);
-
-                       }
-                   }
-               });
-               return false;
-           }
-
-       });
-        $("#req_cn").validate({
-           
-           errorPlacement: function(error, element) {
-               console.log(element.attr('name'));
-               $( error ).insertAfter( element);
-           },
-
-           submitHandler: function(form) {
-
-               // do other things for a valid form
-               var formData = $("#req_cn").serialize();
-
-               $.ajax({
-                   type: 'post',
-                   url: "{{ URL::route('postData') }}",
-                   data:formData,
-                   success: function(data){
-                       if(data.status == 1){
-
-                           $('.modal-body').html('Successfully Assigned');
-                           $('#modalFooter').addClass('hidden');
-                           setTimeout(function(){
-                               location.reload();
-                           },1000);
-
-                       }
-                   }
-               });
-               return false;
-           }
-
-       });
-        $("#email_update").validate({
-           
-           errorPlacement: function(error, element) {
-               console.log(element.attr('name'));
-               $( error ).insertAfter( element);
-           },
-
-           submitHandler: function(form) {
-
-               // do other things for a valid form
-               var formData = $("#email_update").serialize();
-
-               $.ajax({
-                   type: 'post',
-                   url: "{{ URL::route('postData') }}",
-                   data:formData,
-                   success: function(data){
-                       if(data.status == 1){
-
-                           $('.modal-body').html('Successfully Assigned');
-                           $('#modalFooter').addClass('hidden');
-                           setTimeout(function(){
-                               location.reload();
-                           },1000);
-
-                       }
-                   }
-               });
-               return false;
-           }
-
-       });
-        $("#estimate").validate({
-           
-           errorPlacement: function(error, element) {
-               console.log(element.attr('name'));
-               $( error ).insertAfter( element);
-           },
-
-           submitHandler: function(form) {
-
-               // do other things for a valid form
-               var formData = $("#estimate").serialize();
-
-               $.ajax({
-                   type: 'post',
-                   url: "{{ URL::route('postData') }}",
-                   data:formData,
-                   success: function(data){
-                       if(data.status == 1){
-
-                           $('.modal-body').html('Successfully Assigned');
-                           $('#modalFooter').addClass('hidden');
-                           setTimeout(function(){
-                               location.reload();
-                           },1000);
-
-                       }
-                   }
-               });
-               return false;
-           }
-
-       });
-        $("#asp_spoil").validate({
-           
+        $('#mileage').change(function() {
+            var status = this.value;
+            var token = "{{ csrf_token() }}";
+            var type = 'claim_amount';
+            $.ajax({
+                type: 'post',
+                url: '{{ URL::route("postData") }}',
+                data: {
+                    type: type,
+                    status: status,
+                    _token: token
+                },
+                success: function(data) {
+                    if (data.status == 1) {
+
+                        $("#claim_amount").val(data.amount);
+
+                    } else if (data.status == 3) {
+                        alert('Data Not Found');
+                    }
+
+                }
+            });
+        });
+
+        $("#claimform").validate({
+            rules: {
+                email: {
+                    required: true,
+                },
+                password: {
+                    required: true,
+                },
+                files: {
+                    required: true,
+                }
+            },
+            messages: {
+                name: {
+                    required: "Please enter  name ",
+                }
+            },
+            errorPlacement: function(error, element) {
+                console.log(element.attr('name'));
+                $(error).insertAfter(element);
+            },
+            submitHandler: function(form) {
+
+                // do other things for a valid form
+                var formData = $("#claimform").serialize();
+                $("#modal-body lodgif").html("Your formhas been successfully submitting...");
+                $('#myModal').modal('show');
+                $.ajax({
+                    type: 'post',
+                    url: "{{ URL::route('postData') }}",
+                    data: formData,
+                    success: function(data) {
+                        setInterval(function() {
+                            $("#modal-body lodgif").html("Your form has been successfully submited, you are now being redirected ...");
+                            $('#myModal').modal('show');
+                            window.location.href = "{{URL::route('AspJobs')}}";
+                        }, 1500);
+
+                    }
+                });
+                return false;
+            }
+        });
+
+        $("#apptform").validate({
+            rules: {
+                email: {
+                    required: true,
+                },
+                password: {
+                    required: true,
+                },
+                files: {
+                    required: true,
+                }
+            },
+            messages: {
+                name: {
+                    required: "Please enter  name ",
+                }
+            },
+            errorPlacement: function(error, element) {
+                console.log(element.attr('name'));
+                $(error).insertAfter(element);
+            },
+            submitHandler: function(form) {
+
+                // do other things for a valid form
+                var formData = $("#apptform").serialize();
+                $("#modal-body lodgif").html("Your formhas been successfully submitting...");
+                $('#myModal').modal('show');
+                $.ajax({
+                    type: 'post',
+                    url: "{{ URL::route('postData') }}",
+                    data: formData,
+                    success: function(data) {
+                        setInterval(function() {
+                            $("#modal-body lodgif").html("Your form has been successfully submited, you are now being redirected ...");
+                            $('#myModal').modal('show');
+                            window.location.href = "{{URL::route('AspJobs')}}";
+                        }, 1500);
+
+                    }
+                });
+                return false;
+            }
+        });
+
+
+        $('input:radio').change(function() {
+            var crd = $("input[name='approve']:checked").val();
+
+            if (crd == 1) {
+                $(".amont").show();
+                $(".credit_not").show();
+                $(".ex_number").hide();
+            } else {
+                $(".ex_number").show();
+                $(".amont").hide();
+                $(".credit_not").show();
+            }
+
+        })
+        $('.changestatus').on('change', function() {
+
+            var status = this.value;
+            $('#status').val(status);
+            var job_id = $(this).attr("data-id");
+            var sympt = $(this).attr("data-sym");
+            var fal_id = $(this).attr("data-fal");
+            var res_id = $(this).attr("data-res");
+            var symptom = $(this).attr("data-symptom");
+            var faulty = $(this).attr("data-faulty");
+            var resol = $(this).attr("data-resol");
+            var repair = $(this).attr("data-repair");
+            var fname = $(this).attr("data-fname");
+            var lname = $(this).attr("data-lname");
+            var addrs = $(this).attr("data-addrs");
+            var phn = $(this).attr("data-phn");
+            var tech = $(this).attr("data-tech");
+            var bus = $(this).attr("data-bus");
+            var part_no = $(this).attr("data-partno");
+            var part_desc = $(this).attr("data-partdesc");
+            var part_qty = $(this).attr("data-partqty");
+            var part_id = $(this).attr("data-partid");
+            var part_rem = $(this).attr("data-partrem");
+            var grn_spare = $(this).attr("data-grnspare");
+            var tech_prob = $(this).attr("data-techprob");
+            //GRN  
+            var dented = $(this).attr("data-dented");
+            var photogr = $(this).attr("data-photogr");
+            var returnacc = $(this).attr("data-returnacc");
+            var pur_date = $(this).attr("data-purdate");
+            var appl_date = $(this).attr("data-appldate");
+            var comp_date = $(this).attr("data-compdate");
+            var goods_date = $(this).attr("data-gooddate");
+            var model = $(this).attr("data-mod");
+            var grn_res = $(this).attr("data-grnres");
+            var grn_seriel = $(this).attr("data-grnseriel");
+            //RMA
+            var rma_spare = $(this).attr("data-rmaspare");
+            var rma_seriel = $(this).attr("data-rmaseriel");
+            var warcard = $(this).attr("data-warcard");
+            var panser = $(this).attr("data-panser");
+            var panmod = $(this).attr("data-panmod");
+            var accnt = $(this).attr("data-accnt");
+            var compl = $(this).attr("data-compl");
+            var rmares = $(this).attr("data-rmares");
+            var rmaappl = $(this).attr("data-rmaappl");
+            var rma_pur = $(this).attr("data-rmapurchase");
+            var date_rec = $(this).attr("data-daterec");
+            var other = $(this).attr("data-othe");
+            var grnid = $(this).attr("data-grnid");
+            var rmaid = $(this).attr("data-rmaid");
+            var prdrepid = $(this).attr("data-prdrepid");
+            //Claim
+            var mileage = $(this).attr("data-mileage");
+            var cl_amount = $(this).attr("data-clamount");
+            var labour = $(this).attr("data-labour");
+            //JOB
+            var job_loc = $(this).attr("data-jobloc");
+            var remar_job = $(this).attr("data-jobremark");
+            var fround = $(this).attr("data-fround");
+            var descr = $(this).attr("data-jobdesc");
+            var asp_loc = $(this).attr("data-asploc");
+            if (status == 71) {
+                $('#apptModal').modal('show');
+                $('#job22id').val(job_id);
+                $('#resol').val(resol);
+                $('#faulty').val(faulty);
+                $('#symptom').val(symptom);
+                $('#firstname').val(fname);
+                $('#lastname').val(lname);
+                $('#address').val(addrs);
+                $('#phone22').val(phn);
+                $('#business').val(bus);
+            }
+            if (status == 76) {
+                window.location = "{{ URL::route("PendingAsp") }}/" + job_id;
+            }
+            if (status == 63) {
+                window.location = "{{ URL::route("PendingAsp") }}/" + job_id;
+            }
+            if (status == 64) {
+                window.location = "{{ URL::route("PendingAsp") }}/" + job_id;
+            }
+            if (status == 67) {
+                window.location = "{{ URL::route("PendingAsp") }}/" + job_id;
+            }
+            if (status == 80) {
+                $('#jobidcus').val(job_id);
+                $('#CustomerNotModal').modal('show');
+            }
+            if (status == 75) {
+                $('#jo_id_spoil').val(job_id);
+                $('#AspSpoil').modal('show');
+            }
+            if (status == 83) {
+                $('#jo_id_est').val(job_id);
+                $('#Estimate').modal('show');
+            }
+            if (status == 84) {
+                $('#jo_id_email').val(job_id);
+                $('#EmailUpdate').modal('show');
+            }
+            if (status == 87) {
+                $('#jo_id_cn').val(job_id);
+                $('#RequestCn').modal('show');
+            }
+            if (status == 88) {
+                $('#jo_id_ex').val(job_id);
+                $('#RequestEx').modal('show');
+            }
+            if (status == 92) {
+                $('#jo_id_cpy').val(job_id);
+                $('#HardCopy').modal('show');
+            }
+            if (status == 95) {
+                $('#jo_id_suport').val(job_id);
+                $('#TechSup').modal('show');
+            }
+            if (status == 96) {
+                $('#jo_id_ex_com').val(job_id);
+                $('#ExhangeComp').modal('show');
+            }
+            if (status == 101) {
+                $('#jo_id_part').val(job_id);
+                $('#PendPart').modal('show');
+            }
+            if (status == 102) {
+                $('#jo_id_grn').val(job_id);
+                $('#DelGrn').modal('show');
+            }
+            if (status == 103) {
+                $('#jo_id_rma').val(job_id);
+                $('#DelRma').modal('show');
+            }
+            $("#del_rma").validate({
                 errorPlacement: function(error, element) {
                     console.log(element.attr('name'));
-                    $( error ).insertAfter( element);
+                    $(error).insertAfter(element);
+                },
+                submitHandler: function(form) {
+                    // do other things for a valid form
+                    var formData = $("#del_rma").serialize();
+                    $.ajax({
+                        type: 'post',
+                        url: "{{ URL::route('postData') }}",
+                        data: formData,
+                        success: function(data) {
+                            if (data.status == 1) {
+
+                                $('.modal-body').html('Successfully Assigned');
+                                $('#modalFooter').addClass('hidden');
+                                setTimeout(function() {
+                                    location.reload();
+                                }, 1000);
+                            }
+                        }
+                    });
+                    return false;
+                }
+            });
+            $("#del_grn").validate({
+                errorPlacement: function(error, element) {
+                    console.log(element.attr('name'));
+                    $(error).insertAfter(element);
+                },
+                submitHandler: function(form) {
+                    // do other things for a valid form
+                    var formData = $("#del_grn").serialize();
+                    $.ajax({
+                        type: 'post',
+                        url: "{{ URL::route('postData') }}",
+                        data: formData,
+                        success: function(data) {
+                            if (data.status == 1) {
+                                $('.modal-body').html('Successfully Assigned');
+                                $('#modalFooter').addClass('hidden');
+                                setTimeout(function() {
+                                    location.reload();
+                                }, 1000);
+                            }
+                        }
+                    });
+                    return false;
+                }
+
+            });
+
+            $("#pend_part").validate({
+                errorPlacement: function(error, element) {
+                    console.log(element.attr('name'));
+                    $(error).insertAfter(element);
+                },
+                submitHandler: function(form) {
+                    // do other things for a valid form
+                    var formData = $("#pend_part").serialize();
+                    $.ajax({
+                        type: 'post',
+                        url: "{{ URL::route('postData') }}",
+                        data: formData,
+                        success: function(data) {
+                            if (data.status == 1) {
+
+                                $('.modal-body').html('Successfully Assigned');
+                                $('#modalFooter').addClass('hidden');
+                                setTimeout(function() {
+                                    location.reload();
+                                }, 1000);
+
+                            }
+                        }
+                    });
+                    return false;
+                }
+
+            });
+
+            $("#tech_support").validate({
+                errorPlacement: function(error, element) {
+                    console.log(element.attr('name'));
+                    $(error).insertAfter(element);
+                },
+                submitHandler: function(form) {
+
+                    // do other things for a valid form
+                    var formData = $("#tech_support").serialize();
+
+                    $.ajax({
+                        type: 'post',
+                        url: "{{ URL::route('postData') }}",
+                        data: formData,
+                        success: function(data) {
+                            if (data.status == 1) {
+
+                                $('.modal-body').html('Successfully Assigned');
+                                $('#modalFooter').addClass('hidden');
+                                setTimeout(function() {
+                                    location.reload();
+                                }, 1000);
+
+                            }
+                        }
+                    });
+                    return false;
+                }
+
+            });
+            $("#exchange_comp").validate({
+                errorPlacement: function(error, element) {
+                    console.log(element.attr('name'));
+                    $(error).insertAfter(element);
+                },
+                submitHandler: function(form) {
+                    // do other things for a valid form
+                    var formData = $("#exchange_comp").serialize();
+                    $.ajax({
+                        type: 'post',
+                        url: "{{ URL::route('postData') }}",
+                        data: formData,
+                        success: function(data) {
+                            if (data.status == 1) {
+
+                                $('.modal-body').html('Successfully Assigned');
+                                $('#modalFooter').addClass('hidden');
+                                setTimeout(function() {
+                                    location.reload();
+                                }, 1000);
+
+                            }
+                        }
+                    });
+                    return false;
+                }
+            });
+            $("#hard_copy").validate({
+                errorPlacement: function(error, element) {
+                    console.log(element.attr('name'));
+                    $(error).insertAfter(element);
+                },
+                submitHandler: function(form) {
+                    // do other things for a valid form
+                    var formData = $("#hard_copy").serialize();
+                    $.ajax({
+                        type: 'post',
+                        url: "{{ URL::route('postData') }}",
+                        data: formData,
+                        success: function(data) {
+                            if (data.status == 1) {
+
+                                $('.modal-body').html('Successfully Assigned');
+                                $('#modalFooter').addClass('hidden');
+                                setTimeout(function() {
+                                    location.reload();
+                                }, 1000);
+                            }
+                        }
+                    });
+                    return false;
+                }
+            });
+            $("#req_ex").validate({
+                errorPlacement: function(error, element) {
+                    console.log(element.attr('name'));
+                    $(error).insertAfter(element);
+                },
+                submitHandler: function(form) {
+                    // do other things for a valid form
+                    var formData = $("#req_ex").serialize();
+                    $.ajax({
+                        type: 'post',
+                        url: "{{ URL::route('postData') }}",
+                        data: formData,
+                        success: function(data) {
+                            if (data.status == 1) {
+
+                                $('.modal-body').html('Successfully Assigned');
+                                $('#modalFooter').addClass('hidden');
+                                setTimeout(function() {
+                                    location.reload();
+                                }, 1000);
+
+                            }
+                        }
+                    });
+                    return false;
+                }
+            });
+            $("#req_cn").validate({
+
+                errorPlacement: function(error, element) {
+                    console.log(element.attr('name'));
+                    $(error).insertAfter(element);
+                },
+
+                submitHandler: function(form) {
+
+                    // do other things for a valid form
+                    var formData = $("#req_cn").serialize();
+
+                    $.ajax({
+                        type: 'post',
+                        url: "{{ URL::route('postData') }}",
+                        data: formData,
+                        success: function(data) {
+                            if (data.status == 1) {
+
+                                $('.modal-body').html('Successfully Assigned');
+                                $('#modalFooter').addClass('hidden');
+                                setTimeout(function() {
+                                    location.reload();
+                                }, 1000);
+
+                            }
+                        }
+                    });
+                    return false;
+                }
+
+            });
+            $("#email_update").validate({
+
+                errorPlacement: function(error, element) {
+                    console.log(element.attr('name'));
+                    $(error).insertAfter(element);
+                },
+
+                submitHandler: function(form) {
+
+                    // do other things for a valid form
+                    var formData = $("#email_update").serialize();
+
+                    $.ajax({
+                        type: 'post',
+                        url: "{{ URL::route('postData') }}",
+                        data: formData,
+                        success: function(data) {
+                            if (data.status == 1) {
+
+                                $('.modal-body').html('Successfully Assigned');
+                                $('#modalFooter').addClass('hidden');
+                                setTimeout(function() {
+                                    location.reload();
+                                }, 1000);
+
+                            }
+                        }
+                    });
+                    return false;
+                }
+
+            });
+            $("#estimate").validate({
+
+                errorPlacement: function(error, element) {
+                    console.log(element.attr('name'));
+                    $(error).insertAfter(element);
+                },
+
+                submitHandler: function(form) {
+
+                    // do other things for a valid form
+                    var formData = $("#estimate").serialize();
+
+                    $.ajax({
+                        type: 'post',
+                        url: "{{ URL::route('postData') }}",
+                        data: formData,
+                        success: function(data) {
+                            if (data.status == 1) {
+
+                                $('.modal-body').html('Successfully Assigned');
+                                $('#modalFooter').addClass('hidden');
+                                setTimeout(function() {
+                                    location.reload();
+                                }, 1000);
+
+                            }
+                        }
+                    });
+                    return false;
+                }
+
+            });
+            $("#asp_spoil").validate({
+
+                errorPlacement: function(error, element) {
+                    console.log(element.attr('name'));
+                    $(error).insertAfter(element);
                 },
 
                 submitHandler: function(form) {
@@ -4017,15 +3903,15 @@ window.location = "{{ URL::route("PendingAsp") }}/"+job_id;
                     $.ajax({
                         type: 'post',
                         url: "{{ URL::route('postData') }}",
-                        data:formData,
-                        success: function(data){
-                            if(data.status == 1){
+                        data: formData,
+                        success: function(data) {
+                            if (data.status == 1) {
 
                                 $('.modal-body').html('Successfully Assigned');
                                 $('#modalFooter').addClass('hidden');
-                                setTimeout(function(){
+                                setTimeout(function() {
                                     location.reload();
-                                },1000);
+                                }, 1000);
 
                             }
                         }
@@ -4035,10 +3921,10 @@ window.location = "{{ URL::route("PendingAsp") }}/"+job_id;
 
             });
 
-$("#CustomerNotInForm").validate({
+            $("#CustomerNotInForm").validate({
                 errorPlacement: function(error, element) {
                     console.log(element.attr('name'));
-                    $( error ).insertAfter( element);
+                    $(error).insertAfter(element);
                 },
 
                 submitHandler: function(form) {
@@ -4049,15 +3935,15 @@ $("#CustomerNotInForm").validate({
                     $.ajax({
                         type: 'post',
                         url: "{{ URL::route('postData') }}",
-                        data:formData,
-                        success: function(data){
-                            if(data.status == 1){
+                        data: formData,
+                        success: function(data) {
+                            if (data.status == 1) {
 
                                 $('.modal-body').html('Successfully Assigned');
                                 $('#modalFooter').addClass('hidden');
-                                setTimeout(function(){
+                                setTimeout(function() {
                                     location.reload();
-                                },1000);
+                                }, 1000);
 
                             }
                         }
@@ -4068,15 +3954,15 @@ $("#CustomerNotInForm").validate({
             });
 
 
-             if(status == 79){
-            $('#jobidser').val(job_id);
-            $('#WaitServiceModal').modal('show');
+            if (status == 79) {
+                $('#jobidser').val(job_id);
+                $('#WaitServiceModal').modal('show');
 
-        }
-        $("#WaitService").validate({
+            }
+            $("#WaitService").validate({
                 errorPlacement: function(error, element) {
                     console.log(element.attr('name'));
-                    $( error ).insertAfter( element);
+                    $(error).insertAfter(element);
                 },
 
                 submitHandler: function(form) {
@@ -4087,15 +3973,15 @@ $("#CustomerNotInForm").validate({
                     $.ajax({
                         type: 'post',
                         url: "{{ URL::route('postData') }}",
-                        data:formData,
-                        success: function(data){
-                            if(data.status == 1){
+                        data: formData,
+                        success: function(data) {
+                            if (data.status == 1) {
 
                                 $('.modal-body').html('Successfully Assigned');
                                 $('#modalFooter').addClass('hidden');
-                                setTimeout(function(){
+                                setTimeout(function() {
                                     location.reload();
-                                },1000);
+                                }, 1000);
 
                             }
                         }
@@ -4108,17 +3994,15 @@ $("#CustomerNotInForm").validate({
 
 
 
+            if (status == 91) {
+                $('#jobsup').val(job_id);
+                $('#WaitTechModal').modal('show');
 
-
-             if(status == 91){
-            $('#jobsup').val(job_id);
-            $('#WaitTechModal').modal('show');
-
-        }
-        $("#WaitTech").validate({
+            }
+            $("#WaitTech").validate({
                 errorPlacement: function(error, element) {
                     console.log(element.attr('name'));
-                    $( error ).insertAfter( element);
+                    $(error).insertAfter(element);
                 },
 
                 submitHandler: function(form) {
@@ -4129,15 +4013,15 @@ $("#CustomerNotInForm").validate({
                     $.ajax({
                         type: 'post',
                         url: "{{ URL::route('postData') }}",
-                        data:formData,
-                        success: function(data){
-                            if(data.status == 1){
+                        data: formData,
+                        success: function(data) {
+                            if (data.status == 1) {
 
                                 $('.modal-body').html('Successfully Assigned');
                                 $('#modalFooter').addClass('hidden');
-                                setTimeout(function(){
+                                setTimeout(function() {
                                     location.reload();
-                                },1000);
+                                }, 1000);
 
                             }
                         }
@@ -4147,29 +4031,7 @@ $("#CustomerNotInForm").validate({
 
             });
 
-    //    var type = 'ChangeStatus';
-
-    //                         $.ajax({
-
-    //                             type:'post',
-
-    //                             url:"{{ URL::route('postData') }}",
-
-    //                             data:{status:status,job_id:job_id,tech:tech,_token: '{{ csrf_token() }}',type:type},
-
-    //                             success:function(data){
-
-    //                                 if(data.status==1){
-
-    //                                     //  $("#modal-body lodgif").html("Your form has been successfully submited, you are now being redirected ...");
-    //                                     //          $('#myModal').modal('show');
-    //                                     //          setTimeout(function() { $('#myModal').modal('hide'); }, 4000);
-    //                                 }
-
-    //                             }
-
-    //                         });
-})
-        });
+        })
+    });
     </script>
 @endsection

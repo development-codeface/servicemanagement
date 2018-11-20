@@ -66,11 +66,8 @@
                                     <!-- <a class="btnsecal" href="job-del.html" title="del"><i class="fa fa-trash pad"></i></a> -->
                                 </td>
                               <td>{{$job->repaire_order_no}}</td>
-                            @if($job->order_date)
-                              <td>{{date('d-m-Y', strtotime($job->order_date))}}</td>
-                              
-                               @else<td></td>
-                               @endif
+                              @if($job->order_date)
+                              <td>{{date('d-m-Y', strtotime($job->order_date))}}</td>@else<td></td>@endif
                                @if($job->delivery_date)
                                <td>{{date('d-m-Y', strtotime($job->delivery_date))}}</td>
                                @else<td></td>

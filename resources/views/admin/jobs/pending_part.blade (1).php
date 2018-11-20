@@ -1809,14 +1809,14 @@ $(document).on('click', '.removediv', function(e) {
         var formData = $("#partsform").serialize();
         var avl_qty = $("#avl_part_qty").val();
 	
-		if(avl_qty == 0){
+		/*if(avl_qty == 0){
 			alert('Cant Approve Order due to insufficient quantity');
 			$("#order_btn").attr("disabled", true);
 			$('#submit').attr('disabled','disabled');
 			location.reload();
-		}
+		}*/
 		 
-        else{
+        if(true){
 			$.ajax({
             type: 'post',
             url: "{{ URL::route('postData') }}",

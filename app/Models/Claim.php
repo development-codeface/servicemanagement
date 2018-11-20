@@ -21,7 +21,7 @@ class Claim extends Model implements AuthenticatableContract, CanResetPasswordCo
         'mileage',
         'job_id',
         'labour',
-        'isapprove'.
+        'isapprove',
         'remarks'
     ];
 

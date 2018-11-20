@@ -146,7 +146,7 @@
                             </div>
                             <div class="col-lg-4">
                                 <h2>
-                                    Phone No/Business Number</h2>
+                                Contact Number</h2>
                                 <p >{{$job->phone_no}}</p>
 
                             </div>
@@ -177,7 +177,7 @@
 
                             </div>
                             <div class="col-lg-4">
-                            <h2> Seriel Number</h2>
+                            <h2> Serial Number</h2>
                                 <p > {{$job->seriel_number}}  </p>
 
                             </div>
@@ -194,25 +194,10 @@
                           
                             <div class="col-lg-4">
                                 <h2>
-                                    Turn Fround Time</h2>
-                                @if($job->claim_create)<?php $d1 = App\Models\Job::where('job_id',$job->job_id)->first();
-							        $dat1 = $d1->created_at;
-									    $vv = date('d-m-Y', strtotime($dat1));
-										
-									$d2 = App\Models\Claim::where('job_id',$job->job_id)->first();
-									$dat2 = $d2->created_at;
-									  $nn =  date('d-m-Y', strtotime($dat2));
-									 $formatted_dt1=Carbon::parse($vv);
-
-                                 $formatted_dt2=Carbon::parse($nn);
-
-                          $date_diff=$formatted_dt1->diffInDays($formatted_dt2);
-									
-									//echo round($diff / (60 * 60 * 24));
-
-									
-							   ?>
-                                <p>{{$date_diff}} days</p>@endif
+                                    Turn Around Time</h2>
+                                @if($job->turn_fround_time)
+                                <p>{{$job->turn_fround_time}} days</p>
+                                @endif
 
                             </div>
 							 <div class="col-lg-4">
@@ -292,7 +277,7 @@
                             <div class="box box-primary">
 
                     <div class="edc">
-                        <div class="row tx_hd">
+                        <div class="row tx_hd hidden">
                             <div class="col-lg-4">
                                 <h2> Faulty Code</h2>
                                 <p> {{$job->faulty_description}} </p>
@@ -309,7 +294,7 @@
 
                             </div>
                         </div>
-                        <hr>
+                        <!--<hr> -->
 
 
                         <div class="row tx_hd">
@@ -333,7 +318,7 @@
                           
                             <div class="col-lg-4">
                                 <h2>
-                                    Turn Fround Time</h2>
+                                    Description</h2>
                                 <p > {{$mul->parts_description}}</p>
 
                             </div>
@@ -348,11 +333,35 @@
                                     @endforeach
                        
                         <div class="row tx_hd">
-                          <div class="col-lg-4">
-                                <h2> Delivery Date</h2>
-                                @if($job->part_del)<p > {{date('d-m-Y', strtotime($job->part_del))}} </p>@endif
-
-                            </div>
+                        @if($job->isapprove !=0)
+                                <div class="col-lg-4">
+                                    <fieldset class="form-group">
+                                        <label>Approve/Reject</label><br>
+                                        @if($job->isapprove==1)<input type="radio" name="rejectval" value="1" checked disabled> Approve &nbsp; @endif
+                                        @if($job->isapprove==2) <input type="radio" name="rejectval" value="2" checked disabled>  Reject<br>  @endif											
+                                            </fieldset>
+                                </div>
+                            @endif					
+                                        
+                            @if($job->isapprove==1 || $job->isapprove==2)
+                                        <div class="col-lg-4 @if($job->isapprove==2) hidden @endif ">
+                                            
+                                            <h2>Delivery Date</h2>
+                                                @if($job->delivery_date)
+                                                <p> {{date('d-m-Y', strtotime($job->delivery_date))}} </p>
+                                                @else
+                                                <p></p>
+                                                @endif   
+                                        </div>
+                                
+                            
+                                        <div class="col-lg-4" >
+                                            
+                                                <label> Remarks</label>
+                                                <p >{{$job->apprv_remarks}}</p>                                      
+                                                
+                                        </div>
+                            @endif
                             </div>
                            
                           
@@ -381,7 +390,7 @@
 
                     <div class="edc">
                         <div class="row tx_hd">
-                            <div class="col-lg-4">
+                            <div class="col-lg-4 hidden">
                                 <h2> Model</h2>
                                 <p> {{$job->product_description}} </p>
 
@@ -391,7 +400,7 @@
                                 <p > {{$job->reason_for_retrun}}  </p>
 
                             </div>
-                             <div class="col-lg-4">
+                             <div class="col-lg-4 hidden">
                             <h2> Serial Number</h2>
                                 <p > {{$job->grn_seriel}}  </p>
 
@@ -448,65 +457,93 @@
                                 <div class="col-lg-4">
                                 <h2>
                                    Attach Proof</h2>
-                                @if($job->attach_proof)<p >
+                                @if($job->attach_proof)
+                                <p>
+                                @if($is_proof_image)
                                     <a href="#img{{$i}}">
-      <img src="{{ url('data/products/'.$job->attach_proof) }}" style="width: 124px;
-    height: 66px;"class="thumbnail">
-    </a>
-    
-    <!-- lightbox container hidden with CSS -->
-    <a href="#_" class="lightbox" id="img{{$i}}">
-      <img src="{{ url('data/products/'.$job->attach_proof) }}">
-    </a></p>@endif
+                                        <img src="{{ url('data/products/'.$job->attach_proof) }}" style="width: 124px;height: 66px;"class="thumbnail">
+                                    </a>
+                                    <!-- lightbox container hidden with CSS -->
+                                    <a href="#_" class="lightbox" id="img{{$i}}">
+                                        <img src="{{ url('data/products/'.$job->attach_proof) }}">
+                                    </a>
+                                @else
+                                <a href="{{ url('data/products/'.$job->attach_proof) }}">{{$job->attach_proof}}</a>
+                                @endif
+                                </p>
+                                @endif
 
                             </div>
                             @endif
-                           @if($job->is_ex_cn != NULL)
+                            @if($job->is_ex_cn != NULL)
                             <div class="col-lg-4">
                                 <h2>
                                     Select EX/CN</h2>
-<input type="radio" name="approve" value="1" @if($job->grn_credit) checked @endif disabled> Credit note &nbsp;
-                                             <input type="radio" name="approve" value="2" @if($job->grn_ex) checked @endif disabled> Exchange<br>  
+<input type="radio" name="approve" value="1" @if($job->is_ex_cn == 1) checked @endif disabled> Credit note &nbsp;
+                                             <input type="radio" name="approve" value="2" @if($job->is_ex_cn == 2) checked @endif disabled> Exchange<br>  
                             </div>
-                            @endif
-                            @if($job->grn_ex)
+							@endif
+							@if($job->is_ex_cn == 2)
                                 <div class="col-lg-4">
-                                <h2>
-                                    Exchange Number</h2>
-                                <p >{{$job->grn_ex}}</p>
-
-                            </div>
-                            @endif
-                            
+                                    <h2>Exchange Number</h2>
+                                    <p >{{$job->grn_ex}}</p>
+                                </div>
+                                <div class="col-lg-4">
+                                    <h2>Remarks</h2>
+                                    <p >{{$job->grn_remarks}}</p>
+                                </div>
+							@endif
+							
                         </div>
                        
-                        @if($job->grn_credit)
-                             <div class="row tx_hd">
-                             
-                         <div class="col-lg-4">
+                        @if($job->is_ex_cn == 1)
+							 <div class="row tx_hd">
+							 
+						 <div class="col-lg-4">
                                 <h2>
                                     Credit Note</h2>
                                 <p >{{$job->grn_credit}}</p>
 
                             </div>
-                            <div class="col-lg-4">
+							<div class="col-lg-4">
                                 <h2>
                                     Amount</h2>
                                 <p >{{$job->grn_amount}}</p>
 
                             </div>
-                            <div class="col-lg-4">
+							<div class="col-lg-4">
                                 <h2>
                                     Last Selling Price</h2>
                                 <p >{{$job->sell_price}}</p>
 
                             </div>
-                            
 
-                            
-                         </div>
-                         @endif
-                         <hr>
+                            <div class="col-lg-4">
+                                <h2>Remarks</h2>
+                                <p >{{$job->grn_remarks}}</p>
+
+                            </div>
+							
+
+							
+						 </div>
+						 @endif
+						 <hr>
+                         <div class="row tx_hd">
+                            <div class="col-lg-4">
+                                <h2>Dealer Name</h2>
+                                @if($job->dealer_name)<p > {{$job->dealer_name}}</p>@endif
+                            </div>
+                            <div class="col-lg-4">
+                                <h2>Dealer Address</h2>
+                                @if($job->dealer_address)<p > {{$job->dealer_address}}</p>@endif
+                            </div>
+                            <div class="col-lg-4">
+                                <h2>Dealer Account Number </h2>
+                                @if($job->dealer_acc)<p > {{$job->dealer_acc}}</p>@endif
+                            </div>
+                        </div>
+                        <hr>
                                 
                             <div class="row tx_hd">
                           
@@ -526,17 +563,22 @@
                             <div class="col-lg-4">
                                 <h2>
                                    Picture Of Symptom</h2>
-                                @if($job->grn_image)<p >
-                                    <a href="#img{{$i}}">
-      <img src="{{ url('data/products/'.$job->grn_image) }}" style="width: 124px;
-    height: 66px;"class="thumbnail">
-    </a>
-    
-    <!-- lightbox container hidden with CSS -->
-    <a href="#_" class="lightbox" id="img{{$i}}">
-      <img src="{{ url('data/products/'.$job->grn_image) }}">
-    </a></p>@endif
-
+                                   @if($job->grn_image)
+                                <p>
+                                @if($is_symptom_image)
+                                    
+                                        <a href="#img{{$i}}">
+                                        <img src="{{ url('data/products/'.$job->grn_image) }}" style="width: 124px; height: 66px;"class="thumbnail"></a>
+                                        <!-- lightbox container hidden with CSS -->
+                                        <a href="#_" class="lightbox" id="img{{$i}}">
+                                        <img src="{{ url('data/products/'.$job->grn_image) }}">
+                                        </a>
+                                    
+                                @else 
+                                <a href="{{ url('data/products/'.$job->grn_image) }}">{{$job->grn_image}} </a>
+                                @endif
+                                </p>
+                                @endif
                             </div>
                             </div>
                            
@@ -643,45 +685,39 @@
                             <div class="col-lg-4">
                                 <h2>
                                   Select EX/CN</h2>
-                              <input type="radio" name="approve" value="1" @if($job->gma_credit) checked @endif disabled> Credit note &nbsp;
-                             <input type="radio" name="approve" value="2" @if($job->gma_ex) checked @endif disabled> Exchange<br>  
+                              <input type="radio" name="approve" value="1" @if($job->is_cn_ex==1) checked @endif disabled> Credit note &nbsp;
+                             <input type="radio" name="approve" value="2" @if($job->is_cn_ex==2) checked @endif disabled> Exchange<br>  
 
                             </div>
 							@endif
                            
                         </div>
-                       
-						@if($job->gma_credit)
-                         <div class="row tx_hd">
-						 
-						  
-						 <div class="col-lg-4">
-                                <h2>
-                                    Credit Note</h2>
+                        <div class="row tx_hd">
+                        
+						@if($job->is_cn_ex==1) 
+                            <div class="col-lg-4">
+                                <h2>Credit Note</h2>
                                 <p >{{$job->gma_credit}}</p>
-
                             </div>
-							<div class="col-lg-4">
-                                <h2>
-                                    Amount</h2>
+                            <div class="col-lg-4">
+                                <h2>Amount</h2>
                                 <p >{{$job->gma_amount}}</p>
-
                             </div>
-							 </div>
-							@endif
-							
-							@if($job->gma_ex)
-								 <div class="row tx_hd">
-						 
-								<div class="col-lg-4">
-                                <h2>
-                                    Exchange Number</h2>
-                                <p >{{$job->gma_ex}}</p>
-
+						@endif
+						@if($job->is_cn_ex==2)
+							<div class="col-lg-4">
+                                <h2>Exchange Number</h2>
+                                <p>{{$job->rma_ex_number}}</p>
                             </div>
-                            </div>
-							@endif
-							<hr>
+						@endif
+                        @if($job->is_cn_ex) 
+                            <div class="col-lg-4">
+                                <h2>Remarks</h2>
+                                <p >{{$job->rma_remarks}}</p>
+                            </div>  
+                            @endif
+                        </div>
+						<hr>
 						
 					
                             <div class="row tx_hd">
@@ -824,6 +860,27 @@
                                 <p > {{$job->labour}}  </p>
 
                             </div>
+                            @if($job->claim_approve!=0)
+                                <div class="col-lg-4">
+                                      
+                                            <h2>Approve/Reject</h2>
+                                            @if($job->claim_approve==1)
+                                                <input type="radio" name="reject" value="1" checked disabled> Approve &nbsp;
+                                            @else											
+                                                <input type="radio" name="reject" value="1" disabled> Approve &nbsp;
+											@endif
+
+                                            @if($job->claim_approve==2) 
+                                                <input type="radio" name="reject" value="2" checked disabled>  Reject<br>  
+											@else
+                                                <input type="radio" name="reject" value="2" disabled>  Reject<br> 
+                                            @endif											
+                                             
+                                    </div>
+                            @endif        
+
+
+
 								@if($job->claim_remarks)<div class="col-lg-4">
                             <h2>Remarks</h2>
                                 <p > {{$job->claim_remarks}}  </p>

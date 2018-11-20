@@ -1679,7 +1679,7 @@
                                   <a class="btnsecal  deleteButton" data-tooltip="Delete" data-id="{{$job->job_id }}"  data-toggle="modal"  data-target="#deleteModal" title="Delete Details"><i class="fa fa-trash pad"></i></a>
 
                                     <!-- <a class="btnview js-mytooltip"  href="{{URL::route('NewAssignJobs',$job->job_id)}}"> <span class="label label-info"><i class="fa fa-hand-pointer-o" aria-hidden="true"></i> Assign</span></a> -->
-                                    
+                                    <!--
                                     @if($job->status!= 68)
                                   
                                        @if($job->part_order_id != NULL)
@@ -1690,6 +1690,7 @@
                                     <a class="btnact js-mytooltip" data-tooltip=" Request For claim" href="{{URL::route('EditAdminClaim',$job->job_id)}}" ><i class="fa fa-file"></i></a>
                                     @endif
                                     @endif
+                                    -->
 
                                 </td>
                                 @if($job->claim_approve ==1)
@@ -1765,33 +1766,24 @@
                                 <td>{{$job->symptom_description}}</td>
                                 <td>{{$job->resolution_description}}</td>
                                 <td>{{$job->change_code}}</td>
-                               @if($job->claim_create)
-								   <?php $d1 = App\Models\Job::where('job_id',$job->job_id)->first();
-							        $dat1 = $d1->created_at;
-									    $vv = date('d-m-Y', strtotime($dat1));
-										
-									$d2 = App\Models\Claim::where('job_id',$job->job_id)->first();
-									$dat2 = $d2->created_at;
-									  $nn =  date('d-m-Y', strtotime($dat2));
-									 $formatted_dt1=Carbon::parse($vv);
-
-                                 $formatted_dt2=Carbon::parse($nn);
-
-                          $date_diff=$formatted_dt1->diffInDays($formatted_dt2);
-									
-									//echo round($diff / (60 * 60 * 24));
-
-									
-							   ?>@endif
-                                @if($job->claim_approve)<td>{{$date_diff}} days<td>
-								@else
-									<td></td>@endif
+                                @if($job->turn_fround_time)
+                                    <td>{{$job->turn_fround_time}} days</td>
+                                @else
+                                    <td></td>
+                                @endif 
+									 
                                
-								  @if($job->appointment_time)
-                                <td>{{date('d-m-Y', strtotime($job->appointment_time))}}</td>
-							@else<td></td>
-							@endif
-                                 @if($job->order_date)<td>{{date('d-m-Y', strtotime($job->order_date))}}</td>@else<td></td>@endif
+								@if($job->appointment_time)
+                                    <td>{{date('d-m-Y', strtotime($job->appointment_time))}}</td>
+							    @else
+                                <td></td>
+							    @endif
+
+                                 @if($job->order_date)
+                                 <td>{{date('d-m-Y', strtotime($job->order_date))}}</td>
+                                 @else
+                                 <td></td>
+                                 @endif
                                
                                 <td>{{$job->product}}</td>
                                 <td>{{$job->seriel_number}}</td>
@@ -3526,201 +3518,149 @@
         })
 		 var myselect;
 		function onChangestatus(stat_obj){
-	
-               var status = stat_obj.value;
-			
-                
-				  var job_id = $(stat_obj).data("id");
-				
-			
-				 
-     var sympt_id = $(stat_obj).attr("data-sym");
-     var fal_id = $(stat_obj).attr("data-fal");
-    
-     var res_id = $(stat_obj).attr("data-res");
-     var symptom = $(stat_obj).attr("data-symptom");
-   
-     var faulty = $(stat_obj).attr("data-faulty");
-     var resol = $(stat_obj).attr("data-resol");
-     var repair = $(stat_obj).attr("data-repair");
-     var fname = $(stat_obj).attr("data-fname");
-     var lname =$(stat_obj).attr("data-lname");
-     var addrs =$(stat_obj).attr("data-addrs");
-     var phn = $(stat_obj).attr("data-phn");
-    
-     var bus = $(stat_obj).attr("data-bus");
+            var status = stat_obj.value;
+			var job_id = $(stat_obj).data("id");		 
+            var sympt_id = $(stat_obj).attr("data-sym");
+            var fal_id = $(stat_obj).attr("data-fal");
+            var res_id = $(stat_obj).attr("data-res");
+            var symptom = $(stat_obj).attr("data-symptom");
+            var faulty = $(stat_obj).attr("data-faulty");
+            var resol = $(stat_obj).attr("data-resol");
+            var repair = $(stat_obj).attr("data-repair");
+            var fname = $(stat_obj).attr("data-fname");
+            var lname =$(stat_obj).attr("data-lname");
+            var addrs =$(stat_obj).attr("data-addrs");
+            var phn = $(stat_obj).attr("data-phn");
+            var bus = $(stat_obj).attr("data-bus");
+            var part_no =$(stat_obj).attr("data-partno");
+            var part_desc =$(stat_obj).attr("data-partdesc");
+            var part_qty =$(stat_obj).attr("data-partqty");
+            var part_id =$(stat_obj).attr("data-partid");
+            var part_rem =$(stat_obj).attr("data-partrem");
+            var mul_part_id =$(stat_obj).attr("data-mulpartid");
+            var mul_part =$(stat_obj).attr("data-mulparts");
+            var grn_spare =$(stat_obj).attr("data-grnspare");
+            var tech_prob =$(stat_obj).attr("data-techprob");
+            //GRN  
+            var dented =$(stat_obj).attr("data-dented");
+            var photogr =$(stat_obj).attr("data-photogr");
+            var returnacc =$(stat_obj).attr("data-returnacc");
+            var pur_date =$(stat_obj).attr("data-purdate");
+            var appl_date =$(stat_obj).attr("data-appldate");
+            var comp_date =$(stat_obj).attr("data-compdate");
+            var goods_date =$(stat_obj).attr("data-gooddate");
+            var model =$(stat_obj).attr("data-mod");
+            var grn_res =$(stat_obj).attr("data-grnres");
+            var grn_seriel =$(stat_obj).attr("data-grnseriel");
+            //RMA
+            var rma_spare =$(stat_obj).attr("data-rmaspare");
+            var rma_seriel =$(stat_obj).attr("data-rmaseriel");
+            var warcard =$(stat_obj).attr("data-warcard");
+            var panser =$(stat_obj).attr("data-panser");
+            var panmod =$(stat_obj).attr("data-panmod");
+            var accnt =$(stat_obj).attr("data-accnt");
+            var compl =$(stat_obj).attr("data-compl");
+            var rmares =$(stat_obj).attr("data-rmares");
+            var rmaappl =$(stat_obj).attr("data-rmaappl");
+            var rma_pur =$(stat_obj).attr("data-rmapurchase");
+            var date_rec =$(stat_obj).attr("data-daterec");
+            var other =$(stat_obj).attr("data-othe");
+	        var partorder =$(stat_obj).attr("data-partorder");
+	        var grnid =$(stat_obj).attr("data-grnid");
+			var rmaid =$(stat_obj).attr("data-rmaid");
+			var prdrepid =$(stat_obj).attr("data-prdrepid");
+            //Claim
 
-     var part_no =$(stat_obj).attr("data-partno");
-     var part_desc =$(stat_obj).attr("data-partdesc");
-     var part_qty =$(stat_obj).attr("data-partqty");
-     var part_id =$(stat_obj).attr("data-partid");
-     var part_rem =$(stat_obj).attr("data-partrem");
-var mul_part_id =$(stat_obj).attr("data-mulpartid");
-
-var mul_part =$(stat_obj).attr("data-mulparts");
-
-
-     var grn_spare =$(stat_obj).attr("data-grnspare");
-     
-     var tech_prob =$(stat_obj).attr("data-techprob");
- //GRN  
-     var dented =$(stat_obj).attr("data-dented");
-     var photogr =$(stat_obj).attr("data-photogr");
-     var returnacc =$(stat_obj).attr("data-returnacc");
-     var pur_date =$(stat_obj).attr("data-purdate");
-     var appl_date =$(stat_obj).attr("data-appldate");
-     var comp_date =$(stat_obj).attr("data-compdate");
-     var goods_date =$(stat_obj).attr("data-gooddate");
-     var model =$(stat_obj).attr("data-mod");
-     var grn_res =$(stat_obj).attr("data-grnres");
-     var grn_seriel =$(stat_obj).attr("data-grnseriel");
-//RMA
-    var rma_spare =$(stat_obj).attr("data-rmaspare");
-    var rma_seriel =$(stat_obj).attr("data-rmaseriel");
-    var warcard =$(stat_obj).attr("data-warcard");
-    var panser =$(stat_obj).attr("data-panser");
-    var panmod =$(stat_obj).attr("data-panmod");
-    var accnt =$(stat_obj).attr("data-accnt");
-    var compl =$(stat_obj).attr("data-compl");
-    var rmares =$(stat_obj).attr("data-rmares");
-    var rmaappl =$(stat_obj).attr("data-rmaappl");
-    var rma_pur =$(stat_obj).attr("data-rmapurchase");
-    var date_rec =$(stat_obj).attr("data-daterec");
-    var other =$(stat_obj).attr("data-othe");
-	    var partorder =$(stat_obj).attr("data-partorder");
-	    var grnid =$(stat_obj).attr("data-grnid");
-
-			    var rmaid =$(stat_obj).attr("data-rmaid");
-				
-			    var prdrepid =$(stat_obj).attr("data-prdrepid");
-
-	
-//Claim
-
- var mileage =$(stat_obj).attr("data-mileage");
-    var cl_amount =$(stat_obj).attr("data-clamount");
-    var labour =$(stat_obj).attr("data-labour");
-//JOB
-      var job_loc =$(stat_obj).attr("data-jobloc");
-
-   var remar_job =$(stat_obj).attr("data-jobremark");
-    var fround =$(stat_obj).attr("data-fround");
-    var descr =$(stat_obj).attr("data-jobdesc");
-   
-    var asp_loc =$(stat_obj).attr("data-asploc");
-				if(status == 71){
-            
-            $('#apptModal').modal('show');
-            $('#job22id').val(job_id);
-    $('#resol').val(resol);
-    $('#faulty').val(faulty);
-    $('#symptom').val(symptom);
-    $('#firstname').val(fname);
-    $('#lastname').val(lname);
-   
-    $('#address').val(addrs);
-    $('#phone22').val(phn);
-    $('#business').val(bus);
-
-         }
-    if(status == 76){
-        
-      
-
-         window.location = "{{ URL::route("Pendingpart") }}/"+job_id; 
-    }
-    if(status == 63){
-
-       window.location = "{{ URL::route("Pendingpart") }}/"+job_id; 
-
-    }
-
-          if(status == 64){
-                      window.location = "{{ URL::route("Pendingpart") }}/"+job_id; 
-        }
-        if(status == 67){
-           
-           window.location = "{{ URL::route("Pendingpart") }}/"+job_id; 
-       
-        }
-		
-		
-		
-		
-		
-		
-		
-        if(status == 80){
-            $('#jobidcus').val(job_id);
-            $('#CustomerNotModal').modal('show');
-
-        }
-        if(status == 75){
-            $('#jo_id_spoil').val(job_id);
-            $('#AspSpoil').modal('show');
-
-        }
-        if(status == 83){
-            $('#jo_id_est').val(job_id);
-            $('#Estimate').modal('show');
-
-        }
-        if(status == 84){
-            $('#jo_id_email').val(job_id);
-            $('#EmailUpdate').modal('show');
-
-        }
-        if(status == 87){
-            $('#jo_id_cn').val(job_id);
-            $('#RequestCn').modal('show');
-
-        }
-        if(status == 88){
-            $('#jo_id_ex').val(job_id);
-            $('#RequestEx').modal('show');
-
-        }
-        if(status == 92){
-            $('#jo_id_cpy').val(job_id);
-            $('#HardCopy').modal('show');
-
-        }
-        if(status == 95){
-            $('#jo_id_suport').val(job_id);
-            $('#TechSup').modal('show');
-
-        }
-        if(status == 96){
-            $('#jo_id_ex_com').val(job_id);
-            $('#ExhangeComp').modal('show');
-
-        }
-        if(status == 101){
-            $('#jo_id_part').val(job_id);
-            $('#PendPart').modal('show');
-
-        }
-        if(status == 102){
-            $('#jo_id_grn').val(job_id);
-            $('#DelGrn').modal('show');
-
-        }
-        if(status == 103){
-            $('#jo_id_rma').val(job_id);
-            $('#DelRma').modal('show');
-
-        }
-		  if(status == 79){
-            $('#jobidser').val(job_id);
-            $('#WaitServiceModal').modal('show');
-
-        }
-		 if(status == 91){
-            $('#jobsup').val(job_id);
-            $('#WaitTechModal').modal('show');
-
-        }
+            var mileage =$(stat_obj).attr("data-mileage");
+            var cl_amount =$(stat_obj).attr("data-clamount");
+            var labour =$(stat_obj).attr("data-labour");
+            //JOB
+            var job_loc =$(stat_obj).attr("data-jobloc");
+            var remar_job =$(stat_obj).attr("data-jobremark");
+            var fround =$(stat_obj).attr("data-fround");
+            var descr =$(stat_obj).attr("data-jobdesc");
+            var asp_loc =$(stat_obj).attr("data-asploc");
+			if(status == 71){
+                $('#apptModal').modal('show');
+                $('#job22id').val(job_id);
+                $('#resol').val(resol);
+                $('#faulty').val(faulty);
+                $('#symptom').val(symptom);
+                $('#firstname').val(fname);
+                $('#lastname').val(lname);
+                $('#address').val(addrs);
+                $('#phone22').val(phn);
+                $('#business').val(bus);
             }
+            if(status == 76){
+                window.location = "{{ URL::route("Pendingpart") }}/"+job_id; 
+            }
+            if(status == 63){
+                window.location = "{{ URL::route("Pendingpart") }}/"+job_id; 
+            }
+            if(status == 64){
+                window.location = "{{ URL::route("Pendingpart") }}/"+job_id; 
+            }
+            if(status == 67){
+                window.location = "{{ URL::route("Pendingpart") }}/"+job_id; 
+            }
+            if(status == 80){
+                $('#jobidcus').val(job_id);
+                $('#CustomerNotModal').modal('show');
+            }
+            if(status == 75){
+                $('#jo_id_spoil').val(job_id);
+                $('#AspSpoil').modal('show');
+            }
+            if(status == 83){
+                $('#jo_id_est').val(job_id);
+                $('#Estimate').modal('show');
+            }
+            if(status == 84){
+                $('#jo_id_email').val(job_id);
+                $('#EmailUpdate').modal('show');
+            }
+            if(status == 87){
+                $('#jo_id_cn').val(job_id);
+                $('#RequestCn').modal('show');
+            }
+            if(status == 88){
+                $('#jo_id_ex').val(job_id);
+                $('#RequestEx').modal('show');
+            }
+            if(status == 92){
+                $('#jo_id_cpy').val(job_id);
+                $('#HardCopy').modal('show');
+            }
+            if(status == 95){
+                $('#jo_id_suport').val(job_id);
+                $('#TechSup').modal('show');
+            }
+            if(status == 96){
+                $('#jo_id_ex_com').val(job_id);
+                $('#ExhangeComp').modal('show');
+            }
+            if(status == 101){
+                $('#jo_id_part').val(job_id);
+                $('#PendPart').modal('show');
+            }
+            if(status == 102){
+                $('#jo_id_grn').val(job_id);
+                $('#DelGrn').modal('show');
+            }
+            if(status == 103){
+                $('#jo_id_rma').val(job_id);
+                $('#DelRma').modal('show');
+            }
+            if(status == 79){
+                $('#jobidser').val(job_id);
+                $('#WaitServiceModal').modal('show');
+            }
+            if(status == 91){
+                $('#jobsup').val(job_id);
+                $('#WaitTechModal').modal('show');
+            }
+        }
 			
 			
 			
@@ -3730,7 +3670,7 @@ var mul_part =$(stat_obj).attr("data-mulparts");
 				  var user_id=selcode.value;
            $('#code').val(user_id);
 		 
-         var job_id =  $("#getid").attr("data-id");
+         var job_id =  $(selcode).attr("data-id");
          $('#job_id_ware').val(job_id);
 
          $('#AssignAspModal').modal('show');
